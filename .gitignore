@@ -22,3 +22,12 @@ site/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Generated Zensical configs
+zensical.*.generated.toml
+
+# Generated shared assets
+docs/en/assets/
+docs/en/stylesheets/
+docs/lt/assets/
+docs/lt/stylesheets/

@@ -1,23 +1,23 @@
-# Table of Contents: Python Data Types Level 1
+# Data Types Level 1
 
 - [Mutable vs Immutable](#mutable-vs-immutable)
 - [Ordered vs Unordered](#ordered-vs-unordered)
 - [Core built-in data types](#core-built-in-data-types)
 - [Type casting](#type-casting)
 
-**Python Data Types Level 1** introduces the basic kinds of values used in Python and several important ways to describe them. You will learn the difference between **mutable** and **immutable** objects, understand what **ordered** and **unordered** mean, explore the core built-in data types used for numbers, text, Boolean values, and the absence of a value, and perform basic **type casting**.
+**Data Types Level 1** introduces the basic kinds of values used in Python and several important ways to describe them. You will learn the difference between **mutable** and **immutable** objects, understand what **ordered** and **unordered** mean, explore the core built-in data types used for numbers, text, Boolean values, and the absence of a value, and perform basic **type casting**.
 
 ## Mutable vs Immutable
 
 Python objects can be categorized by whether their contents can be changed after the object has been created.
 
-**Mutable types** can be modified in place. They are similar to a **whiteboard**, where the existing content can be erased or changed without replacing the whiteboard itself. Python collection types such as `list`, `dict`, and `set` are mutable. These collection types are covered in more detail in **Python Data Types Level 2**.
+**Mutable types** can be modified in place. They are similar to a **whiteboard**, where the existing content can be erased or changed without replacing the whiteboard itself. Python collection types such as `list`, `dict`, and `set` are mutable. These collection types are covered in more detail in **Data Types Level 2**.
 
 ![Mutable Python types illustrated](./assets/images/mutable_type_intro_gif.gif)
 
 **Immutable types** cannot be changed after they are created. They are similar to a **printed page**. The page itself cannot be edited after printing, so producing different content requires a new page. In Python, an operation that appears to change an immutable value creates or assigns a different object instead of modifying the original object in place.
 
-Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`, `NoneType`, and `frozenset`. The collection types `tuple` and `frozenset` are covered in more detail in **Python Data Types Level 2**.
+Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`, `NoneType`, and `frozenset`. The collection types `tuple` and `frozenset` are covered in more detail in **Data Types Level 2**.
 
 ![Immutable Python types illustrated](./assets/images/immutable_type_intro_gif.gif)
 
@@ -33,7 +33,7 @@ Mutability describes whether an object can change. Another important characteris
 
 Python collection and sequence types can also be described by whether they preserve a defined order and how their elements are accessed.
 
-**Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position based access through an `index`. The collection types `list` and `tuple` are covered in more detail in **Python Data Types Level 2**.
+**Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position based access through an `index`. The collection types `list` and `tuple` are covered in more detail in **Data Types Level 2**.
 
 ![Ordered Python types](./assets/images/ordered_types_intro.png)
 

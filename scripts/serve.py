@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import threading
 import time
@@ -9,24 +10,52 @@ from pathlib import Path
 
 WATCH_PATHS = [
     Path("docs"),
+    Path("config/nav"),
     Path("zensical.en.toml"),
     Path("zensical.lt.toml"),
 ]
 
 BUILD_COMMANDS = [
-    ["uv", "run", "zensical", "build", "-f", "zensical.en.toml"],
-    ["uv", "run", "zensical", "build", "-f", "zensical.lt.toml"],
+    ["uv", "run", "zensical", "build", "-f", "zensical.en.generated.toml"],
+    ["uv", "run", "zensical", "build", "-f", "zensical.lt.generated.toml"],
 ]
 
 
+def copy_shared_assets():
+    for language in ["en", "lt"]:
+        assets_dir = Path(f"docs/{language}/assets")
+        stylesheets_dir = Path(f"docs/{language}/stylesheets")
+
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        stylesheets_dir.mkdir(parents=True, exist_ok=True)
+
+        shutil.copy2(
+            "docs/shared/assets/techin-brand.svg",
+            assets_dir / "techin-brand.svg",
+        )
+
+        shutil.copy2(
+            "docs/shared/stylesheets/extra.css",
+            stylesheets_dir / "extra.css",
+        )
+
 def build():
-    print("\nBuilding English version...")
+    print("\nCopying shared assets")
+    copy_shared_assets()
+
+    print("\nGenerating navigation configs")
+    subprocess.run(
+        ["uv", "run", "python", "scripts/generate_config.py"],
+        check=True,
+    )
+
+    print("\nBuilding English version")
     subprocess.run(BUILD_COMMANDS[0], check=True)
 
-    print("Building Lithuanian version...")
+    print("Building Lithuanian version")
     subprocess.run(BUILD_COMMANDS[1], check=True)
 
-    print("Build complete.\n")
+    print("Build complete\n")
 
 
 def get_modified_times():
@@ -47,9 +76,11 @@ def get_modified_times():
                         ".js",
                         ".svg",
                         ".png",
-                        ".jpg",
-                        ".jpeg",
+                        ".gif",
+                        ".webp",
                         ".toml",
+                        ".yml",
+                        ".yaml",
                     }:
                         files[file_path] = file_path.stat().st_mtime
 
@@ -65,12 +96,12 @@ def watch():
         current = get_modified_times()
 
         if current != previous:
-            print("Change detected. Rebuilding...")
+            print("Change detected. Rebuilding")
 
             try:
                 build()
             except subprocess.CalledProcessError:
-                print("Build failed. Waiting for next change...")
+                print("Build failed. Waiting for next change")
 
             previous = current
 
@@ -89,7 +120,7 @@ def serve():
     print("Serving Learning Materials at http://127.0.0.1:8000")
     print("English: http://127.0.0.1:8000/en/")
     print("Lithuanian: http://127.0.0.1:8000/lt/")
-    print("Watching for changes...\n")
+    print("Watching for changes\n")
 
     server.serve_forever()
 

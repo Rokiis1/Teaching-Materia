@@ -2,99 +2,15 @@
 site_name = "Mokymosi medžiaga"
 site_description = "Programavimo mokymosi medžiaga"
 
-docs_dir = "docs"
+docs_dir = "docs/lt"
 site_dir = "site/lt"
 site_url = "https://rokiis1.github.io/Teaching-Materia/lt/"
 
-# repo_url = "https://github.com/user/repo"
-# repo_name = "user/repo"
+# repo_url = "https://github.com/Rokiis1/Teaching-Materia"
+# repo_name = "Rokiis1/Teaching-Materia"
 # edit_uri = "edit/main/docs/"
 
-nav = [
-  { "Python" = [
-      "lt/python/index.md",
-
-      { "Dokumentacija ir kodo stilius" = [
-          "lt/python/documentation_code_style/overview.md",
-
-          { "1 lygis" = [
-              "lt/python/documentation_code_style/1_level/1_level_documentation_code_style.md",
-          ]},
-
-          { "2 lygis" = [
-              "lt/python/documentation_code_style/2_level/2_level_documentation_code_style.md",
-          ]},
-
-          "lt/python/documentation_code_style/summary.md",
-      ]},
-
-      { "Valdymo struktūros" = [
-          "lt/python/control_flow/overview.md",
-
-          { "1 lygis" = [
-              "lt/python/control_flow/1_level/1_level_control_flow.md",
-          ]},
-
-          { "2 lygis" = [
-              "lt/python/control_flow/2_level/2_level_control_flow.md",
-          ]},
-
-          { "3 lygis" = [
-              "lt/python/control_flow/3_level/3_level_control_flow.md",
-          ]},
-
-          { "4 lygis" = [
-              "lt/python/control_flow/4_level/4_level_control_flow.md",
-          ]},
-
-          "lt/python/control_flow/summary.md",
-      ]},
-
-      { "Duomenų tipai" = [
-          "lt/python/data_types/overview.md",
-
-          { "1 lygis" = [
-              "lt/python/data_types/1_level/1_level_data_types.md",
-          ]},
-
-          { "2 lygis" = [
-              "lt/python/data_types/2_level/2_level_data_types.md",
-          ]},
-
-          { "3 lygis" = [
-              "lt/python/data_types/3_level/3_level_data_types.md",
-          ]},
-
-          { "4 lygis" = [
-              "lt/python/data_types/4_level/4_level_data_types.md",
-          ]},
-
-          "lt/python/data_types/summary.md",
-      ]},
-  ]},
-
-  { "Programinės įrangos testavimas" = [
-      "lt/testing/index.md",
-
-      { "Testavimo pagrindai" = [
-          "lt/testing/fundamentals_of_testing/overview.md",
-
-          { "1 lygis" = [
-              "lt/testing/fundamentals_of_testing/1_level/1_fundamentals_of_testing.md",
-          ]},
-
-          { "2 lygis" = [
-              "lt/testing/fundamentals_of_testing/2_level/2_fundamentals_of_testing.md",
-          ]},
-
-          { "3 lygis" = [
-              "lt/testing/fundamentals_of_testing/3_level/3_fundamentals_of_testing.md",
-          ]},
-
-          "lt/testing/fundamentals_of_testing/summary.md",
-      ]},
-  ]},
-]
+# Navigation is generated from config/nav/
 
 extra_css = ["stylesheets/extra.css"]
 
@@ -131,7 +47,7 @@ features = [
 
 [project.extra]
 alternate = [
-  { name = "English", link = "/Teaching-Materia/en/", lang = "en" },
+  { name = "Anglų", link = "/Teaching-Materia/en/", lang = "en" },
   { name = "Lietuvių", link = "/Teaching-Materia/lt/", lang = "lt" },
 ]
 

@@ -1,4 +1,4 @@
-# Table of Contents: Python Control Flow Level 1
+# Control Flow Level 1
 
 - [If Statement](#if-statement)
 - [If-Else Statement](#if-else-statement)
@@ -18,11 +18,13 @@ In this **Python Control Flow Level 1**, we begin with conditional statements us
 An `if` statement runs a block of code only when its condition evaluates to `True`. It begins with the `if` keyword, followed by a condition and the required colon. The indented statements below it form the code block controlled by that condition.
 
 ```mermaid
-flowchart TD
+flowchart LR
     A([Start]) --> B{Is the condition True?}
+
     B -->|Yes| C[Run the code inside the if block]
+    C --> E([Continue with the program])
+
     B -->|No| D[Skip the if block]
-    C --> E[Continue with the program]
     D --> E
 ```
 
@@ -66,7 +68,16 @@ An `if` statement is enough when a program only needs to act when a condition is
 
 An `if` statement can be combined with `else` when a program needs one action for a true condition and another action for a false condition. This creates two possible branches, but only one of them runs.
 
-![If and else statement flow](./assets/images/if_else_statement.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B{Is the condition True?}
+
+    B -->|Yes| C[Run the if block]
+    B -->|No| D[Run the else block]
+
+    C --> E([Continue with the program])
+    D --> E
+```
 
 The syntax is shown below.
 
@@ -94,7 +105,20 @@ Because `temperature > 20` is `False`, Python skips the `if` block and runs the 
 
 When a program needs to choose between more than two possibilities, one or more `elif` branches can be placed between `if` and `else`. The keyword `elif` means **else if**. Python checks each condition in order until it finds the first one that evaluates to `True`.
 
-![If, elif, and else statement flow](./assets/images/if_elif_else_statement.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B{Is the if condition True?}
+
+    B -->|Yes| C[Run the if block]
+    B -->|No| D{Is the elif condition True?}
+
+    D -->|Yes| E[Run the elif block]
+    D -->|No| F[Run the else block]
+
+    C --> G([Continue with the program])
+    E --> G
+    F --> G
+```
 
 The general structure is shown below.
 
@@ -137,7 +161,17 @@ Python commonly uses two types of loops: a `for` loop repeats work for a sequenc
 
 A `for` loop takes one value at a time from an iterable and runs the loop body for each value. The loop continues automatically until every available value has been processed.
 
-![For loop structure](./assets/images/loop_in.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B[Get iterable]
+    B --> C{More items available?}
+
+    C -->|Yes| D[Get next item]
+    D --> E[Run loop body]
+    E --> C
+
+    C -->|No| F([Continue after loop])
+```
 
 The basic syntax is shown below.
 
@@ -148,7 +182,18 @@ for item in collection:
 
 A string is iterable because its characters can be processed one at a time. The following diagram shows this process.
 
-![For loop execution example](./assets/images/example_for_loop_chart.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B["text = 'Hello'"]
+    B --> C{Another character available?}
+
+    C -->|Yes| D[Get next character]
+    D --> E[Assign character to letter]
+    E --> F["print(letter)"]
+    F --> C
+
+    C -->|No| G([Continue after loop])
+```
 
 The diagram shows the loop taking one character from the string at a time. In the code below, `letter` receives the current character during each iteration, and Python continues until the string has no characters left to process.
 
@@ -175,7 +220,9 @@ for email in emails:
 
 In this introductory example, `"admin"` is treated as invalid because it does not contain `"@"`. Each email is checked independently using the same conditional logic.
 
-> **Note:** Checking only for `"@"` is a simplified teaching example. Real email validation requires more careful rules.
+!!! info "Simplified Validation"
+
+    Checking only for `"@"` is a simplified teaching example. Real email validation requires more careful rules.
 
 Tuples are also iterable, so a loop can process their values in order without manually accessing individual positions.
 
@@ -372,7 +419,17 @@ Both `enumerate()` and `range()` are commonly used with `for` loops, where itera
 
 A `while` loop repeatedly executes a block of code as long as its condition evaluates to `True`. Unlike a `for` loop, which commonly processes values from an iterable, a `while` loop is useful when repetition depends on a condition changing over time.
 
-![while loop chart](./assets/images/while_loop_chart.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B[Initialize data]
+    B --> C{Is the while condition True?}
+
+    C -->|Yes| D[Run the loop body]
+    D --> E[Update data]
+    E --> C
+
+    C -->|No| F([Continue after loop])
+```
 
 The basic syntax is shown below.
 
@@ -383,7 +440,16 @@ while condition:
 
 Python checks the condition before each iteration. If it is `False`, the loop body does not run. The following diagram shows how this repeated condition check controls the loop.
 
-![example chart while loop](./assets/images/example_while_loop_chart.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B["count = 0"]
+    B --> C{"Is count < 5?"}
+
+    C -->|Yes| D["count += 1"]
+    D --> C
+
+    C -->|No| E([Continue after loop])
+```
 
 The following example demonstrates a `while` loop that counts from `1` to `5`.
 
@@ -404,7 +470,9 @@ while True:
     print("Infinite loop") # Infinite loop, repeated continuously
 ```
 
-> **Note:** Press **Ctrl + C** in the terminal to stop the running program.
+!!! tip "Stopping a Running Program"
+
+    Press **Ctrl + C** in the terminal to stop the running program.
 
 The condition `True` never changes, so this loop does not stop on its own. When user input determines when repetition should finish, the stopping rule can instead be expressed directly in the `while` condition.
 

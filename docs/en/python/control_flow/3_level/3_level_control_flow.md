@@ -1,4 +1,4 @@
-# Table of Contents: Python Control Flow Level 3
+# Control Flow Level 3
 
 - [Match-Case Statement](#match-case-statement)
 - [Nested If Statements](#nested-if-statements)

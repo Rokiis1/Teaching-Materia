@@ -1,11 +1,11 @@
-# Table of Contents: Python Documentation and Code Style Level 1
+# Documentation and Code Style Level 1
 
 - [Variables, Literals, and Objects](#variables-literals-and-objects)
 - [Built-in Functions](#built-in-functions)
 - [Naming and Formatting](#naming-and-formatting)
 - [Comments and Docstrings](#comments-and-docstrings)
 
-**Python Documentation and Code Style Level 1** introduces the foundations needed to write small Python programs that are understandable as well as correct. We begin with variables, literal values, and the idea that variable names refer to objects. We then use several built-in functions to display and inspect those objects.
+**Documentation and Code Style Level 1** introduces the foundations needed to write small Python programs that are understandable as well as correct. We begin with variables, literal values, and the idea that variable names refer to objects. We then use several built-in functions to display and inspect those objects.
 
 Once these foundations are in place, the focus shifts from making code run to making code readable. We explore meaningful naming, basic formatting, comments, and docstrings. The goal is not to memorize every Python style rule, but to begin writing code that communicates its purpose clearly.
 

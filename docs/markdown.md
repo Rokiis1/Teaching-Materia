@@ -112,24 +112,54 @@ Or use a blank line for a new paragraph.
 
 !!! note "Note"
 
-    Additional information worth remembering.
+    Important information the student should remember.
 
-!!! tip "Tip"
+!!! abstract "Abstract"
 
-    A useful recommendation for the student.
-
-!!! warning "Warning"
-
-    Be careful when doing this.
-
-!!! danger "Danger"
-
-    This can cause a serious problem.
-
-!!! example "Example"
-
-    Here is an example of how this works.
+    A concise overview or condensed explanation of a larger topic.
 
 !!! info "Information"
 
-    Additional explanation.
+    Additional context or explanation that helps clarify the topic.
+
+!!! tip "Tip"
+
+    A practical recommendation or useful technique that can make a task easier.
+
+!!! success "Success"
+
+    A correct result, successful outcome, or behavior the student should expect.
+
+!!! question "Question"
+
+    A question that encourages the student to think about or check their understanding of the topic.
+
+!!! warning "Warning"
+
+    A potential mistake, limitation, or behavior the student should be careful about.
+
+!!! failure "Failure"
+
+    An example of an unsuccessful result or approach and why it does not work as expected.
+
+!!! danger "Danger"
+
+    A serious problem or action that can cause significant unintended consequences.
+
+!!! bug "Bug"
+
+    Incorrect program behavior caused by a mistake in the code or logic.
+
+!!! example "Example"
+
+    A focused example that demonstrates how a concept works.
+
+!!! quote "Quote"
+
+    A quotation or referenced statement that should be visually separated from the surrounding explanation.
+
+
+<!-- markdownlint-disable MD046 -->
+
+
+<!-- markdownlint-enable MD046 -->

@@ -1,4 +1,4 @@
-# Table of Contents: Python Control Flow Level 2
+# Control Flow Level 2
 
 - [The `break` Statement](#the-break-statement)
 - [The `continue` Statement](#the-continue-statement)
@@ -132,7 +132,19 @@ The important distinction is where execution stops. `break` exits only the curre
 
 The `continue` statement skips the remaining code in the current iteration and moves directly to the next iteration of the loop. It is useful when certain values should be ignored while the loop continues processing the rest of the data, such as filtering records, skipping invalid values, or excluding items that do not meet a requirement.
 
-![Continue statement](./assets/images/continue_statement.png)
+```mermaid
+flowchart LR
+    A([Start]) --> B[Enter loop]
+    B --> C[Run loop code]
+    C --> D{Continue condition met?}
+
+    D -->|No| E[Run remaining code]
+    E --> F[Next iteration]
+    F --> B
+
+    D -->|Yes| G[continue]
+    G --> F
+```
 
 The diagram shows how `continue` skips the remaining work in the current iteration without exiting the loop. The basic structure is shown below.
 

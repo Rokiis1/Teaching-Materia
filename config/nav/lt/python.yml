@@ -1,0 +1,47 @@
+- Python:
+    - python/index.md
+
+    - Dokumentacija ir kodo stilius:
+        - python/documentation_code_style/overview.md
+
+        - 1 lygis:
+            - python/documentation_code_style/1_level/1_level_documentation_code_style.md
+
+        - 2 lygis:
+            - python/documentation_code_style/2_level/2_level_documentation_code_style.md
+
+        - python/documentation_code_style/summary.md
+
+    - Valdymo struktūros:
+        - python/control_flow/overview.md
+
+        - 1 lygis:
+            - python/control_flow/1_level/1_level_control_flow.md
+
+        - 2 lygis:
+            - python/control_flow/2_level/2_level_control_flow.md
+
+        - 3 lygis:
+            - python/control_flow/3_level/3_level_control_flow.md
+
+        - 4 lygis:
+            - python/control_flow/4_level/4_level_control_flow.md
+
+        - python/control_flow/summary.md
+
+    - Duomenų tipai:
+        - python/data_types/overview.md
+
+        - 1 lygis:
+            - python/data_types/1_level/1_level_data_types.md
+
+        - 2 lygis:
+            - python/data_types/2_level/2_level_data_types.md
+
+        - 3 lygis:
+            - python/data_types/3_level/3_level_data_types.md
+
+        - 4 lygis:
+            - python/data_types/4_level/4_level_data_types.md
+
+        - python/data_types/summary.md

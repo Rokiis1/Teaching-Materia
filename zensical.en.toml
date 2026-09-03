@@ -2,110 +2,34 @@
 site_name = "Learning Materials"
 site_description = "Programming learning materials"
 
-docs_dir = "docs"
+# Source directory with Markdown and shared assets
+docs_dir = "docs/en"
+# Output directory for the English build
 site_dir = "site/en"
+# Public production URL for the English site
 site_url = "https://rokiis1.github.io/Teaching-Materia/en/"
 
-# repo_url = "https://github.com/user/repo"
-# repo_name = "user/repo"
+# GitHub repository integration
+# repo_url = "https://github.com/Rokiis1/Teaching-Materia"
+# repo_name = "Rokiis1/Teaching-Materia"
 # edit_uri = "edit/main/docs/"
 
-nav = [
-  { "Python" = [
-      "en/python/index.md",
+# Navigation is generated from config/nav/
 
-      { "Documentation & Code Style" = [
-          "en/python/documentation_code_style/overview.md",
-
-          { "Level 1" = [
-              "en/python/documentation_code_style/1_level/1_level_documentation_code_style.md",
-          ]},
-
-          { "Level 2" = [
-              "en/python/documentation_code_style/2_level/2_level_documentation_code_style.md",
-          ]},
-
-          "en/python/documentation_code_style/summary.md",
-      ]},
-
-      { "Control Flow" = [
-          "en/python/control_flow/overview.md",
-
-          { "Level 1" = [
-              "en/python/control_flow/1_level/1_level_control_flow.md",
-          ]},
-
-          { "Level 2" = [
-              "en/python/control_flow/2_level/2_level_control_flow.md",
-          ]},
-
-          { "Level 3" = [
-              "en/python/control_flow/3_level/3_level_control_flow.md",
-          ]},
-
-          { "Level 4" = [
-              "en/python/control_flow/4_level/4_level_control_flow.md",
-          ]},
-
-          "en/python/control_flow/summary.md",
-      ]},
-
-      { "Data Types" = [
-          "en/python/data_types/overview.md",
-
-          { "Level 1" = [
-              "en/python/data_types/1_level/1_level_data_types.md",
-          ]},
-
-          { "Level 2" = [
-              "en/python/data_types/2_level/2_level_data_types.md",
-          ]},
-
-          { "Level 3" = [
-              "en/python/data_types/3_level/3_level_data_types.md",
-          ]},
-
-          { "Level 4" = [
-              "en/python/data_types/4_level/4_level_data_types.md",
-          ]},
-
-          "en/python/data_types/summary.md",
-      ]},
-  ]},
-
-  { "Software Testing" = [
-      "en/testing/index.md",
-
-      { "Fundamentals of Testing" = [
-          "en/testing/fundamentals_of_testing/overview.md",
-
-          { "Level 1" = [
-              "en/testing/fundamentals_of_testing/1_level/1_fundamentals_of_testing.md",
-          ]},
-
-          { "Level 2" = [
-              "en/testing/fundamentals_of_testing/2_level/2_fundamentals_of_testing.md",
-          ]},
-
-          { "Level 3" = [
-              "en/testing/fundamentals_of_testing/3_level/3_fundamentals_of_testing.md",
-          ]},
-
-          "en/testing/fundamentals_of_testing/summary.md",
-      ]},
-  ]},
-]
-
+# Additional custom stylesheet
 extra_css = ["stylesheets/extra.css"]
 
+# Theme configuration
 [project.theme]
 variant = "classic"
 language = "en"
 logo = "assets/techin-brand.svg"
 
+# Enabled theme features
 features = [
   "announce.dismiss",
 
+  # Code-related features
   "content.code.annotate",
   "content.code.copy",
   "content.code.select",
@@ -113,39 +37,46 @@ features = [
   "content.tabs.link",
   "content.tooltips",
 
+  # Navigation features
   "navigation.footer",
   "navigation.indexes",
   "navigation.instant",
   "navigation.instant.prefetch",
   "navigation.path",
-
   "navigation.tabs",
   "navigation.tabs.sticky",
-
   "navigation.top",
   "navigation.tracking",
 
+  # Search features
   "search.highlight",
   "search.suggest",
 ]
 
+
 [project.extra]
+# Language selector shown in the heade
 alternate = [
   { name = "English", link = "/Teaching-Materia/en/", lang = "en" },
-  { name = "Lietuvių", link = "/Teaching-Materia/lt/", lang = "lt" },
+  { name = "Lithuanian", link = "/Teaching-Materia/lt/", lang = "lt" },
 ]
 
+# Theme color scheme / mode switcher
+
+# Follow operating system preference
 [[project.theme.palette]]
 media = "(prefers-color-scheme)"
 toggle.icon = "lucide/sun-moon"
 toggle.name = "Switch to light mode"
 
+# Light mode
 [[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
+# Dark mode
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
@@ -155,6 +86,7 @@ toggle.name = "Switch to system preference"
 
 [project.markdown_extensions]
 
+# Standard Markdown extensions
 abbr = {}
 admonition = {}
 attr_list = {}
@@ -162,32 +94,44 @@ def_list = {}
 footnotes = {}
 md_in_html = {}
 
+# Adds permalink anchors to headings
 toc.permalink = true
 
+# Math support
 pymdownx.arithmatex.generic = true
+
+# Text formatting extensions
 pymdownx.betterem = {}
 pymdownx.caret = {}
 pymdownx.details = {}
 
+# Emoji support
 pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
 pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
 
+# Syntax highlighting
 pymdownx.highlight.anchor_linenums = true
 pymdownx.highlight.line_spans = "__span"
 pymdownx.highlight.pygments_lang_class = true
 
+# Inline and utility Markdown extensions
 pymdownx.inlinehilite = {}
 pymdownx.keys = {}
 pymdownx.magiclink = {}
 pymdownx.mark = {}
 pymdownx.smartsymbols = {}
 
+# Mermaid diagrams
 pymdownx.superfences.custom_fences = [
   { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
 ]
 
+# Content tabs
 pymdownx.tabbed.alternate_style = true
 pymdownx.tabbed.combine_header_slug = true
 
+# Task lists
 pymdownx.tasklist.custom_checkbox = true
+
+# Strikethrough and related syntax
 pymdownx.tilde = {}

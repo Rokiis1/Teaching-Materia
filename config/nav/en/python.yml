@@ -1,0 +1,34 @@
+- Python:
+    - python/index.md
+
+    - Documentation & Code Style:
+        - python/documentation_code_style/overview.md
+        - Level 1:
+            - python/documentation_code_style/1_level/1_level_documentation_code_style.md
+        - Level 2:
+            - python/documentation_code_style/2_level/2_level_documentation_code_style.md
+        - python/documentation_code_style/summary.md
+
+    - Control Flow:
+        - python/control_flow/overview.md
+        - Level 1:
+            - python/control_flow/1_level/1_level_control_flow.md
+        - Level 2:
+            - python/control_flow/2_level/2_level_control_flow.md
+        - Level 3:
+            - python/control_flow/3_level/3_level_control_flow.md
+        - Level 4:
+            - python/control_flow/4_level/4_level_control_flow.md
+        - python/control_flow/summary.md
+
+    - Data Types:
+        - python/data_types/overview.md
+        - Level 1:
+            - python/data_types/1_level/1_level_data_types.md
+        - Level 2:
+            - python/data_types/2_level/2_level_data_types.md
+        - Level 3:
+            - python/data_types/3_level/3_level_data_types.md
+        - Level 4:
+            - python/data_types/4_level/4_level_data_types.md
+        - python/data_types/summary.md
