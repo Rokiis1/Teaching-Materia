@@ -1,0 +1,15 @@
+[project]
+name = "learning-materials"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Rokiis1", email = "rokassnorvilis@gmail.com" }
+]
+requires-python = ">=3.13"
+[dependency-groups]
+dev = [
+    "zensical>=0.0.58",
+]
+
+

@@ -1,0 +1,193 @@
+[project]
+site_name = "Mokymosi medžiaga"
+site_description = "Programavimo mokymosi medžiaga"
+
+docs_dir = "docs"
+site_dir = "site/lt"
+site_url = "https://rokiis1.github.io/Teaching-Materia/lt/"
+
+# repo_url = "https://github.com/user/repo"
+# repo_name = "user/repo"
+# edit_uri = "edit/main/docs/"
+
+nav = [
+  { "Python" = [
+      "lt/python/index.md",
+
+      { "Dokumentacija ir kodo stilius" = [
+          "lt/python/documentation_code_style/overview.md",
+
+          { "1 lygis" = [
+              "lt/python/documentation_code_style/1_level/1_level_documentation_code_style.md",
+          ]},
+
+          { "2 lygis" = [
+              "lt/python/documentation_code_style/2_level/2_level_documentation_code_style.md",
+          ]},
+
+          "lt/python/documentation_code_style/summary.md",
+      ]},
+
+      { "Valdymo struktūros" = [
+          "lt/python/control_flow/overview.md",
+
+          { "1 lygis" = [
+              "lt/python/control_flow/1_level/1_level_control_flow.md",
+          ]},
+
+          { "2 lygis" = [
+              "lt/python/control_flow/2_level/2_level_control_flow.md",
+          ]},
+
+          { "3 lygis" = [
+              "lt/python/control_flow/3_level/3_level_control_flow.md",
+          ]},
+
+          { "4 lygis" = [
+              "lt/python/control_flow/4_level/4_level_control_flow.md",
+          ]},
+
+          "lt/python/control_flow/summary.md",
+      ]},
+
+      { "Duomenų tipai" = [
+          "lt/python/data_types/overview.md",
+
+          { "1 lygis" = [
+              "lt/python/data_types/1_level/1_level_data_types.md",
+          ]},
+
+          { "2 lygis" = [
+              "lt/python/data_types/2_level/2_level_data_types.md",
+          ]},
+
+          { "3 lygis" = [
+              "lt/python/data_types/3_level/3_level_data_types.md",
+          ]},
+
+          { "4 lygis" = [
+              "lt/python/data_types/4_level/4_level_data_types.md",
+          ]},
+
+          "lt/python/data_types/summary.md",
+      ]},
+  ]},
+
+  { "Programinės įrangos testavimas" = [
+      "lt/testing/index.md",
+
+      { "Testavimo pagrindai" = [
+          "lt/testing/fundamentals_of_testing/overview.md",
+
+          { "1 lygis" = [
+              "lt/testing/fundamentals_of_testing/1_level/1_fundamentals_of_testing.md",
+          ]},
+
+          { "2 lygis" = [
+              "lt/testing/fundamentals_of_testing/2_level/2_fundamentals_of_testing.md",
+          ]},
+
+          { "3 lygis" = [
+              "lt/testing/fundamentals_of_testing/3_level/3_fundamentals_of_testing.md",
+          ]},
+
+          "lt/testing/fundamentals_of_testing/summary.md",
+      ]},
+  ]},
+]
+
+extra_css = ["stylesheets/extra.css"]
+
+[project.theme]
+variant = "classic"
+language = "lt"
+logo = "assets/techin-brand.svg"
+
+features = [
+  "announce.dismiss",
+
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+
+  "navigation.top",
+  "navigation.tracking",
+
+  "search.highlight",
+  "search.suggest",
+]
+
+[project.extra]
+alternate = [
+  { name = "English", link = "/Teaching-Materia/en/", lang = "en" },
+  { name = "Lietuvių", link = "/Teaching-Materia/lt/", lang = "lt" },
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+
+[project.markdown_extensions]
+
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+
+toc.permalink = true
+
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}
