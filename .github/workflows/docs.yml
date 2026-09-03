@@ -36,11 +36,27 @@ jobs:
       - name: Clean site
         run: rm -rf site
 
+      - name: Copy shared assets
+        run: |
+          mkdir -p docs/en/assets
+          mkdir -p docs/en/stylesheets
+          mkdir -p docs/lt/assets
+          mkdir -p docs/lt/stylesheets
+
+          cp docs/shared/assets/techin-brand.svg docs/en/assets/techin-brand.svg
+          cp docs/shared/assets/techin-brand.svg docs/lt/assets/techin-brand.svg
+
+          cp docs/shared/stylesheets/extra.css docs/en/stylesheets/extra.css
+          cp docs/shared/stylesheets/extra.css docs/lt/stylesheets/extra.css
+
+      - name: Generate navigation configs
+        run: uv run python scripts/generate_config.py
+
       - name: Build English
-        run: uv run zensical build -f zensical.en.toml
+        run: uv run zensical build -f zensical.en.generated.toml
 
       - name: Build Lithuanian
-        run: uv run zensical build -f zensical.lt.toml
+        run: uv run zensical build -f zensical.lt.generated.toml
 
       - name: Create root redirect
         run: |
