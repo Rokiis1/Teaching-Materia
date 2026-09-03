@@ -42,8 +42,24 @@ jobs:
       - name: Build Lithuanian
         run: uv run zensical build -f zensical.lt.toml
 
+      - name: Create root redirect
+        run: |
+          cat > site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <meta http-equiv="refresh" content="0; url=./en/">
+              <title>Learning Materials</title>
+          </head>
+          <body>
+          </body>
+          </html>
+          EOF
+
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
@@ -51,5 +67,5 @@ jobs:
           path: site
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         id: deployment
