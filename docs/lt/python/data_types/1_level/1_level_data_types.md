@@ -23,7 +23,7 @@ Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`
 
 Immutability matters because immutable objects can be used safely in situations where a value must remain stable. Some immutable objects are also **hashable**, which allows them to be used as dictionary keys or set elements. For example, a tuple containing only hashable values can be a dictionary key, while a list cannot.
 
-!!! note "Note"
+!!! note "Reassignment is different from mutation"
 
     Mutable and immutable describe whether an object can be changed in place. Reassigning a variable is different because the variable can be made to refer to another object regardless of whether the original object is mutable or immutable.
 

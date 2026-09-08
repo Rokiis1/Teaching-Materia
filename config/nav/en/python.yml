@@ -1,34 +1,55 @@
 - Python:
     - python/index.md
 
-    - Documentation & Code Style:
-        - python/documentation_code_style/overview.md
-        - Level 1:
-            - python/documentation_code_style/1_level/1_level_documentation_code_style.md
-        - Level 2:
-            - python/documentation_code_style/2_level/2_level_documentation_code_style.md
-        - python/documentation_code_style/summary.md
+    - Environment:
+        - python/environment/overview.md
+        - python/environment/1_level/1_level_environment.md
+        - python/environment/summary.md
 
-    - Control Flow:
-        - python/control_flow/overview.md
-        - Level 1:
-            - python/control_flow/1_level/1_level_control_flow.md
-        - Level 2:
-            - python/control_flow/2_level/2_level_control_flow.md
-        - Level 3:
-            - python/control_flow/3_level/3_level_control_flow.md
-        - Level 4:
-            - python/control_flow/4_level/4_level_control_flow.md
-        - python/control_flow/summary.md
+    - Command Line:
+        - python/command_line_interface/overview.md
+        - python/command_line_interface/1_level/1_level_command_line_interface.md
+        - python/command_line_interface/summary.md
+
+    - Documentation and Code Style:
+        - python/documentation_code_style/overview.md
+        - python/documentation_code_style/1_level/1_level_documentation_code_style.md
+        - python/documentation_code_style/summary.md
 
     - Data Types:
         - python/data_types/overview.md
-        - Level 1:
-            - python/data_types/1_level/1_level_data_types.md
-        - Level 2:
-            - python/data_types/2_level/2_level_data_types.md
-        - Level 3:
-            - python/data_types/3_level/3_level_data_types.md
-        - Level 4:
-            - python/data_types/4_level/4_level_data_types.md
+        - python/data_types/1_level/1_level_data_types.md
+        - python/data_types/2_level/2_level_data_types.md
+        - python/data_types/3_level/3_level_data_types.md
         - python/data_types/summary.md
+
+    - Operations:
+        - python/operations/overview.md
+        - python/operations/1_level/1_level_operations.md
+        - python/operations/2_level/2_level_operations.md
+        - python/operations/3_level/3_level_operations.md
+        - python/operations/summary.md
+
+    - Inputs and Outputs Operations:
+        - python/input_output_operations/overview.md
+        - python/input_output_operations/1_level/1_level_input_output_operations.md
+        - python/input_output_operations/summary.md
+
+    - Control Flow:
+        - python/control_flow/overview.md
+        - python/control_flow/1_level/1_level_control_flow.md
+        - python/control_flow/2_level/2_level_control_flow.md
+        - python/control_flow/3_level/3_level_control_flow.md
+        - python/control_flow/summary.md
+
+    - Functions:
+        - python/functions/overview.md
+        - python/functions/1_level/1_level_functions.md
+        - python/functions/2_level/2_level_functions.md
+        - python/functions/3_level/3_level_functions.md
+        - python/functions/summary.md
+
+    - Modules and Import:
+        - python/modules_import/overview.md
+        - python/modules_import/1_level/1_level_modules_import.md
+        - python/modules_import/summary.md

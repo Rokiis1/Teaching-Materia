@@ -1,4 +1,6 @@
-# Control Flow Level 1
+# Level 1
+
+## Table of Contents: Control Flow
 
 - [If Statement](#if-statement)
 - [If-Else Statement](#if-else-statement)
@@ -147,7 +149,11 @@ else:
     print("It's cold outside") # Not printed for temperature = 15
 ```
 
-Python evaluates the conditions from top to bottom. With `temperature` set to `15`, the first two conditions are `False`, while `temperature > 10` is `True`, so Python prints `"It's cool outside"` and skips the final `else` block. The order of conditions matters because once Python finds a true branch, the remaining branches are not evaluated. Use `if-elif-else` when one result must be selected from several ordered possibilities, such as assigning a category, choosing a status, or applying different rules to different value ranges.
+Python evaluates the conditions from top to bottom. With `temperature` set to `15`, the first two conditions are `False`, while `temperature > 10` is `True`, so Python prints `"It's cool outside"` and skips the final `else` block. Use `if-elif-else` when one result must be selected from several ordered possibilities, such as assigning a category, choosing a status, or applying different rules to different value ranges.
+
+!!! note "First Matching Branch"
+
+    Python runs only the first branch whose condition is `True`. Once a branch is selected, the remaining `elif` and `else` branches are skipped.
 
 Conditional statements allow a program to choose what should happen. The next part of control flow addresses a different problem. Instead of choosing between branches, programs often need to perform the same kind of work repeatedly. Python handles this with loops.
 
@@ -340,6 +346,7 @@ if mode == "pending":
     for order in orders:
         if order["status"] == "pending":
             print("Processing pending order:", order["id"]) # ORD-1001, then ORD-1003
+
 elif mode == "shipped":
     for order in orders:
         if order["status"] == "shipped":
@@ -361,13 +368,7 @@ for i, stop in enumerate(stops, 1):
     print(f"Stop {i}: {stop}") # Stop 1: Station A, then Stop 2, then Stop 3
 ```
 
-The second argument, `1`, tells `enumerate()` to start the counter at `1`. On each iteration, `i` receives the current number and `stop` receives the current list element. This approach is useful when both the item and its position are needed, such as numbering menu choices, labeling search results, or showing steps in an ordered sequence. The resulting output is shown below.
-
-```text
-Stop 1: Station A
-Stop 2: Station B
-Stop 3: Station C
-```
+The second argument, `1`, tells `enumerate()` to start the counter at `1`. On each iteration, `i` receives the current number and `stop` receives the current list element. This approach is useful when both the item and its position are needed, such as numbering menu choices, labeling search results, or showing steps in an ordered sequence.
 
 If only the value is needed, a normal `for` loop is simpler. When a program needs a predictable sequence of numbers instead of positions from an existing collection, Python provides `range()`.
 
@@ -474,7 +475,7 @@ while True:
 
     Press **Ctrl + C** in the terminal to stop the running program.
 
-The condition `True` never changes, so this loop does not stop on its own. When user input determines when repetition should finish, the stopping rule can instead be expressed directly in the `while` condition.
+When user input determines when repetition should finish, the stopping rule can instead be expressed directly in the `while` condition.
 
 ```py
 choice = ""
@@ -487,4 +488,4 @@ print("Exiting program") # Exiting program
 
 The loop continues while `choice` is not equal to `"q"`. Each iteration asks the user for a new value, and entering `"q"` makes the condition `False`, so the loop finishes normally. Use a `while` loop when repetition depends on a changing condition rather than on processing a known collection, such as waiting for valid input, repeating an attempt while a requirement is unmet, or continuing a process until a state changes. This pattern keeps the stopping rule visible in the `while` statement and avoids introducing loop control keywords that belong to later material.
 
-With `while`, the ****Python Control Flow Level 1**** control flow foundation is complete. The learner can now choose between branches with `if`, `elif`, and `else`, process iterable values with `for`, keep track of positions with `enumerate()`, generate numeric sequences with `range()`, and repeat work according to a changing condition with `while`. These foundations prepare the learner for the next control flow level, where loop behavior can be controlled more directly and more complex execution patterns can be introduced.
+With `while`, the **Control Flow Level 1** foundation is complete. You can now choose between branches with `if`, `elif`, and `else`, process iterable values with `for`, keep track of positions with `enumerate()`, generate numeric sequences with `range()`, and repeat work according to a changing condition with `while`. These foundations prepare you for the next control flow level, where you will learn to control loop behavior more directly and work with more complex execution patterns.

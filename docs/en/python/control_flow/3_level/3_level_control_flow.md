@@ -1,4 +1,6 @@
-# Control Flow Level 3
+# Level 3
+
+## Table of Contents: Control Flow
 
 - [Match-Case Statement](#match-case-statement)
 - [Nested If Statements](#nested-if-statements)
@@ -24,7 +26,9 @@ match value:
 
 The underscore (`_`) acts as a default case, similar to `else`, and is used when none of the other patterns match.
 
-> **Note:** The `match-case` statement is available in Python 3.10 and later. Python supports more advanced structural patterns, but this level focuses on matching simple literal values such as strings and numbers.
+!!! info "Python Version and Scope"
+
+    The `match-case` statement is available in Python 3.10 and later. Python supports more advanced structural patterns, but this level focuses on matching simple literal values such as strings and numbers.
 
 Here is a simple example that replaces a multi-branch conditional with `match-case`.
 
@@ -42,7 +46,7 @@ match command:
         print("Unknown command") # Not printed
 ```
 
-Here, Python compares `command` with each case until `"start"` matches, then runs that block and skips the remaining cases. This pattern is most useful when one controlling value has a known set of possible choices, such as commands, modes, roles, or status values.
+Here, `"start"` matches the first case, so Python prints the corresponding message. This pattern is most useful when one controlling value has a known set of possible choices, such as commands, modes, roles, or status values.
 
 A case can also contain additional decision logic when a matched value has its own rules. In the following example, `match-case` first selects the user's role, and an `if` statement inside the matching case then checks whether that account is active.
 
@@ -72,7 +76,9 @@ print(dashboard) # Editor dashboard
 
 The example keeps the two decisions at different levels. `match-case` selects the user's role from a known set of values, while the nested `if` checks an additional condition only after `"admin"` or `"editor"` has matched. This makes `match-case` responsible for choosing the category and `if` responsible for checking a condition within that category.
 
-> **Note:** Use `match-case` when one value is being compared against several known possibilities. When a decision mainly depends on relationships between multiple conditions, such as `role == "admin" and active`, a normal `if` statement is usually clearer.
+!!! tip "Choosing a Decision Structure"
+
+    Use `match-case` when one value is being compared against several known possibilities. When a decision mainly depends on relationships between multiple conditions, such as `role == "admin" and active`, a normal `if` statement is usually clearer.
 
 Another important consideration is what happens when none of the cases match. The default `_` case provides a fallback for values that were not handled by an earlier case. If a function does not include this fallback, it may reach the end without returning an explicit value.
 
@@ -91,7 +97,7 @@ print(result) # None
 
 Here, `"restart"` matches neither `"start"` nor `"stop"`, so the function reaches the end and returns `None` implicitly. Adding a default `_` case would allow the function to return an explicit response for unexpected commands.
 
-The default case is especially useful when several possible values are expected, but `match-case` is not automatically the best choice for every decision. When there are only one or two simple branches, an `if` or `if-else` statement is often easier to read.
+When there are only one or two simple branches, an `if` or `if-else` statement is often easier to read.
 
 `match-case` is therefore most useful when one controlling value determines which of several known branches should run. Some decisions, however, have a different structure: one condition must succeed before another condition should even be checked. That kind of dependent decision-making leads naturally to nested `if` statements.
 
@@ -124,7 +130,9 @@ else:
 
 The outer `if` first checks whether the user is logged in. Only when that condition is `True` does the program evaluate the role inside the nested block. Keeping dependent checks in the correct scope is important because checking a role without first confirming login status can produce incorrect behavior. Nested `if` statements are useful for dependent rules such as checking authentication before permissions, validating one step before continuing to another, or applying additional rules only after an earlier requirement has been satisfied.
 
-> **Note:** Nest a condition only when the inner check genuinely depends on the outer one. If two conditions can be evaluated independently, they usually do not need to be nested.
+!!! tip "When to Nest Conditions"
+
+    Nest a condition only when the inner check genuinely depends on the outer one. If two conditions can be evaluated independently, they usually do not need to be nested.
 
 Nested `if` statements become harder to read when too many dependent checks are placed inside one another. The following example works, but each additional level increases indentation and makes the path through the logic more difficult to trace.
 
@@ -200,7 +208,7 @@ else:
 
 This version reduces indentation because the first three checks form one combined access requirement. However, combining too many conditions can make the rule itself difficult to inspect, so nested checks, guard clauses, and combined conditions should be chosen according to which structure makes the dependency clearest.
 
-Nested `if` statements are therefore most useful when one decision genuinely depends on another. When the program only needs to choose one of two values from a simple condition, a full `if-else` block may be more verbose than necessary. Python provides a compact alternative for that situation called a conditional expression, also known as the ternary operator.
+When the program only needs to choose one of two values from a simple condition, a full `if-else` block may be more verbose than necessary. Python provides a compact alternative for that situation called a conditional expression, also known as the ternary operator.
 
 ## Conditional Expressions (Ternary Operator)
 
@@ -222,11 +230,11 @@ print(message) # Welcome back
 
 Here, `user_logged_in` is `True`, so the expression produces `"Welcome back"` and assigns it to `message`. The same decision could be written with a traditional `if-else` block, but the conditional expression is concise because the program is only choosing between two simple values.
 
-> **Note:** Use a conditional expression when one simple condition chooses between two values. Use a normal `if-else` statement when each branch needs to perform several actions or when writing the logic on one line would make it harder to understand.
+!!! tip "Choosing a Conditional Expression"
+
+    Use a conditional expression when one simple condition chooses between two values. Use a normal `if-else` statement when each branch needs to perform several actions or when writing the logic on one line would make it harder to understand.
 
 Conditional expressions can also be useful when a function needs to return one of two simple values. In the following example, the function evaluates the login state and returns the appropriate greeting directly.
-
-The expression chooses the message based on `user_logged_in`. The equivalent traditional `if-else` form makes the same two branches explicit.
 
 ```py
 user_logged_in = False
@@ -267,7 +275,7 @@ message = (
 print(message) # Maintenance mode
 ```
 
-The parentheses allow the expression to span multiple lines, but they do not simplify its logic. The reader still has to trace multiple conditions inside one expression. When several outcomes must be handled, a traditional `if-elif-else` statement makes the branches more explicit.
+The parentheses allow the expression to span multiple lines, but they do not simplify its logic. You still have to trace multiple conditions inside one expression. When several outcomes must be handled, a traditional `if-elif-else` statement makes the branches more explicit.
 
 ```py
 status = "maintenance"
@@ -282,7 +290,7 @@ else:
 print(message) # Maintenance mode
 ```
 
-This version is longer, but each possible status and its result are easy to identify. Conditional expressions are therefore best reserved for simple two-value choices. When the decision grows into several branches or requires multiple actions, standard conditional statements usually provide clearer control flow.
+This version is longer, but each possible status and its result are easy to identify. For several branches or multiple actions, standard conditional statements usually provide clearer control flow.
 
 So far, the decisions in this level have selected which code or value should be used. Some problems add another dimension by organizing data into multiple levels, such as rows containing seats, roles containing permissions, or users containing actions. Processing those structures requires repetition inside repetition, which leads to nested loops.
 
@@ -310,7 +318,7 @@ for row in cinema_seats:
         print("Checking seat:", seat) # A1, A2, A3, A4, then B1 ... C4
 ```
 
-Here, each `row` becomes the collection processed by the inner loop, which checks every `seat` before continuing to the next row. The same pattern can be used with other grouped structures, including dictionaries whose values contain collections of related items.
+The same pattern can be used with other grouped structures, including dictionaries whose values contain collections of related items.
 
 ```py
 role_permissions = {
@@ -324,9 +332,11 @@ for role, permissions in role_permissions.items():
         print(role, "can", permission) # Prints each role-permission pair
 ```
 
-The dictionary provides the outer context through each `role`, while its value provides the collection of `permissions` processed by the inner loop. This pattern is useful for grouped records such as departments and employees, categories and products, users and actions, or any structure where one collection contains other collections.
+This pattern is useful for grouped records such as departments and employees, categories and products, or users and actions.
 
-> **Note:** The inner collection does not have to be a list. It can be another iterable such as a tuple or set. Sets are unordered and do not support positional indexing, so nested loops can process their values, but code should not depend on a particular set iteration order.
+!!! note "Inner Iterables"
+
+    The inner collection does not have to be a list. It can be another iterable such as a tuple or set. Sets are unordered and do not support positional indexing, so nested loops can process their values, but code should not depend on a particular set iteration order.
 
 Nested loops can also use `range()` when repetition is based on fixed counts rather than stored data. For example, a program may perform several retry checks for each attempt.
 
@@ -347,7 +357,7 @@ for _ in range(3):
         print("Sending heartbeat") # Printed 6 times
 ```
 
-Control-flow statements inside nested loops affect the loop in which they appear. A `break` exits the current loop, while `continue` skips the rest of the current iteration and moves to the next iteration of that same loop. Neither statement automatically stops or skips the outer loop when it is used inside the inner loop.
+Control-flow statements inside nested loops affect the loop in which they appear. The following example shows how `break` stops an inner loop without stopping the outer loop.
 
 ```py
 max_attempts = 3
@@ -426,7 +436,9 @@ print(result) # Example2
 
 Here, `return` immediately ends the function when the first error is found, so later users are not checked. The placement of `return None` is also important. It belongs after both loops because the function should return `None` only after every user has been checked without finding an error.
 
-> **Note:** In nested loops, `break` exits only the current loop, while `return` exits the entire function. Choose between them according to how much processing should stop after a condition is met.
+!!! note "Nested Loop Control"
+
+    In nested loops, `break` exits only the current loop, `continue` skips the rest of the current iteration of that loop, and `return` exits the entire function. Choose the statement according to how much execution should be skipped or stopped.
 
 Nested loops are most useful when the data or repetition genuinely has multiple levels, such as processing every item within each group. However, unnecessary nesting can make code harder to read and can increase the amount of work performed. When the goal is simply to transform, filter, or collect values into a new list using a straightforward pattern, writing full loop blocks may be more verbose than necessary. Python provides a compact alternative for those cases called a list comprehension.
 
@@ -438,7 +450,7 @@ A list comprehension creates a new list from an iterable using a compact express
 [expression for item in iterable]
 ```
 
-The expression describes the value that will be added to the new list, while the `for` clause supplies each item from the iterable. A simple transformation is a good place to see the structure clearly.
+The expression describes the value that will be added to the new list, while the `for` clause supplies each item from the iterable. This is a syntax pattern rather than a standalone program. A simple transformation shows how it works with actual values.
 
 ```py
 numbers = [1, 2, 3, 4]
@@ -450,7 +462,7 @@ print(doubled) # [2, 4, 6, 8]
 
 For each `number`, Python evaluates `number * 2` and adds the result to the new list. This pattern is useful when every item should be transformed in the same straightforward way.
 
-A condition can be added when only certain items should be included.
+A condition can be added when only certain items should be included. The following syntax pattern shows where the condition belongs.
 
 ```py
 [expression for item in iterable if condition]
@@ -468,7 +480,9 @@ print(even_numbers) # [2, 4, 6]
 
 Here, `number` is added to the new list only when `number % 2 == 0` is `True`. List comprehensions are therefore useful for simple transformations and filtering when the result should be a new list.
 
-> **Note:** A list comprehension creates a new list. Use a regular loop when the main goal is to perform actions such as printing, updating several values, or handling multiple control-flow steps rather than building a list.
+!!! tip "Choosing a Regular Loop"
+
+    A list comprehension creates a new list. Use a regular loop when the main goal is to perform actions such as printing, updating several values, or handling multiple control-flow steps rather than building a list.
 
 List comprehensions are also useful with structured records. The expression can extract one value from each matching record instead of keeping the entire record.
 
@@ -596,10 +610,12 @@ statuses = {order["status"] for order in orders}
 print(statuses) # Order may vary: {'shipped', 'pending', 'cancelled'}
 ```
 
-The comprehension extracts each status, and the set removes duplicate values automatically. Set comprehensions are useful when the result should contain unique values and their order is not important.
+The comprehension extracts each status, and the set removes duplicate values automatically. This is useful when the result should contain unique values and their order is not important.
 
-> **Note:** List comprehensions use square brackets `[ ]`, dictionary comprehensions use braces with a key-value pair `{key: value}`, and set comprehensions use braces with a single expression `{value}`. Although their result types differ, all three use the same basic pattern of iterating over data and optionally filtering it.
+!!! note "Comprehension Result Types"
 
-Comprehensions are most useful when building a new collection follows a simple and readable transformation or filtering rule. When the logic requires several decisions, side effects, or detailed control flow, a regular loop is usually easier to understand and maintain.
+    List comprehensions use square brackets `[ ]`, dictionary comprehensions use braces with a key-value pair `{key: value}`, and set comprehensions use braces with a single expression `{value}`. Although their result types differ, all three use the same basic pattern of iterating over data and optionally filtering it.
 
-Level 3 brings together several ways to express more complex control flow while keeping code readable. `match-case` organizes decisions around known values, nested `if` statements handle dependent checks, and conditional expressions provide a compact choice between two values when the logic is simple. Nested loops process multi-level data, while comprehensions provide concise ways to build new collections from iterable data. Choosing among these tools depends on the structure of the problem, and the clearest solution is usually the one that makes the program's decisions and repetition easiest to follow.
+Choose a comprehension when its transformation or filtering rule remains easy to read. For more involved control flow, a regular loop makes the individual steps easier to inspect and maintain.
+
+With **Control Flow Level 3**, you have several ways to express more complex control flow while keeping code readable. `match-case` organizes decisions around known values, nested `if` statements handle dependent checks, and conditional expressions provide a compact choice between two values when the logic is simple. Nested loops process multi-level data, while comprehensions provide concise ways to build new collections from iterable data. Choose the structure that makes your program's decisions and repetition easiest to follow.

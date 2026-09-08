@@ -469,27 +469,73 @@
   background-color: var(--primary-color);
 }
 
+/* Code block actions */
+
+.md-typeset .md-code__button::after {
+  background-color: #a5a9b0;
+  opacity: 0.5;
+}
+
+.md-code__button:hover::after,
+.md-code__button:focus-visible::after {
+  opacity: 1;
+}
+
+/* Content video */
+
+.md-typeset img,
+.md-typeset .content-video {
+  display: block;
+  width: 100%;
+  max-width: 25rem;
+  height: auto;
+  margin: 1.5rem auto;
+}
+
+/* Skills image */
+
+.md-typeset img[src$="skills.png"] {
+  max-width: 14rem;
+}
+
+.md-typeset img[src$="try_again.gif"] {
+  max-width: 10rem;
+}
+
+.md-typeset img[src$="python_logo.svg"] {
+  max-width: 12rem;
+}
+
+/* Idea page */
+
+.md-main__inner:has(.idea-page) .md-sidebar--primary {
+  display: none;
+}
+
+/* Light mode code blocks */
+
+[data-md-color-scheme="default"] .md-typeset .highlight,
+[data-md-color-scheme="default"] .md-typeset .highlight pre,
+[data-md-color-scheme="default"] .md-typeset pre > code {
+  background-color: #eeeeee;
+}
+
 /* Dark mode */
 
 [data-md-color-scheme="slate"] {
   --primary-color: #18aeb3;
   --primary-hover: #26c1c6;
-
   --text-color: #d8dbe0;
   --text-muted: #a5a9b0;
   --text-strong: #ffffff;
-
   --header-bg: #1b1e23;
   --nav-bg: #1b1e23;
   --background-color: #20242a;
-
   --border-color: #454a52;
   --border-color-light: rgb(255 255 255 / 8%);
-
   --search-bg: #30343c;
   --search-hover-bg: #3a3f48;
   --search-text: #ffffff;
-
   --tooltip-bg: #292d34;
   --tooltip-text: #d8dbe0;
   --tooltip-border: rgb(255 255 255 / 12%);
@@ -570,4 +616,14 @@
 
 [data-md-color-scheme="slate"] .md-header__button.md-logo:hover img {
   filter: brightness(2);
+}
+
+[data-md-color-scheme="slate"] .md-top:hover,
+[data-md-color-scheme="slate"] .md-top:focus-visible {
+  background-color: #03787c !important;
+}
+
+[data-md-color-scheme="default"] .md-code__button::after {
+  background-color: #5e5e5e;
+  opacity: 0.55;
 }

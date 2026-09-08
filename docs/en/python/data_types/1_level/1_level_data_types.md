@@ -1,4 +1,6 @@
-# Data Types Level 1
+# Level 1
+
+## Table of Contents: Data Types
 
 - [Mutable vs Immutable](#mutable-vs-immutable)
 - [Ordered vs Unordered](#ordered-vs-unordered)
@@ -9,9 +11,7 @@
 
 ## Mutable vs Immutable
 
-Python objects can be categorized by whether their contents can be changed after the object has been created.
-
-**Mutable types** can be modified in place. They are similar to a **whiteboard**, where the existing content can be erased or changed without replacing the whiteboard itself. Python collection types such as `list`, `dict`, and `set` are mutable. These collection types are covered in more detail in **Data Types Level 2**.
+Python objects can be categorized by whether their contents can be changed after the object has been created. **Mutable types** can be modified in place. They are similar to a **whiteboard**, where the existing content can be erased or changed without replacing the whiteboard itself. Python collection types such as `list`, `dict`, and `set` are mutable. These collection types are covered in more detail in **Data Types Level 2**.
 
 ![Mutable Python types illustrated](./assets/images/mutable_type_intro_gif.gif)
 
@@ -23,33 +23,31 @@ Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`
 
 Immutability matters because immutable objects can be used safely in situations where a value must remain stable. Some immutable objects are also **hashable**, which allows them to be used as dictionary keys or set elements. For example, a tuple containing only hashable values can be a dictionary key, while a list cannot.
 
-!!! note "Note"
+!!! note "Mutable and Immutable describes"
 
     Mutable and immutable describe whether an object can be changed in place. Reassigning a variable is different because the variable can be made to refer to another object regardless of whether the original object is mutable or immutable.
 
-Mutability describes whether an object can change. Another important characteristic of Python data types is how their elements are organized, which leads to the distinction between **ordered** and **unordered** types.
+Another important characteristic of Python data types is how their elements are organized, which leads to the distinction between **ordered** and **unordered** types.
 
 ## Ordered vs Unordered
 
-Python collection and sequence types can also be described by whether they preserve a defined order and how their elements are accessed.
-
-**Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position based access through an `index`. The collection types `list` and `tuple` are covered in more detail in **Data Types Level 2**.
+Python collection and sequence types can also be described by whether they preserve a defined order and how their elements are accessed. **Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position-based access through an `index`. The collection types `list` and `tuple` are covered in more detail in **Data Types Level 2**.
 
 ![Ordered Python types](./assets/images/ordered_types_intro.png)
 
-**Unordered or non-indexed types** such as `set` do not provide position based access through indexes. A set is more like a **box of toys**, where you work with the items themselves rather than asking for an item at a particular position. Sets are covered in more detail in **Python Data Types Level 2**.
+**Unordered types** such as `set` do not preserve a defined element order and do not provide position-based access through indexes. A set is more like a **box of toys**, where you work with the items themselves rather than asking for an item at a particular position. Sets are covered in more detail in **Python Data Types Level 2**.
 
 ![Unordered Python types illustrated](./assets/images/unordered_types_intro.png)
 
-Dictionaries are also not accessed by numeric position. Instead, a `dict` stores values associated with **keys**, and those keys are used to retrieve the corresponding values. Modern Python dictionaries preserve insertion order, but they are still key based mappings rather than index based sequences. Dictionaries are covered in more detail in **Python Data Types Level 2**.
+Dictionaries are also not accessed by numeric position. Instead, a `dict` stores values associated with **keys**, and those keys are used to retrieve the corresponding values. Python dictionaries preserve insertion order, but they are still key-based mappings rather than index-based sequences. Dictionaries are covered in more detail in **Python Data Types Level 2**.
+
+These distinctions provide a foundation for recognizing the different kinds of values Python offers, beginning with its core built-in data types.
 
 ## Core Built-in Data Types
 
-Python provides several built-in data types for representing common kinds of information. At this level, the focus is on **numeric values**, **text**, **Boolean values**, and the **absence of a value**.
+Documentation and Code Style Level 1 introduced literals for numbers, text, Booleans, and `None`. This section examines the properties of those built-in types, including whether they are mutable or immutable, whether they preserve order, and how they can be converted from one type to another.
 
-Python represents numbers using the built-in types `int`, `float`, and `complex`. These types are **immutable**. An `int` represents a whole number such as `42` or `-7`, while a `float` represents a floating point number such as `3.14` or `-0.001`.
-
-Python also provides the `complex` type for **complex numbers**. A complex number contains a **real part** and an **imaginary part**. In Python, the imaginary part is written using `j`. For example, `2 + 3j` contains the real part `2` and the imaginary part `3j`.
+Python provides the numeric types `int`, `float`, and `complex`. All three are **immutable**. An `int` stores whole numbers, a `float` stores decimal numbers, and `complex` stores numbers with real and imaginary parts. In Python, the imaginary part is written using `j`. For example, `2 + 3j` contains the real part `2` and the imaginary part `3j`.
 
 ```py
 # Integer literals
@@ -67,12 +65,12 @@ large_float = 1_234.56
 # Complex number literal
 complex_number = 2 + 3j
 
-print(complex_number)  # (2+3j)
+print(complex_number) # (2+3j)
 ```
 
-At this level, `int` and `float` are the numeric types you will use most often. The `complex` type is more specialized and is commonly used in mathematical, scientific, and engineering calculations. The important idea here is to recognize `complex` as a built-in numeric type and understand its basic form. Numeric values support arithmetic operations such as addition, subtraction, multiplication, and division, which are explored in more detail in the Python operations material.
+`int` and `float` are the numeric types you will use most often. The `complex` type is more specialized and is useful in mathematical, scientific, and engineering calculations, such as representing electrical signals or solving equations involving imaginary numbers. Most introductory programs do not need complex numbers because ordinary quantities such as counts, prices, and measurements can usually be represented with `int` or `float`. At this level, it is enough to recognize the basic form of a complex number. Numeric values also support arithmetic operations, which are explored in more detail in the Python operations material.
 
-Numbers are only one kind of information that programs work with. Programs also frequently need to store and process **text**. The `str` type represents text as an ordered sequence of characters and is **immutable**, which means its characters cannot be changed in place after the string has been created. Strings can be created with single quotes, double quotes, or triple quotes. Triple quoted strings can also span multiple lines.
+Programs also frequently need to store and process **text**. The `str` type represents text as an ordered, immutable sequence of characters. Strings can be created with single, double, or triple quotes. Triple quotes were introduced in Documentation and Code Style Level 1 for multiline text and docstrings.
 
 ```py
 double_quotes = "Hello"
@@ -80,9 +78,9 @@ single_quotes = 'Hello'
 triple_quotes = """Hello"""
 ```
 
-Strings support operations such as **concatenation**, which joins strings together, and **slicing**, which extracts part of a string. More detailed string operations are introduced later in the course.
+Strings support operations such as **concatenation**, which joins strings together, and **slicing**, which extracts part of a string. More detailed string operations are introduced later in the course. While text and numbers represent data values, programs also need to represent logical truth values.
 
-While numbers and strings represent quantities and text, programs also need to represent whether something is **true or false**. Python uses the immutable `bool` type for this purpose, which has the two values `True` and `False`.
+The `bool` type is immutable and has the values `True` and `False`.
 
 ```py
 example_boolean_true = True
@@ -99,30 +97,25 @@ The `bool()` constructor can be used to see the Boolean interpretation of a valu
 print(bool(0)) # False
 print(bool("")) # False
 print(bool(None)) # False
-
 print(bool(10)) # True
 print(bool("Python")) # True
 ```
 
-Logical operators and more detailed uses of truthiness are covered later in the Python operations material.
-
-Sometimes a program needs to indicate that **no value is currently present**. Python provides `None` for this purpose. `None` represents the **absence of a value**, is the single value of the `NoneType` type, and is immutable.
+Logical operators and more detailed uses of truthiness are covered later in **Operations Level 2**. Programs also need to represent situations where no value is currently present. Python provides `None` for this purpose, and it is immutable. Unlike `False`, `0`, and `""`, which represent actual Boolean, numeric, or text values, `None` represents the absence of a value.
 
 ```py
 example_none = None
-```
 
-`None` is different from values such as `False`, `0`, and `""`. Those values represent actual Boolean, numeric, or text values, while `None` represents the absence of a value.
-
-```py
 print(None == False) # False
 print(None == 0) # False
 print(None == "") # False
 ```
 
+Sometimes a value needs to be represented using a different type. This introduces **type casting**, which allows programs to convert values when a different representation is needed.
+
 ## Type casting
 
-Sometimes a value needs to be represented using a different data type. Python provides built-in constructors such as `float()`, `int()`, `str()`, and `bool()` that can perform **type conversion**, also called **type casting**. The `float()` constructor can convert an integer or a suitable numeric string to a floating point number, while `int()` can convert an integer-like string or a floating point number to an integer. The `str()` constructor produces a string representation of a value, while `bool()` produces its Boolean interpretation.
+Python provides built-in constructors such as `float()`, `int()`, `str()`, and `bool()` that can perform **type conversion**, also called **type casting**. The `float()` constructor can convert an integer or a suitable numeric string to a floating-point number, while `int()` can convert an integer-like string or a floating-point number to an integer. The `str()` constructor produces a string representation of a value, while `bool()` produces its Boolean interpretation.
 
 ```py
 # Original values
@@ -147,7 +140,7 @@ print(boolean_nonempty) # True
 print(boolean_empty) # False
 ```
 
-When `int()` converts a floating point number, it **truncates toward zero** rather than rounding to the nearest whole number.
+When `int()` converts a floating-point number, it **truncates toward zero** rather than rounding to the nearest whole number. For example, both positive and negative values lose their fractional part.
 
 ```py
 print(int(3.99)) # 3
@@ -169,4 +162,8 @@ A string such as `"hello"` does not represent an integer, so attempting to conve
 number = int("hello") # ValueError
 ```
 
-> **Note:** A failed conversion stops normal execution unless the error is handled. Error handling is introduced later in the course. At this level, the important idea is that not every value can be converted to every type.
+!!! warning "Failed Conversion"
+
+    A failed conversion stops normal execution unless the error is handled. Error handling is introduced later in the course. At this **Data Types Level 1**, the important idea is that not every value can be converted to every type.
+
+The next **Data Types Level 2** builds on these foundations by introducing Python collection types in more detail. You will learn how lists, tuples, dictionaries, and sets organize multiple values and how their different characteristics affect the way they are used.

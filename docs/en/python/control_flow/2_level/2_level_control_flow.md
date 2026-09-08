@@ -1,4 +1,6 @@
-# Control Flow Level 2
+# Level 2
+
+## Table of Contents: Control Flow
 
 - [The `break` Statement](#the-break-statement)
 - [The `continue` Statement](#the-continue-statement)
@@ -61,7 +63,9 @@ while True:
 
 Here, `while True` creates a loop whose condition does not become `False` on its own. When the user enters an `"exit"` command, `break` stops the loop immediately. For any other command, the final `print()` runs and the loop begins another iteration.
 
-> **Note:** The `break` statement can only be used inside a `for` or `while` loop. Using `break` outside a loop causes a `SyntaxError`.
+!!! note "Loop-Only Statement"
+
+    The `break` statement can only be used inside a `for` or `while` loop. Using `break` outside a loop causes a `SyntaxError`.
 
 Another common use of `break` is stopping a search once the required value has been found.
 
@@ -126,7 +130,7 @@ else:
 
 The function checks each order one at a time. When the target is found, `return True` immediately exits the entire function. If every order is checked without a match, the function reaches `return False`. The returned Boolean value is then used by the `if-else` statement to decide which message to display.
 
-The important distinction is where execution stops. `break` exits only the current loop, so surrounding code can continue running, while `return` exits the entire function. When a loop should continue but only the current iteration should be skipped, Python provides a different statement. `continue` skips the remaining code in the current iteration and moves directly to the next one.
+The important distinction is where execution stops. `break` exits only the current loop, while `return` exits the entire function. When only the current iteration should be skipped, Python provides `continue`.
 
 ## The `continue` Statement
 
@@ -170,7 +174,13 @@ while i < 10:
 
 When `i` is even, `continue` skips the `print()` call for that iteration. The loop itself does not stop, so execution continues until `i < 10` becomes `False`. Only the odd numbers reach the `print()` statement.
 
-> **Note:** Like `break`, the `continue` statement can only be used inside a `for` or `while` loop. Using `continue` outside a loop causes a `SyntaxError`.
+!!! note "Loop-Only Statement"
+
+    Like `break`, the `continue` statement can only be used inside a `for` or `while` loop. Using `continue` outside a loop causes a `SyntaxError`.
+
+!!! warning "Updating a While Loop"
+
+    When using `continue` in a `while` loop, make sure the values needed to reach the stopping condition are updated. Otherwise, the loop may repeat indefinitely.
 
 This behavior is useful when processing records because invalid or incomplete entries can be skipped without stopping the entire operation.
 
@@ -193,7 +203,7 @@ process_valid_emails(records)
 
 The function checks every record. When the email field is empty, `continue` skips the remaining code for that record and moves to the next one. Records with an email address reach the `print()` call and are processed.
 
-Both `break` and `continue` actively change how a loop proceeds. Sometimes, however, Python requires a statement even though no action should happen yet. For that situation, Python provides `pass`.
+Sometimes Python requires a statement even though no action should happen yet. For that situation, Python provides `pass`.
 
 ## The `pass` Statement
 
@@ -232,15 +242,4 @@ for number in range(3):
 
 When `number` equals `1`, Python executes `pass` and then continues with the next statement in the same iteration, so `print(number)` still runs. This is different from `continue`, which would skip that `print()` call and move directly to the next iteration.
 
-Similarly, `pass` can keep a conditional branch valid when no action is currently required.
-
-```py
-some_condition = True
-
-if some_condition:
-    pass # No action is needed in this case
-else:
-    print("Condition not met") # Not printed
-```
-
-At this level, the key distinction is the effect each statement has on execution. `break` leaves the current loop, `continue` skips the rest of the current iteration, and `pass` performs no action at all. These control-flow tools make it possible to handle early exits, skipped values, and intentionally empty blocks while keeping the program's behavior clear.
+You can now distinguish these statements by their effect on execution. `break` leaves the current loop, `continue` skips the rest of the current iteration, and `pass` performs no action at all. These tools help you handle early exits, skipped values, and intentionally empty blocks while keeping your program's behavior clear. They also prepare you for the more complex control-flow patterns introduced in **Control Flow Level 3**.

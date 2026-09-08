@@ -1,4 +1,6 @@
-# Table of Contents: Python Data Types Level 3
+# Level 3
+
+## Table of Contents: Data Types
 
 - [Indexed sequence types](#indexed-sequence-types)
 - [Non-indexed and Non-subscriptable Types](#non-indexed-and-non-subscriptable-types)
@@ -10,13 +12,13 @@
 - [Tuple Data Type](#tuple-data-type)
 - [Copy](#copy)
 
-In **Python Data Types Levels 1 and 2**, we introduced Python's core data types, their basic properties, and the collection types used to store multiple values. This level builds on that foundation by exploring how values are accessed and changed, how mutable and immutable objects behave, and how copying affects collections. We begin with indexing, slicing, dictionary keys, and membership before moving into nested structures and the behavior of individual collection types.
+In **Data Types Level 3**, we explore how Python's collection types behave when their contents are accessed, modified, and copied. We begin with indexing, slicing, dictionary keys, and nested structures, then examine how mutability affects object identity and shared references. The main sections develop practical skills for working with lists, dictionaries, sets, strings, and tuples, including their methods, common operations, and important limitations. Finally, we examine shallow and deep copying to understand how separate collections can still share nested objects.
 
 ## Indexed sequence types
 
 Python provides square bracket notation `[]` for accessing values in sequences and dictionaries. Lists, strings, and tuples use integer indices to identify positions, while dictionaries use keys rather than positional indices. For sequences, **positive indexing** counts from the beginning and **negative indexing** counts from the end. Square brackets are also used for **slicing**, which selects a range of values from an ordered sequence.
 
-![indexing_slice_notation](../assets/images/indexing_slice_notation.png)
+![indexing slice notation](./assets/images/indexing_slice_notation.png)
 
 The main forms are indexing with `[n]`, slicing with `[start:stop]`, and extended slicing with `[start:stop:step]`. We will begin with positive and negative indexing for sequences and then compare this positional access with dictionary key access.
 
@@ -24,6 +26,7 @@ The main forms are indexing with `[n]`, slicing with `[start:stop]`, and extende
 items = [10, 20, 30, 40, 50] # List example
 phrase = "Python" # String example
 tup = (100, 200, 300, 400) # Tuple example
+person = {"name": "Test", "age": 30} # Dictionary example
 
 # Positive indexing (index 0)
 print("List first element:", items[0]) # List first element: 10
@@ -36,13 +39,11 @@ print("String last character:", phrase[-1]) # String last character: n
 print("Tuple last element:", tup[-1]) # Tuple last element: 400
 
 # Dictionary access by key
-person = {"name": "Test", "age": 30}
-
 print("Name value:", person["name"]) # Name value: Test
 print("Age value:", person["age"]) # Age value: 30
 ```
 
-Slicing extends indexing by selecting part of a sequence. Writing `[:]` or `[::]` selects the full sequence, while start and stop values limit the selected range. Extended slicing adds a step that controls the interval between selected elements.
+Slicing extends indexing by selecting part of a sequence. Writing `[:]` or `[::]` selects the full sequence, while start and stop values limit the selected range. The start is included and the stop is excluded. Extended slicing adds a step that controls the interval between selected elements.
 
 ```py
 text = "Python" # String example
@@ -59,7 +60,9 @@ print(text[-4:-1], numbers[-4:-1], tupl[-4:-1]) # tho [20, 30, 40] (200, 300, 40
 print(text[::2], numbers[::2], tupl[::2]) # Pto [10, 30, 50] (100, 300, 500)
 ```
 
-> **Note:** When you use a `step` with negative indices, such as `text[-4:-1:2]`, Python applies the step interval in the same way as it does with positive indices.
+!!! info "Slicing with negative indices"
+
+    Negative indices can also be used as slice boundaries. They count from the end of the sequence, while the step determines the direction and interval of selection. A positive step moves from left to right even when the boundaries are negative. For example, `text[-5:-2:2]` selects `"yh"` from `"Python"`.
 
 Slice boundaries may extend beyond the available indices without raising `IndexError`. If the requested range does not select any elements, Python returns an empty sequence. With a positive step, slicing moves from left to right, so a start position that comes after the stop position produces an empty result.
 
@@ -67,43 +70,48 @@ Slice boundaries may extend beyond the available indices without raising `IndexE
 text = "Python"
 numbers = [10, 20, 30, 40, 50]
 
-print(text[-5:3]) # 'Pyt'
+print(text[-5:3]) # 'yt'
 print(text[-3:3]) # ''
 print(numbers[-5:3]) # [10, 20, 30]
 print(numbers[-3:3]) # []
 
 result = numbers[3:1]
+
 print(result) # []
 ```
 
 This behavior differs from direct indexing. An expression such as `numbers[10]` raises `IndexError` when the requested position does not exist. A slice is more tolerant of out-of-range boundaries, although an extended slice with a step of `0` is invalid and raises `ValueError`.
 
-Square brackets are used for access and slicing, but working with sequences also introduces an important distinction between **reassignment** and **in-place modification**. For example, using `+` with a list creates a new list, and assignment then makes the variable refer to that new object.
+```py
+numbers[10] # IndexError
+numbers[::0] # ValueError
+```
+
+Working with sequences also introduces an important distinction between **reassignment** and **in-place modification**. Using `+` with a list creates a new list, and assignment then makes the variable refer to that new object.
 
 ```py
 items = [1, 2, 3]
 items = items + [4, 5]
-
 print(items) # [1, 2, 3, 4, 5]
 ```
 
-The expression `items + [4, 5]` creates a new list, and the assignment rebinds `items` to that new object rather than modifying the original list in place. Strings and tuples also support concatenation, but because they are immutable, concatenation creates new objects that can then be assigned to variables.
+Strings and tuples also support concatenation, but because they are immutable, concatenation creates new objects that can then be assigned to variables.
 
-> **Note:** The original list object is not modified by `+`. Instead, `items` is rebound to the newly created list. The similar-looking expression `items += [4, 5]` normally modifies a list in place, so the two forms can behave differently when other variables refer to the same list. The `+=` operator is explored in more detail in the Python operations material.
+!!! note "Concatenation and reassignment"
+
+    The similar-looking expression `items += [4, 5]` normally modifies a list in place, so the two forms can behave differently when other variables refer to the same list. The `+=` operator is explored in more detail in the Python operations material.
 
 ```py
 text = "Hello"
 text = text + " World"
-
-print(text) # Hello World
-
 tup = (1, 2, 3)
 tup = tup + (4, 5)
 
+print(text) # Hello World
 print(tup) # (1, 2, 3, 4, 5)
 ```
 
-Sets and dictionaries do not support concatenation with `+`.
+Sets and dictionaries do not support concatenation with `+`. Attempting to use it with either type raises `TypeError`.
 
 ```py
 my_set = {1, 2, 3}
@@ -117,36 +125,26 @@ Sets and dictionaries therefore require different ways to work with their conten
 
 ## Non-indexed and Non-subscriptable Types
 
-Square bracket notation does not work in the same way with every Python data type. **Sets** are non-indexed and do not support subscripting, so their elements cannot be accessed by position. Types such as `int`, `float`, `bool`, and `None` also do not support subscripting.
-
-Dictionaries behave differently because a **dictionary is subscriptable**, but the value inside the square brackets is interpreted as a key rather than as a numeric position. An integer can therefore appear inside the brackets when that integer actually exists as a dictionary key.
+**Sets** are non-indexed and do not support subscripting, so their elements cannot be accessed by position. Types such as `int`, `float`, `bool`, and `NoneType` also do not support subscripting. Dictionaries behave differently because a **dictionary is subscriptable**, but the value inside the square brackets is interpreted as a key rather than as a numeric position. An integer can therefore appear inside the brackets when that integer actually exists as a dictionary key.
 
 ```py
-item_dict = {0: "zero"}
-
-print(item_dict[0]) # zero
-```
-
-Trying to subscript a set raises `TypeError`. A dictionary supports subscripting, but requesting a key that does not exist raises `KeyError`.
-
-```py
+item_dict = {0: "zero", "a": 1, "b": 2}
 item_set = {1, 2, 3, 4, 5}
 
-print(item_set[0]) # TypeError: 'set' object is not subscriptable
-
-item_dict = {"a": 1, "b": 2}
-
+print(item_dict[0]) # zero
 print(item_dict["a"]) # 1
-print(item_dict[0]) # KeyError: 0
+print(item_set[0]) # TypeError: 'set' object is not subscriptable
 ```
 
-The distinction is important. `item_set[0]` raises `TypeError` because a set cannot be subscripted at all. `item_dict["a"]` succeeds because `"a"` is an existing dictionary key, while `item_dict[0]` raises `KeyError` because the dictionary supports subscripting but does not contain the key `0`.
+!!! warning "Unsupported access and missing keys"
 
-Programs often contain **nested structures**, where one collection stores another collection. Common examples include lists containing lists, dictionaries, sets, or tuples, as well as dictionaries containing lists or other dictionaries. In these structures, square brackets can be chained to move through each level of the data. Understanding which objects support square bracket access therefore prepares us for the next topic, where indexing and dictionary keys are combined to work with nested values.
+    A set cannot be subscripted at all, while a dictionary can be subscripted only with an existing key. For example, `item_dict["missing"]` raises `KeyError` because the dictionary does not contain that key. These are different errors, so a missing dictionary key should not be confused with an object that does not support subscripting.
+
+Programs often contain **nested structures**, where one collection stores another collection. Lists can contain lists, dictionaries, sets, or tuples, while dictionaries can contain lists or other dictionaries. The next section shows how to access and modify values within these structures.
 
 ## Nested access and assignment using square brackets
 
-Square brackets `[]` access elements by index in sequences and by key in dictionaries. When structures are nested, the same notation can be chained so that each pair of square brackets moves one level deeper into the data.
+Square brackets can be chained so that each pair moves one level deeper into the data. The object reached at each level determines whether indexing or key access is supported and whether assignment can modify the selected value.
 
 A list can contain another list. Because lists are mutable, square bracket notation can be used both to access a nested value and to update it with assignment.
 
@@ -161,7 +159,7 @@ numbers[2][1] = 99
 print(numbers) # [1, 2, [10, 99, 30]]
 ```
 
-The same idea applies when a dictionary contains a list. The first pair of square brackets selects the dictionary value by key, and the second pair selects an element from the nested list. Because that nested list is mutable, its selected value can also be changed.
+The first index selects the nested list, and the second selects the value `20`. Assignment replaces that value with `99` in the existing nested list. The same approach works when a dictionary contains a list, except that the first pair of square brackets uses a key.
 
 ```py
 profile = {
@@ -176,7 +174,7 @@ profile["roles"][0] = "admin"
 print(profile) # {'username': 'admin', 'roles': ['admin', 'moderator']}
 ```
 
-A dictionary can also contain another dictionary. Chained keys move through each dictionary level, and assignment can update an existing value or add a new key value pair to the nested dictionary.
+The assignment changes the selected role without replacing the entire list. A dictionary can also contain another dictionary, where chained keys move through each level and assignment can update an existing value or add a new key-value pair.
 
 ```py
 config = {
@@ -194,7 +192,7 @@ config["database"]["user"] = "root"
 print(config) # {'database': {'host': 'localhost', 'port': 3306, 'user': 'root'}}
 ```
 
-A list can contain a set, but the set itself remains non-indexed. Square brackets can access the set through its position in the outer list, but they cannot select an individual element inside that set. Because the outer list is mutable, assignment can instead replace the entire set stored at that position.
+The assignment to `"port"` changes an existing value, while the assignment to `"user"` adds a new key-value pair. Not every nested collection supports the same operations, however. A list can contain a set, but the set itself remains non-indexed. Square brackets can access the set through its position in the outer list, but they cannot select an individual element inside that set. Because the outer list is mutable, assignment can instead replace the entire set stored at that position.
 
 ```py
 data = [
@@ -205,13 +203,14 @@ data = [
 print(data[0]) # {1, 2, 3}
 
 data[0][1] # TypeError
-
 data[0] = {10, 20, 30}
 
 print(data) # [{10, 20, 30}, {4, 5, 6}]
 ```
 
-> **Note:** Sets do not guarantee display order, so the elements in the printed sets may appear in a different order.
+!!! note "Set display order"
+
+    Sets do not guarantee display order, so the elements in the printed sets may appear in a different order.
 
 A list containing a tuple behaves differently. Tuples are indexed, so their values can be accessed with square brackets, but tuples are immutable and their individual values cannot be replaced through assignment. The mutable outer list can still replace the entire tuple.
 
@@ -225,19 +224,18 @@ print(data[0]) # (10, 20, 30)
 print(data[0][1]) # 20
 
 data[0][1] = 99 # TypeError
-
 data[0] = (100, 200, 300)
 
 print(data) # [(100, 200, 300), (40, 50, 60)]
 ```
 
-Square brackets therefore provide a path through nested structures, but what can be changed depends on the object reached at the end of that path. A nested list or dictionary can be modified, a tuple cannot be modified internally, and a set cannot be indexed at all. These differences lead directly to the broader distinction between **mutable** and **immutable** objects.
+The examples show that replacing an entire nested object is different from modifying it internally. This distinction leads to a closer examination of **mutable** and **immutable** objects.
 
 ## How mutable and immutable data types work
 
-In **Python Data Types Level 1**, we introduced the difference between mutable and immutable data types. **Mutable data types** can be changed in place, while **immutable data types** cannot. When an operation appears to change an immutable value, Python creates a new object and the variable is reassigned to that object.
+In **Python Data Types Level 1**, we introduced the difference between mutable and immutable data types. **Mutable data types** can be changed in place, while **immutable data types** cannot. When an operation produces a different immutable value, Python may create a new object, and assignment can make the variable refer to that object. This section uses `id()` to observe the difference between modifying an existing object and reassigning a variable.
 
-The built-in `id()` function helps us observe this behavior. It returns an integer that identifies a particular object during its lifetime. The actual number, such as `140245849646464`, is not important and may be different each time the program runs. What matters is whether the number stays the same or changes after an operation.
+The built-in `id()` function returns an integer that identifies an object during its lifetime. The actual number is not important and may differ between program runs. What matters in the following examples is whether the identifier stays the same or changes after an operation.
 
 ```py
 my_list = [1, 2, 3]
@@ -251,9 +249,9 @@ print("Modified list:", my_list) # Modified list: [1, 2, 3, 4]
 print("Modified id:", id(my_list)) # Same ID as before
 ```
 
-Because a list is **mutable**, `append()` changes the existing list in place. The contents change from `[1, 2, 3]` to `[1, 2, 3, 4]`, but both calls to `id(my_list)` return the same number during that run. This tells us that `my_list` still refers to the same list object.
+Because a list is **mutable**, `append()` changes the existing list in place. Both calls to `id(my_list)` return the same number during that run. This shows that `my_list` still refers to the same list object.
 
-Strings behave differently because they are **immutable**.
+Strings behave differently because they are **immutable**. Concatenating strings produces a new string rather than changing the original one.
 
 ```py
 text = "Hello"
@@ -265,17 +263,28 @@ text = text + " world"
 print("After:", text, id(text)) # After: Hello world <different ID>
 ```
 
-The two `id()` values are different because `"Hello world"` is a new string object. The original `"Hello"` string was not modified. Instead, `text` was reassigned so that it refers to the newly created string. The important distinction is therefore not whether a variable can be assigned another value, because variables can be reassigned in either case. The difference is whether the existing object itself can be modified.
+The two `id()` values are different because `"Hello world"` is a new string object. The original `"Hello"` string was not modified, and `text` now refers to the new string. Variables can be reassigned regardless of the mutability of their objects. What distinguishes mutable and immutable objects is whether the existing object itself can be modified.
 
-This distinction becomes especially important when multiple variables refer to the same mutable object, which we will examine later when working with copies. With this foundation established, we can now examine the individual collection types in more detail, beginning with lists.
+!!! info "Object identity and equality"
+
+    An object's identifier describes its identity, not its contents. Two variables referring to the same object have the same identifier, while two separate objects can contain equal values. An identifier is guaranteed to be unique only among objects that exist at the same time, so it should not be treated as a permanent identifier or used to determine whether values are equal.
+
+This distinction becomes especially important when multiple variables refer to the same mutable object. Assigning one variable to another does not copy the object, as the following example demonstrates.
+
+```py
+original = [1, 2, 3]
+alias = original
+original.append(4)
+print(alias) # [1, 2, 3, 4]
+```
+
+Both variables refer to the same list, so the change made through `original` is also visible through `alias`. The **Copy** section at the end of this level explores how to create separate objects and how copying affects nested collections. With this foundation established, we can now examine the individual collection types in more detail, beginning with lists.
 
 ## List Data Type
 
 In Python, a **list** is a **mutable**, ordered sequence of elements. Because lists are mutable, their contents can be changed in place by adding, removing, replacing, or reordering elements. Lists can store simple values such as numbers and strings, but they are also commonly used to store structured records such as dictionaries, nested lists, and other collections.
 
-Different list methods are useful for different kinds of changes. `append()` adds one element to the end, `insert()` adds one element at a specific position, and `extend()` adds multiple elements. Similarly, `remove()`, `pop()`, and `clear()` remove elements in different ways depending on what the program needs to remove.
-
-To add a single element to the **end** of a list, use `append(element)`. Use `append()` when one new item needs to be added and its exact position is not important beyond placing it after the existing elements.
+To add a single element to the **end** of a list, use `append(element)`. This is useful when a program receives or produces items one at a time, such as accepted form submissions, successful API results, processed files, or completed tasks.
 
 ```py
 valid_users = []
@@ -292,7 +301,7 @@ if user["email"] != "":
 print(valid_users) # [{'name': 'example1', 'email': 'example@example.com', 'active': True}]
 ```
 
-In this example, one validated user is added to the end of `valid_users`. This approach is useful when a program receives or produces items one at a time, such as accepted form submissions, successful API results, processed files, or completed tasks.
+In this example, the condition checks that the user's email is not empty. Because the condition is true, `append()` adds the user dictionary as one element at the end of `valid_users`. The resulting list contains one validated user.
 
 If one element must be added at a **specific position**, use `insert(index, element)` instead of `append()`. Existing elements at that position and after it are shifted to the right.
 
@@ -304,7 +313,7 @@ subjects.insert(1, "English")
 print(subjects) # ['Math', 'English', 'History', 'Science']
 ```
 
-The index `1` places `"English"` between `"Math"` and `"History"`. Use `insert()` when a new element needs to appear at a particular position rather than at the end of the list.
+The index `1` places `"English"` between `"Math"` and `"History"`, shifting the existing elements to the right. The resulting list contains four subjects, with `"English"` in the second position.
 
 When several elements need to be added to an existing list, use `extend(iterable)`. Unlike `append()`, which adds its argument as one element, `extend()` takes the elements from another iterable and adds them individually to the end of the list.
 
@@ -324,11 +333,9 @@ monday_logs.extend(tuesday_logs)
 print(monday_logs) # [{'event': 'login'}, {'event': 'upload'}, {'event': 'download'}, {'event': 'logout'}]
 ```
 
-Here, both records from `tuesday_logs` are added individually to `monday_logs`. Use `extend()` rather than `append()` when the goal is to combine the elements of two collections into one list. For example, it can combine records loaded from several files, results from different data sources, or logs collected on different days.
+Both records from `tuesday_logs` are added individually to `monday_logs`. This makes `extend()` useful when combining records loaded from several files, results from different data sources, or logs collected on different days.
 
-Once elements have been added, they may also need to be removed. The appropriate method depends on what the program knows about the element. Use `remove()` when its value is known, `pop()` when its position is known and the removed value is needed, and `clear()` when every element should be removed.
-
-The `remove(value)` method deletes the **first element equal to the specified value**.
+Once elements have been added, they may also need to be removed. Use `remove()` when the value is known, `pop()` when the position is known and the removed value is needed, and `clear()` when every element should be removed. The `remove(value)` method deletes the **first element equal to the specified value**.
 
 ```py
 active_features = [
@@ -342,9 +349,11 @@ active_features.remove("notifications")
 print(active_features) # ['search', 'dark_mode']
 ```
 
-In this example, the program knows the value `"notifications"` but does not need to know its index. This makes `remove()` useful when deleting a known name, option, tag, or other value from a list.
+In this example, the program knows the value `"notifications"` but does not need to know its index. `remove()` finds the first matching value and deletes it from the list.
 
-> **Note:** If the specified value does not exist in the list, `remove()` raises `ValueError`.
+!!! warning "Removing a value that does not exist"
+
+    If the specified value does not exist in the list, `remove()` raises `ValueError`.
 
 Use `pop(index)` when the program knows the **position** of an element and also needs the value that was removed. Unlike `remove()`, `pop()` returns the removed element, allowing it to be stored in a variable and used afterward.
 
@@ -361,9 +370,11 @@ print("Current task:", current_task["task"]) # Current task: download file
 print("Remaining tasks:", tasks) # [{'task': 'parse data'}, {'task': 'save results'}]
 ```
 
-Here, `pop(0)` removes the first task from the list and returns that dictionary. The returned dictionary is stored in `current_task`, so the program can work with the task after removing it from the list. Use `pop()` when an item should be taken out of a list and then used, such as taking the next task from a small task list or retrieving the most recent item from a history.
+Here, `pop(0)` removes the first task and returns that dictionary. The returned dictionary is stored in `current_task`, so the program can continue working with it after it has been removed from the list.
 
-> **Note:** Using `pop(0)` works for small lists, but it becomes inefficient for large queues because all remaining elements must shift to new positions. For programs that require efficient queue operations, Python provides `collections.deque`.
+!!! tip "Use deque for large queues"
+
+    Using `pop(0)` works for small lists, but it becomes inefficient for large queues because all remaining elements must shift to new positions. For programs that require efficient queue operations, Python provides `collections.deque`.
 
 If no index is supplied, `pop()` removes and returns the **last element**. This is useful when the program needs the most recently added element.
 
@@ -380,7 +391,7 @@ print("Last action:", last_action) # Last action: save file
 print("Remaining history:", history) # ['open file', 'edit title']
 ```
 
-Here, `"save file"` is both removed from `history` and stored in `last_action`. This behavior is useful for last-in, first-out operations, where the most recently added item is handled first.
+Here, `"save file"` is removed from `history` and stored in `last_action`. This behavior is useful for last-in, first-out operations, where the most recently added item is handled first.
 
 To remove **all elements** while keeping the same list object, use `clear()`. Use this method when the contents are no longer needed but the list itself will continue to be used.
 
@@ -397,29 +408,31 @@ pending_logs.clear()
 print("Pending logs:", pending_logs) # []
 ```
 
-In this example, the collected logs have already been handled, so `clear()` empties the list before it is used to collect another batch. Unlike removing elements individually, `clear()` removes the entire contents of the list in one operation.
+The collected logs have already been handled, so `clear()` empties the list before it is used to collect another batch. The list object remains available for reuse.
 
-After adding and removing elements, another common operation is changing their order. The `sort()` method rearranges the existing list in place. By default, comparable values are arranged in **ascending order**.
-
-The result depends on the type of values being sorted. Numbers are ordered numerically, while strings are compared character by character according to their Unicode values. This means uppercase and lowercase letters can appear in different parts of the result, and strings containing digits are ordered as text rather than as numbers.
+After adding and removing elements, another common operation is changing their order. The `sort()` method rearranges the existing list in place. By default, comparable values are arranged in **ascending order**. Numbers are ordered numerically, while strings are compared character by character according to their Unicode values. This means uppercase and lowercase letters can appear in different parts of the result, and strings containing digits are ordered as text rather than as numbers.
 
 ```py
 scores = [85, 40, 92, 70, 60]
-scores.sort()
-print(scores) # [40, 60, 70, 85, 92]
-
 names = ["example", "Example", "banana", "Apple"]
-names.sort()
-print(names) # ['Apple', 'Example', 'banana', 'example']
-
 numbers_as_text = ["1", "2", "10", "11", "3"]
+
+scores.sort()
+names.sort()
 numbers_as_text.sort()
+
+print(scores) # [40, 60, 70, 85, 92]
+print(names) # ['Apple', 'Example', 'banana', 'example']
 print(numbers_as_text) # ['1', '10', '11', '2', '3']
 ```
 
-The numeric list is arranged from lowest to highest. With strings, uppercase `"Apple"` and `"Example"` appear before the lowercase values because uppercase and lowercase characters have different Unicode values. The values in `numbers_as_text` are also strings, so Python compares them character by character rather than numerically. This is why `"10"` and `"11"` appear before `"2"`. Their first character is `"1"`, which comes before `"2"`. If the same values were integers, `10` and `11` would be placed after `2` because integers are compared numerically.
+The numeric list is arranged from lowest to highest. With strings, uppercase `"Apple"` and `"Example"` appear before the lowercase values because uppercase and lowercase characters have different Unicode values. In `numbers_as_text`, `"10"` and `"11"` appear before `"2"` because the values are compared as text, character by character. If the same values were integers, `10` and `11` would be placed after `2`.
 
-Use `sort()` when the existing list should remain in sorted order. The method modifies the list in place and returns `None` rather than returning a new sorted list, so `new_scores = scores.sort()` assigns `None` to `new_scores`. The optional `reverse` and `key` parameters provide additional control over how the list is ordered.
+Use `sort()` when the list itself should be reordered and the original sequence is no longer needed. The optional `reverse` and `key` parameters provide additional control over how the list is ordered.
+
+!!! warning "sort() returns None"
+
+    The `sort()` method modifies the existing list in place and returns `None` rather than returning a new sorted list. For example, `new_scores = scores.sort()` assigns `None` to `new_scores`.
 
 Use `reverse=True` when the values should be arranged in **descending order** instead of the default ascending order. For example, an application may display available report years from the most recent to the oldest.
 
@@ -431,7 +444,9 @@ report_years.sort(reverse=True)
 print(report_years) # [2025, 2024, 2023, 2022, 2021]
 ```
 
-The `key` parameter is useful when each list element contains several values and one particular value should determine the order. For example, these dictionaries can be ordered by their `"score"` values.
+Here, `reverse=True` changes the direction of the sort, so the years are arranged from the highest value to the lowest.
+
+The `key` parameter is useful when each list element contains several values and one particular value should determine the order. For example, these dictionaries can be ordered by their `"score"` values, then reordered in the opposite direction by combining the same key with `reverse=True`.
 
 ```py
 results = [
@@ -447,45 +462,38 @@ results.sort(key=score_value)
 
 for result in results:
     print(result["user"], result["score"]) # Prints Example1 78, Example3 85, then Example2 92
-```
 
-The `score_value()` function returns the `"score"` from each dictionary, so `sort()` uses that value for comparison and arranges the records from the lowest score to the highest. The same `key` and `reverse` parameters can be used together when the selected value should be ordered in the opposite direction.
-
-```py
 results.sort(key=score_value, reverse=True)
 
 for result in results:
     print(result["user"], result["score"]) # Prints Example2 92, Example3 85, then Example1 78
 ```
 
-Here, `key=score_value` still selects the score for comparison, while `reverse=True` changes the direction so that the highest score appears first. This completes the basic use of `key` with the `sort()` method. Passing functions as arguments is explored more deeply in **Functions Level 3**, including when working with the built-in `sorted()` function.
+The `score_value()` function returns the `"score"` from each dictionary, so `sort()` uses that value for comparison. The first sort arranges the records from the lowest score to the highest, while `reverse=True` changes the direction so that the highest score appears first. Passing functions as arguments is explored more deeply in **Functions Level 3**, including when working with the built-in `sorted()` function.
 
 Sorting arranges elements according to their values or a selected comparison value. Reversing is different because it simply flips the order that already exists. The `reverse()` method changes the existing list in place, while `[::-1]` creates a new reversed list.
 
 ```py
 processing_queue = ["job_1", "job_2", "job_3", "job_4"]
-
-processing_queue.reverse()
-
-print(processing_queue) # ['job_4', 'job_3', 'job_2', 'job_1']
-
 original_queue = ["job_1", "job_2", "job_3", "job_4"]
 
+processing_queue.reverse()
 reversed_queue = original_queue[::-1]
 
+print(processing_queue) # ['job_4', 'job_3', 'job_2', 'job_1']
 print(original_queue) # ['job_1', 'job_2', 'job_3', 'job_4']
 print(reversed_queue) # ['job_4', 'job_3', 'job_2', 'job_1']
 ```
 
-Use `reverse()` when the existing list itself should be reversed. Use `[::-1]` when the original order should remain unchanged and a separate reversed list is needed.
+`reverse()` changes `processing_queue` itself, while `[::-1]` leaves `original_queue` unchanged and stores the reversed copy in `reversed_queue`.
 
 Lists are useful when elements are organized and accessed by **position**, but structured data often needs values to be identified by names or labels instead of numeric indices. Dictionaries provide this key-based organization, which builds on the collection concepts introduced with lists.
 
 ## Dictionary Data Type
 
-Next, let’s explore another important data type in Python, `dict`, also known as a **mapping type**. A dictionary is a **mutable mapping type** that stores data as **key-value pairs** and uses keys rather than numeric indexes to identify values. Dictionaries often contain lists, other dictionaries, and mixed data types, which makes them useful for representing structured information.
+A Python **dictionary** is a **mutable mapping type** that stores data as **key-value pairs** and uses keys rather than numeric indexes to identify values. Dictionaries can contain lists, other dictionaries, and mixed data types, which makes them useful for representing structured information.
 
-Dictionary values can be accessed directly with square brackets when a key is expected to exist. When a key may be missing, `get()` provides an alternative because it can return `None` or a supplied default value instead of raising a `KeyError`. Consider an application configuration object.
+Dictionary values can be accessed directly with square brackets when a key is expected to exist. When a key may be missing, `get()` provides an alternative because it can return `None` or a supplied default value instead of raising a `KeyError`. The following application configuration demonstrates how `get()` can be used to retrieve values from nested dictionaries.
 
 ```py
 config = {
@@ -504,31 +512,33 @@ config = {
 }
 ```
 
-The `"database"` value can be retrieved with `get()`. This is the basic form of the method and returns the value stored under the requested key.
+The `"database"` value can be retrieved with the basic form of `get()`.
 
 ```py
 db_config = config.get("database")
+
 print(db_config) # {'host': 'localhost', 'port': 5432, 'credentials': {'user': 'admin', 'password': 'secret'}}
 ```
 
-When the required value is deeper inside nested dictionaries, `get()` can be chained.
+Here, `get("database")` returns the dictionary stored under the `"database"` key. When the required value is deeper inside nested dictionaries, `get()` can be chained.
 
 ```py
 db_port = config.get("database", {}).get("port")
+
 print(db_port) # 5432
 ```
 
-The first `get()` retrieves `"database"`. If that key is missing, the default `{}` supplies an empty dictionary, so `get("port")` can still be called without raising a `KeyError`. The same approach can handle an optional nested key that may not exist, either by returning `None` or by using a supplied fallback value.
+The first `get()` retrieves `"database"`. If that key is missing, the default `{}` supplies an empty dictionary, allowing the second `get("port")` call to continue without raising a `KeyError`. The same approach can handle an optional nested key that may not exist.
 
 ```py
 timeout = config.get("database", {}).get("timeout")
-print(timeout) # None
-
 timeout = config.get("database", {}).get("timeout", 30)
+
+print(timeout) # None
 print(timeout) # 30
 ```
 
-Because `"timeout"` is missing, the first call returns `None`, while the second returns the supplied default value `30`. Use a default when the program has a suitable fallback for an optional value.
+Because `"timeout"` is missing, the first expression returns `None`, while the second returns the supplied default value `30`. Use a default when the program has a suitable fallback for an optional value.
 
 Sometimes the program needs to know whether a key exists rather than retrieve a fallback value. In that situation, use the `in` operator.
 
@@ -538,6 +548,8 @@ if "database" in config:
 ```
 
 Use `in` when the existence of the key affects the next action. Once the check succeeds, direct square bracket access can be used safely for that key. Use `get()` instead when the program mainly needs a value and can continue with `None` or another default if the key is absent.
+
+Dictionaries often contain lists of records, so access may continue from a dictionary key into a list element and then into another dictionary.
 
 ```py
 users = {
@@ -549,23 +561,21 @@ users = {
         {"name": "Example3", "active": True}
     ]
 }
-```
 
-The list stored under `"admins"` can be retrieved and indexed to access its first record. Access can then continue into that record to retrieve a specific value.
-
-```py
 first_admin = users.get("admins", [])[0]
-print(first_admin) # {'name': 'Example1', 'active': True}
-
 admin_name = users.get("admins", [])[0].get("name")
+
+print(first_admin) # {'name': 'Example1', 'active': True}
 print(admin_name) # Example1
 ```
 
 In both expressions, `get("admins", [])` retrieves the list and `[0]` selects its first dictionary. The second expression continues into that dictionary with `get("name")` to retrieve the name.
 
-> **Note:** The default empty list prevents a `KeyError` when `"admins"` is missing, but `[0]` still raises an `IndexError` if the list is empty. When the list may be empty, check it before accessing the first element.
+!!! warning "An empty default list can still cause IndexError"
 
-Direct square bracket access behaves differently when a dictionary key does not exist. Instead of returning a default value, it raises a `KeyError`.
+    The default empty list prevents a `KeyError` when `"admins"` is missing, but `[0]` still raises an `IndexError` if the resulting list is empty. When the list may be empty, check it before accessing the first element.
+
+Direct square bracket access behaves differently when a dictionary key does not exist because it raises a `KeyError` instead of returning a fallback value.
 
 ```py
 print(users["moderators"][0]["name"]) # KeyError
@@ -593,7 +603,7 @@ print(config["database"]) # {'host': 'localhost', 'port': 5432, 'credentials': {
 
 Because `"timeout"` does not already exist, the assignment adds it to the nested `"database"` dictionary. If the key already existed, the same syntax would replace its current value. Use direct assignment for one specific entry. When several entries need to be applied together, use `update()`.
 
-The `update()` method applies one or more key-value pairs to an existing dictionary. Existing keys receive new values, while missing keys are added. This makes the method useful both for changing existing entries and adding new ones, especially when several related values need to be applied together.
+The `update()` method applies one or more key-value pairs to an existing dictionary. Existing keys receive new values, while missing keys are added, making the method useful when several related values need to be applied together.
 
 ```py
 config = {
@@ -605,17 +615,15 @@ config = {
         "logging": True
     }
 }
-```
 
-The same `update()` method can change an existing key, add a missing key, or apply several key-value pairs at once.
-
-```py
 # Change an existing key
 config["database"].update({"port": 3306})
+
 print(config) # {'database': {'host': 'localhost', 'port': 3306}, 'features': {'logging': True}}
 
 # Add a missing key
 config["database"].update({"timeout": 30})
+
 print(config) # {'database': {'host': 'localhost', 'port': 3306, 'timeout': 30}, 'features': {'logging': True}}
 
 # Change several related values
@@ -623,12 +631,13 @@ config["database"].update({
     "host": "db.internal",
     "port": 5432
 })
+
 print(config) # {'database': {'host': 'db.internal', 'port': 5432, 'timeout': 30}, 'features': {'logging': True}}
 ```
 
-In the first operation, `"port"` already exists, so its value changes from `5432` to `3306`. In the second, `"timeout"` does not exist, so it is added as a new key-value pair. The final operation changes `"host"` and `"port"` together, showing why `update()` is more convenient than separate assignments when several entries need to be applied at once.
+The first operation changes the existing `"port"` value, the second adds the missing `"timeout"` key, and the final operation changes `"host"` and `"port"` together. This shows why `update()` is convenient when several entries should be applied at once.
 
-`update()` can also modify a dictionary stored inside another collection. In the following list, `users[1]` selects the second user dictionary before `update()` changes its `"active"` value.
+`update()` can also modify a dictionary stored inside another collection.
 
 ```py
 users = [
@@ -637,39 +646,42 @@ users = [
 ]
 
 users[1].update({"active": True})
+
 print(users) # [{'id': 1, 'name': 'Example1', 'active': True}, {'id': 2, 'name': 'Example2', 'active': True}]
 ```
 
-Only the `"active"` value in that record changes, while its other fields remain unchanged.
+Here, `users[1]` selects the second user dictionary before `update()` changes only its `"active"` value. The other fields remain unchanged.
 
-`update()` can also apply the contents of another dictionary to an existing record.
+The same method can apply all entries from another dictionary to an existing record.
 
 ```py
 user_profile = {
     "id": 3,
-    "name": "Charlie"
+    "name": "Example"
 }
 extra_data = {
-    "email": "charlie@example.com",
+    "email": "Example@example.com",
     "role": "editor"
 }
 user_profile.update(extra_data)
-print(user_profile) # {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com', 'role': 'editor'}
+
+print(user_profile) # {'id': 3, 'name': 'Example', 'email': 'Example@example.com', 'role': 'editor'}
 ```
 
-The keys from `extra_data` are added to `user_profile`. If both dictionaries contained the same key, the value from `extra_data` would replace the existing value. Use this form when a collection of key-value pairs from another dictionary should be applied to an existing record.
-
-The replacement behavior can also be used deliberately when one dictionary should override selected values from another.
+The keys from `extra_data` are added to `user_profile`. If both dictionaries contained the same key, the value from `extra_data` would replace the existing value. This replacement behavior can also be used deliberately when one dictionary should override selected values from another.
 
 ```py
 settings = {
     "theme": "light",
     "language": "en"
 }
+
 override = {
     "theme": "dark"
 }
+
 settings.update(override)
+
 print(settings) # {'theme': 'dark', 'language': 'en'}
 ```
 
@@ -677,7 +689,7 @@ Both dictionaries contain `"theme"`, so `"dark"` replaces `"light"`. The `"langu
 
 Another useful dictionary method is `setdefault(key, default)`. It returns the existing value when the key is already present. If the key is missing, it creates the key with the supplied default value and returns that value. This makes `setdefault()` useful for building grouped or nested data without replacing values that were already stored.
 
-Imagine processing events and grouping their actions by user. The goal is to create a dictionary in which each user is associated with a list of actions.
+Imagine processing events and grouping their actions by user.
 
 ```py
 events = [
@@ -697,7 +709,7 @@ for event in events:
 print(activity_log) # {'Example1': ['login', 'upload'], 'Example2': ['login', 'logout']}
 ```
 
-If the `user` key does not exist, `setdefault()` creates it with an empty list `[]`. If the key already exists, it returns the existing list. In both cases, `append()` adds the action to that list. Using `update()` here would behave differently because it can replace an existing value.
+If the `user` key does not exist, `setdefault()` creates it with an empty list. If the key already exists, it returns the existing list. In both cases, `append()` adds the action to that list. Using `update()` here would behave differently because it can replace an existing value.
 
 ```py
 activity_log.update({"Example1": []})
@@ -740,32 +752,32 @@ for result in results:
 print(scores_by_category) # {'math': [80, 85], 'science': [90]}
 ```
 
-For the first `"math"` result, `setdefault()` creates an empty list and `80` is appended. When `"math"` appears again, the existing list is returned and `85` is appended to it. This collects several values under the same category without overwriting earlier values.
+For the first `"math"` result, `setdefault()` creates an empty list and `80` is appended. When `"math"` appears again, the existing list is returned and `85` is appended, collecting several values under the same category without overwriting earlier values.
 
-Dictionaries also provide `keys()`, `values()`, and `items()` for working with their stored data. `keys()` provides the keys, `values()` provides the values, and `items()` provides each key together with its value.
+Dictionaries also provide `keys()`, `values()`, and `items()` for working with their stored data.
 
 ```py
 user_profile = {
     "id": 3,
-    "name": "Charlie",
+    "name": "Example",
     "role": "editor"
 }
 
 print(user_profile.keys()) # dict_keys(['id', 'name', 'role'])
-print(user_profile.values()) # dict_values([3, 'Charlie', 'editor'])
-print(user_profile.items()) # dict_items([('id', 3), ('name', 'Charlie'), ('role', 'editor')])
+print(user_profile.values()) # dict_values([3, 'Example', 'editor'])
+print(user_profile.items()) # dict_items([('id', 3), ('name', 'Example'), ('role', 'editor')])
 
 for key, value in user_profile.items():
-    print(key, value) # id 3, then name Charlie, then role editor
+    print(key, value) # id 3, then name Example, then role editor
 ```
 
-Choose the method according to what the program needs. When only the keys are needed, use `keys()`. When only the stored values are needed, use `values()`. When both are needed, `items()` provides each key together with its corresponding value, which is especially useful during iteration.
+Use `keys()` when only the keys are needed, `values()` when only the stored values are needed, and `items()` when both are needed. The `items()` method is especially useful during iteration.
 
-> **Note:** `keys()`, `values()`, and `items()` return dictionary view objects rather than lists. These views reflect later changes made to the dictionary.
+!!! note "Dictionary views reflect later changes"
 
-After adding and updating entries, dictionaries also provide several ways to remove them. Use `del` when a known key should simply be removed, `pop()` when the removed value is also needed, `popitem()` when the most recently added pair should be removed, and `clear()` when every entry should be removed.
+    `keys()`, `values()`, and `items()` return dictionary view objects rather than lists. These views reflect later changes made to the dictionary.
 
-The `del` keyword is a Python statement rather than a dictionary method. Use it when a known key should be removed and the removed value is not needed afterward.
+After adding and updating entries, dictionaries also provide several ways to remove them. Use `del` when a known key should simply be removed, `pop()` when the removed value is also needed, `popitem()` when the most recently added pair should be removed, and `clear()` when every entry should be removed. The `del` keyword is a Python statement rather than a dictionary method.
 
 ```py
 user_profile = {
@@ -783,9 +795,11 @@ del user_profile["session"] # Remove session data after logout
 print(user_profile) # {'id': 101, 'name': 'Example1', 'email': 'Example1@example.com'}
 ```
 
-Here, the user record remains while only the `"session"` entry is removed. This is commonly used when temporary or sensitive data is no longer needed, such as session information after logout.
+Here, the user record remains while only the `"session"` entry is removed. This is useful when temporary data such as session information is no longer needed.
 
-> **Note:** If the key does not exist, `del` raises a `KeyError`.
+!!! warning "Deleting a missing key raises KeyError"
+
+    If the key does not exist, `del` raises a `KeyError`.
 
 Unlike `del`, the `pop()` method removes a key and returns its value. Use `pop()` when the value should still be available after the entry is removed.
 
@@ -801,8 +815,6 @@ print("Expired cache entry:", expired_page) # Expired cache entry: <html>...</ht
 print("Remaining cache:", cache) # {'page:/about': '<html>...</html>'}
 ```
 
-The removed value is returned, so the program can still process it. This is commonly used when removed data must still be processed, such as during cache invalidation or task consumption.
-
 When the key may not exist, a default value can be supplied to `pop()`.
 
 ```py
@@ -810,13 +822,14 @@ settings = {
     "theme": "dark",
     "language": "en"
 }
+
 timezone = settings.pop("timezone", "UTC")
 
 print("Timezone:", timezone) # Timezone: UTC
 print(settings) # {'theme': 'dark', 'language': 'en'}
 ```
 
-Because `"timezone"` is missing, no entry is removed and `"UTC"` is returned. This eliminates the need for extra `if key in dict` checks when a fallback value is sufficient.
+Because `"timezone"` is missing, no entry is removed and `"UTC"` is returned. This avoids an extra membership check when a fallback value is sufficient.
 
 `popitem()` removes and returns the **most recently added** key-value pair. Unlike `pop()`, it does not require a specific key.
 
@@ -832,11 +845,13 @@ print("Removed:", last_entry) # Removed: ('debug', True)
 print(request_context) # {'request_id': 'req-001', 'user': 'Example1'}
 ```
 
-This is useful when dictionaries act as stacks or temporary stores, or when **reverse-order processing** is required.
+Here, the most recently added `"debug"` entry is removed and returned as a tuple. This can be useful when the latest inserted pair needs to be processed or discarded.
 
-> **Note:** Calling `popitem()` on an **empty dictionary** raises a `KeyError`.
+!!! warning "popitem() requires a non-empty dictionary"
 
-The `clear()` method removes every key-value pair while keeping the dictionary object itself. Use it when all current contents are no longer needed but the same dictionary will continue to be used.
+    Calling `popitem()` on an empty dictionary raises a `KeyError`.
+
+The `clear()` method removes every key-value pair while keeping the dictionary object itself, making it useful when all current contents are no longer needed but the same dictionary will continue to be used.
 
 ```py
 session_data = {
@@ -844,20 +859,18 @@ session_data = {
     "cart": ["item1", "item2"],
     "auth_token": "xyz789"
 }
-
 session_data.clear() # Reset session after logout
+
 print(session_data) # {}
 ```
 
-After `clear()`, `session_data` becomes `{}` while the dictionary object itself remains available for reuse. This makes `clear()` appropriate when all existing entries should be removed at once without replacing the dictionary itself.
+After `clear()`, `session_data` becomes `{}` while the dictionary object itself remains available for reuse.
 
-Dictionaries organize values through keys, allowing structured data to be read and changed by meaningful identifiers rather than numeric positions. Sets organize collections differently by focusing on unique values instead of key-value relationships, which is the next data type we will examine.
+Dictionaries organize values through keys, allowing structured data to be read and changed by meaningful identifiers rather than numeric positions. Sets organize collections differently by focusing on unique values instead of key-value relationships, which is the next data type we will examine
 
 ## Set Data Type
 
-A set is a **non-indexed collection of unique elements**. Unlike lists and tuples, sets do not allow duplicate values. Sets are also **mutable**, so elements can be added or removed after the set has been created. Because sets do not provide positional access, they are especially useful when the important questions are whether a value exists and whether each value appears only once.
-
-Consider a dataset of user actions in which the same user may appear several times. A set can collect the active users without requiring a separate duplicate check.
+A set is a **mutable, non-indexed collection of unique elements**. It does not allow duplicates or provide positional access, making it useful for membership checks and collecting distinct values. For example, a set can collect unique users from a dataset of actions in which the same user may appear several times.
 
 ```py
 events = [
@@ -876,11 +889,13 @@ for event in events:
 print(active_users) # {'example1', 'example2', 'example3'}
 ```
 
-Although some users appear more than once, the set keeps only unique values. This pattern is useful when processing logs, events, or audit data because there is no need to manually check whether a user has already been added.
+The repeated users are stored only once, so `active_users` contains three unique names without requiring a separate duplicate check. This is useful when processing logs, events, or audit data.
 
-> **Note:** Sets do not guarantee display order. The same elements may appear in a different order when a set is printed.
+!!! note "Set display order"
 
-Sets can also be stored inside other collections when values within each group must remain unique. For example, a dictionary can associate each role with a set of permissions.
+    Sets do not guarantee display order. The same elements may appear in a different order when a set is printed.
+
+Sets can also be stored inside other collections. A dictionary of roles, for example, can use sets to keep each role’s permissions unique.
 
 ```py
 permissions = {
@@ -895,9 +910,9 @@ permissions["editor"].add("write") # Duplicate value, ignored
 print(permissions["editor"]) # {'read', 'write', 'publish'}
 ```
 
-Each dictionary value is a set because permissions should be unique. Adding `"publish"` creates a new element, while adding `"write"` again does not create a duplicate. This is useful in access control and role based authorization systems.
+Adding `"publish"` creates a new permission for the editor role, while adding `"write"` again leaves the set unchanged. This allows access control systems to maintain unique permissions for each role.
 
-Sets are also frequently used inside lists of records. When a record contains repeated values, converting that collection to a set removes the duplicates while leaving the surrounding structure intact.
+Sets can also replace repeated values inside lists of records without changing the surrounding structure.
 
 ```py
 users = [
@@ -911,9 +926,9 @@ for user in users:
 print(users) # [{'name': 'example1', 'actions': {'login', 'upload'}}, {'name': 'example2', 'actions': {'login', 'logout'}}]
 ```
 
-Each user record remains a dictionary, but its `"actions"` value becomes a set of unique actions. This pattern appears in analytics, activity tracking, and event aggregation systems.
+Each user record remains a dictionary, while its `"actions"` list becomes a set containing each action once. This is useful when activity tracking or analytics needs distinct actions rather than every occurrence.
 
-The `add()` method adds **one element** to a set. Choose it when values arrive individually, such as new sessions, processed IDs, or completed tasks.
+Use `add()` to add **one element** at a time and `update()` to add all elements from an iterable, such as a list, tuple, or set. Both modify the existing set in place. The following examples compare collecting individual IDs with adding a batch.
 
 ```py
 processed_ids = set()
@@ -931,9 +946,7 @@ for batch in incoming_batches:
 print(processed_ids) # {101, 102, 103, 104, 105}
 ```
 
-Even though the same IDs appear in multiple batches, each ID occurs only once in `processed_ids`.
-
-When several elements should be added from an iterable, use `update()` instead. Unlike `add()`, which adds one element, `update()` can take a list, tuple, set, or another iterable and add all of its elements to the set at once.
+Even though the same IDs appear in multiple batches, each ID occurs only once in `processed_ids`. When the values are already available as a batch, `update()` avoids adding them individually.
 
 ```py
 processed_ids = {101, 102}
@@ -944,9 +957,9 @@ processed_ids.update(new_batch)
 print(processed_ids) # {101, 102, 103, 104}
 ```
 
-Here, `102` already exists, while `103` and `104` are added. `update()` modifies `processed_ids` **in place**, so the same set object remains in use while its contents change. This makes the method useful for batch data, API responses, and file imports.
+Here, `102` already exists, while `103` and `104` are added. The existing set is modified, which makes this approach useful for batch data, API responses, and file imports.
 
-The iterable supplied to `update()` can also come from a nested structure. In the following example, each dictionary value contains a batch of event IDs.
+The same method can collect values from nested structures, such as a dictionary containing batches of event IDs.
 
 ```py
 event_batches = {
@@ -963,9 +976,9 @@ for batch in event_batches.values():
 print(all_event_ids) # {201, 202, 203, 204, 205}
 ```
 
-Each batch is added to the same set, and repeated IDs are automatically ignored.
+The loop adds each sensor’s batch to `all_event_ids`, producing five unique IDs from the seven values in the source data.
 
-Sets stored inside dictionaries can be updated in the same way when several values belong to a particular category.
+When sets are stored inside a dictionary, `update()` can add values to a specific group without changing the other groups.
 
 ```py
 active_sessions = {
@@ -980,21 +993,18 @@ active_sessions["us-east"].update(new_sessions)
 print(active_sessions["us-east"]) # {'sess_1', 'sess_2', 'sess_4', 'sess_5'}
 ```
 
-The `"us-east"` set receives all values from `new_sessions`, while the duplicate `"sess_2"` remains a single element. This is useful for grouped data such as regional or sharded system state.
+The `"us-east"` set gains `"sess_4"` and `"sess_5"`, while `"sess_2"` remains a single element and the `"eu-west"` set is unchanged. This is useful for maintaining grouped data such as regional or sharded system state.
 
-`update()` can also combine the contents of two sets. Because it is a mutating method, it changes the set on which it is called.
+When combining two sets, use `update()` to modify the existing set or `union()` to create a separate result without changing either original set.
 
 ```py
 validated_ids = {1, 2, 3}
 processed_ids = {3, 4, 5}
 
 validated_ids.update(processed_ids)
+
 print(validated_ids) # {1, 2, 3, 4, 5}
-```
 
-`update()` modifies `validated_ids` in place, adding all elements from `processed_ids`. The set object remains the same, but its contents change. When the original sets should remain unchanged, use `union()` to create a new set instead.
-
-```py
 validated_ids = {1, 2, 3}
 processed_ids = {3, 4, 5}
 
@@ -1004,9 +1014,9 @@ print(combined_ids) # {1, 2, 3, 4, 5}
 print(validated_ids) # {1, 2, 3}
 ```
 
-`combined_ids` contains the unique elements from both sets, while `validated_ids` is unchanged. Choose `update()` when the existing set should change and `union()` when a separate combined set is needed.
+The first operation adds `4` and `5` to `validated_ids` in place. After the original values are restored, `union()` creates `combined_ids` with all five unique IDs while leaving `validated_ids` unchanged.
 
-Sets are often **populated** from lists of dictionaries rather than from simple values. A generator expression can select the required field while `update()` collects the unique values.
+A generator expression can also supply values to `update()` by selecting a field from each dictionary in a collection of records.
 
 ```py
 records = [
@@ -1016,14 +1026,15 @@ records = [
 ]
 
 unique_ids = set()
+
 unique_ids.update(record["id"] for record in records)
 
 print(unique_ids) # {301, 302}
 ```
 
-Only the record IDs are added, and the repeated `301` appears once. This is useful in data cleanup and report generation.
+The generator supplies only the `"id"` values, so `unique_ids` contains `301` and `302` while the repeated `301` is stored once. This is useful when data cleanup or reporting requires distinct record IDs.
 
-Because sets are designed around unique values, membership testing with `in` is one of their most common operations. Use it when the program needs to know whether a particular value is present.
+Use `in` to check whether a particular value exists in a set, such as when verifying an active session.
 
 ```py
 active_sessions = {"sess_101", "sess_102", "sess_103"}
@@ -1032,25 +1043,22 @@ if "sess_102" in active_sessions:
     print("Session is active") # Session is active
 ```
 
-The expression checks membership directly without requiring positional access or a loop.
+The condition is true because `"sess_102"` exists in the set, so the program prints `"Session is active"`.
 
-Sets also provide several ways to remove elements. Use `remove()` when a specific element is expected to exist, `discard()` when it may already be absent, `pop()` when any one element can be removed and returned, and `clear()` when every element should be removed.
-
-The `remove(element)` method deletes a specific element. If the element does not exist, Python raises a `KeyError`, so choose this method when absence should be treated as an error.
+Sets provide several ways to remove elements. Use `remove()` when a specific element is expected to exist, `discard()` when it may already be absent, `pop()` when any one element can be removed and returned, and `clear()` when every element should be removed. Unlike `discard()`, `remove()` raises a `KeyError` when the requested element is missing, so it is appropriate when absence should be treated as an error.
 
 ```py
 active_sessions = {"sess_101", "sess_102", "sess_103"}
 
 active_sessions.remove("sess_102") # A user logs out
-
 print(active_sessions) # {'sess_101', 'sess_103'}
 
 active_sessions.remove("sess_999") # KeyError
 ```
 
-The first removal is appropriate because `"sess_102"` is expected to exist. The second call demonstrates the `KeyError` raised for a missing element.
+The first call removes the expected session, leaving the other two sessions in the set. The second call demonstrates that attempting to remove a missing element raises a `KeyError`.
 
-The same behavior is useful when sets are nested inside dictionaries and a required value should be present.
+The same method can remove a required permission from a set stored inside a dictionary.
 
 ```py
 user_permissions = {
@@ -1063,9 +1071,9 @@ user_permissions["editor"].remove("write")
 print(user_permissions["editor"]) # {'read'}
 ```
 
-The permission is expected to exist. Attempting to remove a missing permission would indicate corrupted data, which is useful to detect in authorization systems.
+The `"write"` permission is removed from the editor role, leaving `"read"`. If a required permission were missing, the resulting `KeyError` could help reveal an unexpected state in an authorization system.
 
-When a missing element should not be treated as an error, use `discard(element)`. It removes the element if it exists and does nothing if it is already absent.
+When a missing element should not be treated as an error, use `discard(element)`, which removes an existing element and does nothing if it is already absent.
 
 ```py
 pending_jobs = {"job_1", "job_2", "job_3"}
@@ -1075,30 +1083,22 @@ pending_jobs.discard("job_2") # A job completes
 print(pending_jobs) # {'job_1', 'job_3'}
 ```
 
-This is useful when data may have expired or when an element might already be gone.
+The existing `"job_2"` is removed, leaving `"job_1"` and `"job_3"`. Calling `discard()` again with the same value would leave the set unchanged without raising an error.
 
-The `pop()` method removes and returns an **arbitrary element** from a set. Because sets are non-indexed, the program should not depend on which element is selected.
+The `pop()` method removes and returns an **arbitrary element** from a set. Use it when any pending item can be processed next, including when the set is stored inside another collection, because the program cannot depend on which element will be selected.
 
 ```py
 pending_jobs = {"job_101", "job_102", "job_103"}
+
+server_connections = {
+    "server_a": {"conn_1", "conn_2"},
+    "server_b": {"conn_3"}
+}
 
 current_job = pending_jobs.pop()
 
 print("Processing:", current_job) # One arbitrary job ID
 print("Remaining jobs:", pending_jobs) # The other two job IDs
-```
-
-Here, one job is removed and its ID is returned. This is useful in task schedulers when any pending job can be processed next.
-
-> **Note:** The exact value returned by `set.pop()` should not be shown as a fixed expected result because sets do not provide positional order. The important result is that one element is removed and returned.
-
-`pop()` can also operate on a set stored inside another collection.
-
-```py
-server_connections = {
-    "server_a": {"conn_1", "conn_2"},
-    "server_b": {"conn_3"}
-}
 
 closed_conn = server_connections["server_a"].pop()
 
@@ -1106,17 +1106,25 @@ print("Closed connection:", closed_conn) # Either conn_1 or conn_2
 print(server_connections) # server_a now contains one of its original connections
 ```
 
-One connection is removed from the `"server_a"` set and returned. If a set is empty, however, `pop()` raises a `KeyError`, so check the set first when it may contain no elements.
+The first call removes one pending job and returns its ID. The second removes one connection from the `"server_a"` set, leaving one of its original connections. The exact values depend on which elements are selected.
+
+!!! warning "pop() requires a non-empty set"
+
+    Calling `pop()` on an empty set raises a `KeyError`. When a set may be empty, check it before calling the method.
 
 ```py
 empty_set = set()
 empty_set.pop() # KeyError
+```
 
+The following check avoids calling `pop()` when no pending jobs remain.
+
+```py
 if pending_jobs:
     job = pending_jobs.pop()
 ```
 
-The `clear()` method removes all elements while keeping the set object itself. Use it when the current contents should be discarded but the same set will continue to be used.
+The `clear()` method removes all elements while keeping the set object itself, making it useful when the current contents should be discarded but the same set will continue to be used.
 
 ```py
 active_users = {"user_1", "user_2", "user_3"}
@@ -1126,33 +1134,9 @@ active_users.clear() # System shutdown or reset
 print(active_users) # set()
 ```
 
-After `clear()`, `active_users` is empty but still refers to the same set object. This is useful when reusing containers or clearing stored state between phases.
+After `clear()`, `active_users` is `set()` and can be reused to collect new values.
 
-Sets also support operations that compare or combine their contents without modifying the original sets. The `intersection()` method returns a new set containing only values that appear in both sets.
-
-```py
-user_permissions = {"read", "write", "delete"}
-required_permissions = {"read", "execute"}
-
-allowed = user_permissions.intersection(required_permissions)
-print(allowed) # {'read'}
-```
-
-The result contains the shared permission `"read"`, while both original sets remain unchanged. This is useful when identifying values shared by two collections.
-
-When the program needs to check whether **all** required values are available rather than only find the shared ones, `issubset()` provides a direct test.
-
-```py
-user_permissions = {"read", "write", "delete"}
-required_permissions = {"read", "write"}
-
-if required_permissions.issubset(user_permissions):
-    print("All required permissions are available") # All required permissions are available
-```
-
-Here, every element in `required_permissions` exists in `user_permissions`, so `issubset()` returns `True`. This is useful for permission and capability checks.
-
-The `difference()` method returns a new set containing values that exist in one set but not the other.
+Sets also support non-mutating operations for comparing their contents. The `difference()` method returns a new set containing values that exist in one set but not another, making it useful for identifying missing or unmatched data.
 
 ```py
 expected_files = {"a.txt", "b.txt", "c.txt"}
@@ -1162,17 +1146,15 @@ missing_files = expected_files.difference(uploaded_files)
 print(missing_files) # {'b.txt'}
 ```
 
-`missing_files` contains `"b.txt"` because it is expected but was not uploaded. This is common during upload validation, and the original sets remain unchanged.
+`missing_files` contains `"b.txt"` because it is expected but was not uploaded. Neither original set is modified.
 
-Sets focus on unique values and do not provide positional indexing. Strings serve a different purpose by representing ordered textual data, so we now move from unique collections to working with text.
+Strings serve a different purpose by representing ordered textual data, so we now move from unique collections to working with text.
 
 ## Strings Data Type
 
-A **string** is an **immutable sequence of Unicode characters**. Because strings are ordered, individual characters can be accessed with indexing and slicing. Because strings are immutable, however, their characters cannot be changed in place.
+A **string** is an **immutable sequence of Unicode characters**. Strings are used everywhere: user input, messages, file names, configuration values, and API responses. Their ordered characters can be accessed through indexing and slicing, but cannot be changed in place. String methods therefore focus on normalizing, splitting, searching, validating, and transforming text, often returning new strings rather than modifying the original object.
 
-Strings are used everywhere: user input, messages, file names, configuration values, and API responses. Many string methods therefore focus on normalizing, splitting, searching, validating, and transforming text while returning new strings rather than modifying the original object.
-
-One common operation is normalizing text with `upper()` and `lower()`. Normalization converts text into a consistent form before it is compared or stored, which is useful when user input may use different capitalization.
+Use `lower()` and `upper()` to convert text to lowercase or uppercase. A consistent capitalization is useful when comparing or storing user input that may arrive in different forms.
 
 ```py
 user_input = "Admin"
@@ -1186,40 +1168,32 @@ if user_input.lower() == "admin":
 
 Instead of checking several capitalization variations, the second condition converts the input to lowercase before comparing it. This appears in role checks and form validation.
 
-The same approach can normalize several values before they are stored or processed.
+The same approach can normalize several values before they are stored or processed. Lowercase is often useful for program logic, while uppercase can be useful for display output such as logs and alerts.
 
 ```py
 raw_usernames = ["Example", "example", "EXAMPLE", "ExamplE"]
-
 normalized = []
 
 for name in raw_usernames:
     normalized.append(name.lower())
 
-print(normalized) # ["example", "example", "example", "example"]
-```
+print(normalized) # ['example', 'example', 'example', 'example']
 
-This is commonly done before storing values in databases when capitalization should not create inconsistent records. Lowercase is often useful for program logic, while uppercase can be useful for display output such as logs and alerts.
-
-```py
 status = "error"
 
 print(status.upper()) # ERROR
-```
 
-Calling `upper()` or `lower()` does not change the original string because strings are immutable. The returned value must be assigned if the transformed text should be kept.
-
-```py
 text = "Hello"
-
 text.upper()
+
 print(text) # Hello
 
 text = text.upper()
+
 print(text) # HELLO
 ```
 
-The first call creates an uppercase string but does not assign it, so `text` remains `"Hello"`. The second call assigns the returned string back to `text`, so the variable then refers to `"HELLO"`.
+The loop produces four lowercase usernames, preventing capitalization from creating inconsistent records when a consistent form is required. The status is converted to uppercase for display. Calling `text.upper()` without assigning its result leaves `text` unchanged, while the final assignment makes the variable refer to the new uppercase string.
 
 Strings often appear inside lists and dictionaries, where their values can be normalized before being used.
 
@@ -1238,58 +1212,42 @@ for user in users:
 
 Here, each role is converted to lowercase before comparison, so the check does not depend on how the role was originally capitalized.
 
-Because strings are ordered sequences, indexing and slicing can select particular characters or sections of text.
+Indexing and slicing can select particular characters or sections of a string, including a reversed copy when the step is `-1`.
 
 ```py
 filename = "report_2026.pdf"
-
-extension = filename[-3:]
-print(extension) # pdf
-
 country_code = "+370-612-34567"
-
-print(country_code[:4]) # +370
-```
-
-The first slice retrieves the final three characters for an extension check, while the second retrieves the first four characters of the phone number. String slicing also supports a step, just like other indexed sequences.
-
-```py
 text = "Python"
 
+extension = filename[-3:]
 reversed_text = text[::-1]
+
+print(extension) # pdf
+print(country_code[:4]) # +370
 print(reversed_text) # nohtyP
 ```
 
-A step of `-1` reads the string from the end toward the beginning and creates a new reversed string. The original string remains unchanged.
+The first slice retrieves the final three characters of the filename, the second retrieves the first four characters of the phone number, and the third reads `"Python"` from the end toward the beginning. Each slice creates a new string without modifying the original.
 
-Strings frequently contain several pieces of data that must be separated before they can be processed. By default, `split()` separates text at whitespace such as spaces, tabs, and newlines.
+Use `split()` to separate a string into a list of smaller strings. Without an argument, it splits on whitespace such as spaces, tabs, and newlines. A specified separator, such as a comma or equals sign, can instead be used for structured input.
 
 ```py
 command = "deploy production --force"
-
 parts = command.split()
+
 print(parts) # ['deploy', 'production', '--force']
 
 action = parts[0]
 environment = parts[1]
 
 print(action, environment) # deploy production
-```
 
-After the command is split, each part can be processed independently. This pattern is common in command line tools.
-
-When values are separated by a specific character such as a comma, colon, or pipe (`|`), pass that separator to `split()`.
-
-```py
 row = "101,example,admin,active"
-
 fields = row.split(",")
+
+print(row) # 101,example,admin,active
 print(fields) # ['101', 'example', 'admin', 'active']
-```
 
-This allows you to map values into a structured record.
-
-```py
 user = {
     "id": int(fields[0]),
     "name": fields[1],
@@ -1298,34 +1256,27 @@ user = {
 }
 
 print(user) # {'id': 101, 'name': 'example', 'role': 'admin', 'status': 'active'}
-```
 
-The comma separated string becomes a list whose values can be used to build a structured record. This pattern appears in CSV style input and exported reports.
-
-A similar approach can separate a key from its value.
-
-```py
 setting = "timeout=30"
-
 key, value = setting.split("=")
+
 print(key, value) # timeout 30
 ```
 
-This frequently appears when processing configuration values, environment style settings, or URL query data.
+The command becomes three parts, allowing its action and environment to be processed independently. The comma-separated row becomes a list that is used to build a structured user record, while the configuration setting is separated into its key and value. These patterns are useful in command-line tools, CSV-style input, exported reports, and configuration processing.
 
-The natural counterpart to `split()` is `join()`. While `split()` breaks one string into separate strings, `join()` combines an iterable of strings using a chosen separator.
+Use `join()` for the opposite operation, combining an iterable of strings into one string with a chosen separator.
 
 ```py
 fields = ["101", "example", "admin", "active"]
-
 row = ",".join(fields)
 
 print(row) # 101,example,admin,active
 ```
 
-Here, the comma string acts as the separator placed between each element in `fields`. Use `join()` when separate strings need to be assembled into one string.
+The comma is placed between the four fields, producing `"101,example,admin,active"`. All elements supplied to `join()` must be strings.
 
-When working with multiline text, `splitlines()` separates the text into lines and handles different line endings more reliably than manually splitting only on `"\n"`.
+Use `splitlines()` to separate multiline text into lines. It recognizes different line endings, making it useful for processing text files and logs.
 
 ```py
 log_data = """INFO Server started
@@ -1338,9 +1289,9 @@ for line in lines:
     print("Log entry:", line) # Prints each log line with the "Log entry:" prefix
 ```
 
-This is useful when reading and processing text files, logs, and other multiline content.
+The loop prints each log entry separately with the `"Log entry:"` prefix.
 
-Programs also frequently need to check how a string starts or ends rather than compare the entire value. The `startswith()` and `endswith()` methods provide direct checks for this purpose and are useful for file validation, URL handling, log parsing, and input filtering.
+Use `startswith()` and `endswith()` to check a string's prefix or suffix without comparing the entire value. These methods are useful for file validation, URL handling, log parsing, and input filtering. `startswith()` can also accept a starting position when only part of a string should be checked.
 
 ```py
 filename = "report_2026.pdf"
@@ -1351,56 +1302,36 @@ else:
     print("Invalid file type")
 
 log_line = "ERROR Disk full"
-
 if log_line.startswith("ERROR"):
     print("Critical issue detected") # Critical issue detected
-```
 
-The first check validates the file extension, while the second identifies a log entry by its severity prefix.
-
-`startswith()` can also begin checking from a specified position.
-
-```py
 path = "/api/v1/users"
-
 if path.startswith("v1", 5):
     print("Version 1 API request") # Version 1 API request
-```
 
-Starting at index `5` allows the program to check the version portion of the path without creating a separate slice.
-
-Ending checks are also useful when a suffix identifies a particular category or format.
-
-```py
 email = "user@example.com"
-
 if email.endswith("@example.com"):
     print("Internal company email") # Internal company email
 ```
 
-When part of a string needs to be replaced, use `replace(old, new[, count])`. The `old` argument is the substring to replace, `new` is the replacement text, and the optional `count` argument limits the maximum number of replacements.
+The first check accepts the PDF filename, while the second identifies the error log by its prefix. Starting the path check at index `5` allows `"v1"` to be matched without creating a separate slice, and the final check recognizes the email suffix.
+
+Use `replace(old, new[, count])` to replace a substring with new text. The optional `count` argument limits the maximum number of replacements, and matching is case-sensitive.
 
 ```py
 message = "User password is secret123"
-
-safe_message = message.replace("secret123", "***")
-print(safe_message) # User password is ***
-```
-
-This type of replacement can be useful when preparing text for logs or other output where a particular value should not appear in plain form.
-
-The optional `count` argument can limit how many matching occurrences are replaced.
-
-```py
 text = "ERROR: Disk error detected"
 
+safe_message = message.replace("secret123", "***")
 fixed = text.replace("error", "issue", 1)
+
+print(safe_message) # User password is ***
 print(fixed) # ERROR: Disk issue detected
 ```
 
-Only the first matching lowercase `"error"` is replaced. The uppercase `"ERROR"` does not match because string replacement is case sensitive.
+The first replacement produces a message in which the specified secret is replaced with asterisks. The second replaces only the first lowercase `"error"`, leaving uppercase `"ERROR"` unchanged. Replacement returns a new string and does not modify the original.
 
-User input and external data often contain unwanted whitespace, including spaces, tabs, and newline characters. Python provides the `strip()` method to remove whitespace from both ends of a string.
+Use `strip()` to remove surrounding whitespace, including spaces, tabs, and newline characters, from user input or external data. Use `lstrip()` or `rstrip()` when whitespace should be removed only from the left or right side.
 
 ```py
 raw_input = "   admin   "
@@ -1414,12 +1345,12 @@ if cleaned == "admin":
     print("Access granted") # Access granted
 ```
 
-The first comparison fails because `raw_input` contains extra spaces. After `strip()` removes the surrounding whitespace, the second comparison succeeds. This is common in form handling, command line tools, and API input validation. When whitespace should be removed from only one side, use `lstrip()` for the left side or `rstrip()` for the right side.
+The first comparison fails because `raw_input` contains extra spaces. After `strip()` removes the surrounding whitespace, the second comparison succeeds. This is useful in form handling, command-line tools, and API input validation.
 
-Programs also need to locate, count, or analyze text inside strings. Consider processing an authentication log.
+Use `count()` to count occurrences of a substring and `find()` or `index()` to locate its first occurrence. `find()` returns `-1` when no match exists, while `index()` raises a `ValueError`, so choose `index()` when a missing substring should be treated as an error. The following authentication-log example demonstrates these operations.
 
 ```py
-log = "User login failed. User login failed again."
+log = "User login failed. User login failed again"
 
 attempts = log.count("failed")
 print(attempts) # 2
@@ -1429,13 +1360,7 @@ print(first_failure) # 11
 
 snippet = log[first_failure:first_failure + 20]
 print(snippet) # failed. User login
-```
 
-`count()` reports how many times the substring occurs, while `find()` returns the index of its first occurrence. That index can then be used for further processing, such as extracting surrounding context for log viewers, debugging tools, or error summaries.
-
-When the substring might be absent, `find()` is useful because it returns `-1` instead of raising an exception. When the substring is expected to exist and its absence should be treated as an error, use `index()` instead.
-
-```py
 missing = log.find("timeout")
 print(missing) # -1
 
@@ -1443,15 +1368,12 @@ separator = log.index(".")
 print(separator) # 17
 ```
 
-If the substring passed to `index()` is missing, Python raises a `ValueError`. This difference makes `find()` suitable when absence is an expected possibility, while `index()` is useful when a required substring should exist and an unexpected format should be detected immediately.
+`count()` finds two occurrences of `"failed"`, and `find()` locates the first at index `11`, which is then used to extract surrounding context. Searching for the absent `"timeout"` returns `-1`, while `index(".")` locates the first period at index `17`. These operations are useful for log viewers, debugging tools, and error summaries.
 
-> **Note:** Both `find()` and `index()` return the position of the first matching substring. Their main difference is what happens when no match exists. `find()` returns `-1`, while `index()` raises `ValueError`.
-
-Strings can also be validated before their contents are converted or otherwise processed. The `isdigit()` method returns `True` when the string is not empty and all of its characters are digits.
+Use `isdigit()` for simple validation when input is expected to contain only digits before conversion to an integer. It returns `True` when the string is not empty and all of its characters are digits.
 
 ```py
 user_input = "42"
-
 if user_input.isdigit():
     value = int(user_input)
     print("Valid number:", value) # Valid number: 42
@@ -1459,19 +1381,19 @@ else:
     print("Invalid input")
 ```
 
-This is useful for simple validation when input is expected to contain only digits before conversion to an integer.
+The input `"42"` passes the check and is converted to the integer `42`. The alternative branch handles input that does not satisfy the digit check.
 
-> **Note:** `isdigit()` is not a universal test for every numeric format. For example, `"-5".isdigit()` and `"3.14".isdigit()` both return `False` because the minus sign and decimal point are not digits.
+!!! warning "isdigit() does not validate every numeric format"
+
+    `isdigit()` is not a universal test for every numeric format. For example, `"-5".isdigit()` and `"3.14".isdigit()` both return `False` because the minus sign and decimal point are not digits. Some Unicode digit characters also pass `isdigit()` even though `int()` cannot convert them, so use exception handling when conversion must be reliable.
 
 Strings provide ordered access to textual data while remaining immutable. Tuples share those two characteristics but are designed to group multiple values rather than represent text, which makes them the next sequence type to examine.
 
 ## Tuple Data Type
 
-A **tuple** is an **ordered and immutable collection**. Because tuples are ordered, their values can be accessed by index. Because they are immutable, their elements cannot be added, removed, or reassigned after the tuple has been created.
+A **tuple** is an **ordered and immutable collection**. Its values can be accessed by index, but its elements cannot be added, removed, or reassigned after creation. Tuples are useful for fixed records whose positions have consistent meanings, such as data received from external systems, APIs, databases, or configuration sources.
 
-Tuples are useful when a group of values represents a fixed record that should remain unchanged during program execution. This is common when working with data from external systems, APIs, databases, or configuration sources.
-
-Consider a dataset of transaction records received from an external service.
+The following dataset contains transaction records. Each tuple stores a transaction ID, type, amount, and approval status at indices `0` through `3`, respectively. Functions can use this consistent structure to process records without modifying them.
 
 ```py
 transactions = [
@@ -1479,56 +1401,42 @@ transactions = [
     (1002, "withdraw", 100.00, False),
     (1003, "deposit", 500.00, True),
 ]
-```
 
-Each tuple represents one transaction, and the meaning of each position remains consistent. Index `0` stores the transaction ID, index `1` stores the transaction type, index `2` stores the amount, and index `3` stores the approval status. Programs that process these records rely on that structure remaining stable.
-
-Because the same processing logic is often applied to many tuples, that logic is usually placed inside a function.
-
-```py
 def print_rejected_transactions(transactions):
     for transaction in transactions:
         if not transaction[3]:
             print("Rejected transaction:", transaction[0]) # Rejected transaction: 1002
 
 print_rejected_transactions(transactions)
-```
 
-Tuples are commonly processed with loops and conditions to read and calculate values rather than modify the records.
-
-```py
 def sum_approved_amount(transactions):
     total = 0
-
     for transaction in transactions:
         if transaction[3]:
             total += transaction[2]
-
     return total
 
 total_approved = sum_approved_amount(transactions)
-
 print(total_approved) # 750.0
 ```
 
-Because a tuple is immutable, attempting to assign a new value to one of its positions raises a `TypeError`.
+The first function prints the ID of the rejected transaction, while the second adds the amounts of the two approved transactions to produce `750.0`. Both read the records without changing them.
+
+Attempting to assign a new value to a tuple position raises a `TypeError`. When different or filtered data is needed, a program can create another structure instead of modifying the original tuple.
 
 ```py
 transaction = (1001, "deposit", 250.00, True)
-
 transaction[2] = 999.00 # TypeError
 ```
 
-The existing tuple cannot be changed in place. When a program needs different or filtered data, it creates another structure instead of modifying the original tuple.
+The assignment fails because the existing tuple cannot be changed in place. A separate list can instead collect the approved records from the original dataset.
 
 ```py
 def filter_approved(transactions):
     approved = []
-
     for transaction in transactions:
         if transaction[3]:
             approved.append(transaction)
-
     return approved
 
 approved_transactions = filter_approved(transactions)
@@ -1536,9 +1444,9 @@ approved_transactions = filter_approved(transactions)
 print(approved_transactions) # [(1001, 'deposit', 250.0, True), (1003, 'deposit', 500.0, True)]
 ```
 
-The original transaction dataset remains unchanged, while the approved records are collected separately.
+The function returns a new list containing the two approved transaction tuples, while the original dataset remains unchanged.
 
-Although tuple values can be accessed individually by index, **tuple unpacking** provides a clearer way to assign the values of a fixed record to separate variables.
+Although tuple values can be accessed individually by index, **tuple unpacking** provides a clearer way to assign the values of a fixed record to separate variables. Functions can also return several related values as a tuple, which the caller can unpack immediately.
 
 ```py
 transaction = (1001, "deposit", 250.00, True)
@@ -1549,15 +1457,7 @@ print(tid) # 1001
 print(ttype) # deposit
 print(amount) # 250.0
 print(approved) # True
-```
 
-Each variable receives the value from the corresponding tuple position. Unpacking is useful when the structure is known and several values from the tuple will be used.
-
-> **Note:** Tuple unpacking requires the number of variables to match the number of values being unpacked unless extended unpacking with `*` is used. A mismatch raises a `ValueError`.
-
-Functions can also return several related values as a tuple, which can be unpacked immediately by the caller.
-
-```py
 def get_summary(transaction):
     return transaction[0], transaction[2]
 
@@ -1566,9 +1466,13 @@ tid, amount = get_summary(transaction)
 print(tid, amount) # 1001 250.0
 ```
 
-The function returns the transaction ID and amount together. The returned tuple is then unpacked into `tid` and `amount`, avoiding separate function calls for related results.
+The first unpacking assigns each transaction field to a corresponding variable. The function then returns the ID and amount together, and the caller unpacks those two values without needing separate function calls.
 
-Tuples are also frequently used for user records or state snapshots.
+!!! warning "Tuple unpacking requires matching values"
+
+    The number of variables must match the number of values being unpacked unless extended unpacking with `*` is used. A mismatch raises a `ValueError`.
+
+Tuples can also represent user records or state snapshots. The following example uses fixed positions to identify active administrators.
 
 ```py
 users = [
@@ -1585,9 +1489,9 @@ def print_active_admins(users):
 print_active_admins(users)
 ```
 
-The tuple structure is trusted, index based access is explicit, and the record itself cannot be modified through item assignment.
+The function checks the active-status field and role at indices `2` and `1`, then prints the matching user's ID. The records cannot be modified through item assignment, so their positional structure remains fixed.
 
-Another important use of tuples comes from their ability to serve as dictionary keys when all of their elements are hashable. This is useful when several fixed values together identify an entry.
+Tuples can also serve as dictionary keys when all of their elements are hashable. This is useful when several fixed values together identify an entry, such as a pair of geographic coordinates.
 
 ```py
 locations = {
@@ -1598,71 +1502,75 @@ locations = {
 print(locations[(40.7128, -74.0060)]) # New York
 ```
 
-Here, each coordinate pair is a tuple used as a dictionary key. A list could not be used in the same position because lists are mutable and therefore unhashable.
+The coordinate pair retrieves `"New York"` because it matches the tuple used as a dictionary key. A list cannot be used as a dictionary key because lists are unhashable.
 
-> **Note:** A tuple is not automatically hashable just because it is immutable. Every element inside the tuple must also be hashable for the tuple to be used as a dictionary key or set element.
+!!! note "Tuple hashability depends on its elements"
 
-Tuples are not used when the collection itself needs to change. If elements must be added, removed, or reassigned, a list or dictionary is usually more appropriate. Tuples are most useful when the positions form a stable structure and the collection should remain unchanged.
+    A tuple is not automatically hashable just because it is immutable. Every element inside the tuple must also be hashable for the tuple to be used as a dictionary key or set element.
 
-This distinction between mutable and immutable objects becomes especially important when data is copied. The next section examines how Python handles copying, why shallow and deep copies behave differently, and how data structures can be reused without breaking the guarantees that immutability provides.
+Tuples are most useful when positions form a stable structure and the collection itself should remain unchanged. When elements need to be added, removed, or reassigned, a list or dictionary is usually more appropriate. This distinction becomes especially important when data is copied, so the next section examines how shallow and deep copies affect nested objects and shared references.
 
 ## Copy
 
-At this point, you might be wondering if mutable collections such as lists, dictionaries, and sets can be copied so that changes to the copy do not affect the original. They can, but the result depends on whether the program creates a **shallow copy** or a **deep copy**.
+Mutable collections such as lists, dictionaries, and sets can be copied so that changes to the copied container do not affect the original. A **shallow copy** creates a new outer container but can share nested objects, while a **deep copy** recursively copies nested objects when needed. The distinction matters when a collection contains other mutable objects.
 
-The difference becomes important when a collection contains other mutable objects. A shallow copy creates a new outer container but can still share nested objects with the original. A deep copy creates independent copies of the nested objects as well.
-
-A shallow copy of a list, dictionary, or set can be created with the corresponding built-in class constructor `list()`, `dict()`, or `set()`. These constructors were introduced in Data Types Level 2, but here their copying behavior is important.
+A shallow copy can be created with the built-in constructors `list()`, `dict()`, and `set()`, introduced in **Data Types Level 2**, or with the corresponding `.copy()` methods. Both approaches create a separate outer container containing the same elements. The following examples print the copied values and compare object identities to verify that each copy is a different object.
 
 ```py
-# Shallow copy of a list
 original_list = [1, 2, 3]
 new_list = list(original_list)
+copied_list = original_list.copy()
 
 print(new_list) # [1, 2, 3]
+print(copied_list) # [1, 2, 3]
+print(id(original_list) == id(new_list)) # False
+print(id(original_list) == id(copied_list)) # False
 
-# Shallow copy of a dictionary
 original_dict = {"a": 1, "b": 2}
 new_dict = dict(original_dict)
+copied_dict = original_dict.copy()
 
 print(new_dict) # {'a': 1, 'b': 2}
+print(copied_dict) # {'a': 1, 'b': 2}
+print(id(original_dict) == id(new_dict)) # False
+print(id(original_dict) == id(copied_dict)) # False
 
-# Shallow copy of a set
 original_set = {4, 5, 6}
 new_set = set(original_set)
+copied_set = original_set.copy()
 
 print(new_set) # {4, 5, 6}
+print(copied_set) # {4, 5, 6}
+print(id(original_set) == id(new_set)) # False
+print(id(original_set) == id(copied_set)) # False
 ```
 
-Each constructor creates a new outer container. We can use `id()` to verify this because `id()` identifies a particular object during its lifetime. The actual number returned by `id()` is not important. What matters is whether two expressions return the same ID.
+The `False` comparisons confirm that the constructors and `.copy()` methods create separate containers. As discussed earlier in **Data Types Level 3**, the numeric values returned by `id()` can vary between runs. What matters is whether the IDs are equal or different.
 
-For a flat collection containing immutable values, the copy is a separate container, so changing the copied container does not change the original.
+For a flat collection containing immutable values, changing the copied container does not change the original. A list can also be shallow-copied with `[:]`, which selects the entire list and creates a new outer object. The following example demonstrates both the separate identity and the effect of modifying the copy.
 
 ```py
 original_list = [1, 2, 3]
-new_list = list(original_list)
+copied_list = original_list[:]
 
-print(id(original_list)) # ID of the original list
-print(id(new_list)) # Different ID for the copied list
-print(id(original_list) == id(new_list)) # False
+print(id(original_list) == id(copied_list)) # False
 
-new_list.append(4)
+copied_list.append(4)
 
 print(original_list) # [1, 2, 3]
-print(new_list) # [1, 2, 3, 4]
+print(copied_list) # [1, 2, 3, 4]
 ```
 
-The two `id()` values are different, and the comparison returns `False`. This confirms that `original_list` and `new_list` are two different list objects. Adding `4` to `new_list` therefore changes only the copy.
+The identity comparison confirms that the full slice creates a separate list, so appending `4` changes only `copied_list`. Like the constructors and `.copy()`, slicing does not recursively copy nested objects.
 
-> **Note:** The numeric values returned by `id()` can differ each time the program runs. The important comparison is whether two objects have the same ID, not the numbers themselves.
-
-The important limitation appears when the outer container contains mutable objects. A shallow copy still creates a new outer container, but it does not create new copies of the nested objects.
+The limitation becomes important when the outer container contains mutable objects. A shallow copy creates a new outer list, but both lists can still refer to the same inner lists. Comparing identities at both levels makes the difference visible.
 
 ```py
 original = [[1, 2], [3, 4]]
 shallow_copy = list(original)
 
 print(id(original) == id(shallow_copy)) # False
+
 print(id(original[0]) == id(shallow_copy[0])) # True
 
 shallow_copy[0].append(99)
@@ -1671,64 +1579,23 @@ print(original) # [[1, 2, 99], [3, 4]]
 print(shallow_copy) # [[1, 2, 99], [3, 4]]
 ```
 
-There are **two levels of identity** to notice here. `original` and `shallow_copy` have different IDs because they are separate outer lists. However, `original[0]` and `shallow_copy[0]` have the same ID because both outer lists contain a reference to the same inner list.
+The outer comparison returns `False`, while the inner comparison returns `True`. Appending `99` therefore modifies the shared inner list, and the change appears in both the original and the shallow copy.
 
-When `99` is appended through `shallow_copy[0]`, Python modifies that shared inner list. The change is therefore visible through both `original` and `shallow_copy`.
-
-> **Note:** A shallow copy creates a new outer container, but nested mutable objects can remain shared. A deep copy is needed when those nested objects must also become independent.
-
-Another way to create a shallow copy is with the `.copy()` method, which is available for lists, dictionaries, and sets.
-
-```py
-# Using .copy() on a list
-original_list = [1, 2, 3]
-copied_list = original_list.copy()
-
-print(copied_list) # [1, 2, 3]
-
-# Using .copy() on a dictionary
-original_dict = {"a": 1, "b": 2}
-copied_dict = original_dict.copy()
-
-print(copied_dict) # {'a': 1, 'b': 2}
-
-# Using .copy() on a set
-original_set = {4, 5, 6}
-copied_set = original_set.copy()
-
-print(copied_set) # {4, 5, 6}
-```
-
-Like the constructors, `.copy()` creates a new outer container but does not recursively copy nested mutable objects. For lists, slicing with `[:]` is another common shallow-copy technique.
-
-```py
-original_list = [1, 2, 3]
-copied_list = original_list[:]
-
-print(copied_list) # [1, 2, 3]
-
-print(id(original_list) == id(copied_list)) # False
-```
-
-The slice `original_list[:]` selects the entire list and creates a new list object. It is still a shallow copy, so nested mutable elements would remain shared.
-
-When nested mutable objects must also be independent, a shallow copy is not enough. Python does not provide deep copying through the built-in `list()`, `dict()`, or `set()` constructors. For that behavior, import the `copy` module and use `copy.deepcopy()`.
-
-The following example shows the difference between a shallow copy and a deep copy.
+Python provides the `copy` module for both kinds of copying. `copy.copy()` creates a shallow copy, while `copy.deepcopy()` recursively copies nested objects when needed. The built-in collection constructors do not perform deep copying. The following example compares both approaches using the same nested list.
 
 ```py
 import copy
 
-# Example of shallow vs deep copy
 original_list = [[1, 2], [3, 4]]
 
-# Shallow copy
-shallow_copy = copy.copy(original_list) # Same as original_list.copy() or original_list[:]
-
-# Deep copy
+shallow_copy = copy.copy(original_list)
 deep_copy = copy.deepcopy(original_list)
 
-# Modify inner list
+print(id(original_list) == id(shallow_copy)) # False
+print(id(original_list) == id(deep_copy)) # False
+print(id(original_list[0]) == id(shallow_copy[0])) # True
+print(id(original_list[0]) == id(deep_copy[0])) # False
+
 original_list[0][0] = 99
 
 print("Original:", original_list) # Original: [[99, 2], [3, 4]]
@@ -1736,9 +1603,9 @@ print("Shallow copy:", shallow_copy) # Shallow copy: [[99, 2], [3, 4]]
 print("Deep copy:", deep_copy) # Deep copy: [[1, 2], [3, 4]]
 ```
 
-`copy.copy()` creates a shallow copy, so `original_list` and `shallow_copy` still share their inner lists. Changing `original_list[0][0]` is therefore visible through both structures. `copy.deepcopy()` recursively copies the nested lists, so `deep_copy` remains independent.
+The outer comparisons return `False` for both copies. At the nested level, the shallow copy returns `True` because it shares the original inner list, while the deep copy returns `False` because its inner list is independent. Consequently, changing `original_list[0][0]` also changes the shallow copy, but the deep copy retains its original values.
 
-The same issue applies to nested dictionaries and is not specific to lists.
+The same behavior applies to nested dictionaries. In the following example, `deepcopy()` creates separate copies of the outer dictionary, nested list, and user dictionary.
 
 ```py
 import copy
@@ -1750,12 +1617,17 @@ original = {
 }
 
 deep_copy = copy.deepcopy(original)
+
+print(id(original) == id(deep_copy)) # False
+print(id(original["users"]) == id(deep_copy["users"])) # False
+print(id(original["users"][0]) == id(deep_copy["users"][0])) # False
+
 deep_copy["users"][0]["name"] = "B"
 
 print(original) # {'users': [{'name': 'A'}]}
 print(deep_copy) # {'users': [{'name': 'B'}]}
 ```
 
-The nested list and dictionary inside `deep_copy` are independent copies, so changing the copied user record does not affect `original`.
+The three `False` comparisons confirm that the outer dictionary, nested list, and user dictionary are independent. Changing the copied user record to `"B"` therefore leaves the original record as `"A"`.
 
-> **Note:** Use a shallow copy when the collection contains only immutable values, or when sharing nested objects is acceptable. Use `copy.deepcopy()` when the collection contains nested mutable objects and those inner objects must also be independent.
+Use a shallow copy when a separate outer container is sufficient and sharing nested objects is acceptable. Use `copy.deepcopy()` when nested mutable objects must also be independent. Deep copying does not necessarily duplicate every object because immutable objects may be reused and some objects require special copying behavior, but it provides the appropriate mechanism for recursively copying ordinary nested collections.
