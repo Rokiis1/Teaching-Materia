@@ -27,7 +27,7 @@ Thumbs.db
 zensical.*.generated.toml
 
 # Generated shared assets
-docs/en/assets/
+docs/en/assets/techin-brand.svg
+docs/lt/assets/techin-brand.svg
 docs/en/stylesheets/
-docs/lt/assets/
 docs/lt/stylesheets/
