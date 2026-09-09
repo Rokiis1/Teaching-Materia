@@ -6,9 +6,8 @@
 - [Running a Python Script](#running-a-python-script)
 - [Quick Commands](#quick-commands)
 - [Checking Python Version and Help](#checking-python-version-and-help)
-- [Passing Arguments to a Program](#passing-arguments-to-a-program)
 
-**Command Line Level 1** introduces the basic ways to start Python and run Python code from a terminal or Command Prompt. You will learn how to start the Python interpreter, run a Python script, execute a short piece of code directly, check the installed Python version, display command line help, and pass simple arguments to a program.
+**Command Line Level 1** introduces the basic ways to start Python and run Python code from a terminal or Command Prompt. You will learn how to start the Python interpreter, run a Python script, execute a short piece of code directly, check the installed Python version, and display command line help.
 
 ## Understanding the Python Command Line
 
@@ -82,23 +81,4 @@ python -h
 
 The shorter `-V` and `-h` options perform the same basic tasks as `--version` and `--help`. These commands provide information about the Python interpreter and exit without running a program. You do not need to understand every available option at this **Command Line Level 1**. The important idea is that these options let you quickly check the Python version or discover available command line options when needed.
 
-The options shown above affect the Python interpreter itself. When running a script, you can also place values after the script name so that the program can receive information when it starts.
-
-## Passing Arguments to a Program
-
-Values written after the script name can be passed to the Python program as **command line arguments**. Python passes these arguments to the program in the order in which they were written. Consider the following command.
-
-```bash
-python script.py hello world
-```
-
-A program can access these values through `sys.argv`.
-
-```py
-import sys
-
-# Display the command line arguments received by the program
-print(sys.argv) # ['script.py', 'hello', 'world']
-```
-
-The first element identifies the script being executed, while the remaining elements contain the arguments supplied after the script name. At this level, the important idea is that **Python delivers command line arguments to the program in order**, while the program itself decides what those arguments mean and how they should be used. More detailed command line argument processing belongs in **Command Line Level 2**.
+Together, these commands provide the foundation for starting Python, executing code, and inspecting the interpreter from the command line. **Command Line Level 2** builds on these basics by examining how Python's execution context affects programs, how modules can be executed by name, and how command line arguments and exit codes allow programs to communicate with their environment.

@@ -9,7 +9,7 @@
 - [Working with Command Line Arguments](#working-with-command-line-arguments)
 - [Exit Codes](#exit-codes)
 
-**Command Line Level 2** builds on the operations introduced in **Command Line Level 1** by examining the execution context, working directory, module search path, and module execution. We will also extend our use of `sys.argv` to validate arguments and use exit codes to communicate whether a program completed successfully.
+**Command Line Level 2** builds on the operations introduced in **Command Line Level 1** by examining the execution context, working directory, module search path, and module execution. We will also introduce command line arguments, use `sys.argv` to validate them, and use exit codes to communicate whether a program completed successfully.
 
 ## How the Command Line Controls Execution
 
@@ -21,21 +21,9 @@ These details become important as programs grow beyond a single file. We will be
 
 ## Working Directory and File Execution
 
-A Python program runs with a **current working directory**, which is normally the directory from which the Python command was executed. Suppose the terminal is currently inside a directory named `project`.
+A Python program runs with a **current working directory**, which is normally the directory from which the Python command was executed. This directory matters because it determines how the program resolves relative file paths.
 
-```bash
-cd project
-python main.py
-```
-
-In this case, `project` is the current working directory. Suppose `main.py` opens a relative path.
-
-```py
-with open("data/input.txt") as file:
-    print(file.read()) # Display the file's contents
-```
-
-Python looks for `data/input.txt` relative to the current working directory, regardless of where `main.py` is located. This distinction becomes clearer when a script is executed from another directory. Suppose the project has the following structure.
+Suppose a project has the following structure.
 
 ```text
 project/
@@ -45,26 +33,34 @@ project/
     └── input.txt
 ```
 
-If the command is executed from `project`, the current working directory remains `project` even though the script is inside `scripts`.
+If the terminal is currently inside `project`, the script can be executed with the following command.
 
 ```bash
 python scripts/main.py
 ```
 
-The relative path therefore still refers to `project/data/input.txt`. The same principle applies when the script is identified with an **absolute path**.
+The **script path** identifies the file Python executes, while the **current working directory** remains `project`. A **relative path** identifies a file in relation to the current working directory. For example, suppose `main.py` contains the following code.
+
+```py
+with open("data/input.txt") as file:
+    print(file.read()) # Display the file's contents
+```
+
+Python resolves `data/input.txt` from `project`, so the path refers to `project/data/input.txt`. It does not automatically resolve the path from the `scripts` directory containing `main.py`.
+
+An **absolute path** identifies a file independently of the current working directory. The same script can therefore be identified using an absolute path.
 
 ```bash
 # macOS and Linux
 python /home/user/project/scripts/main.py
+
 # Windows
 python C:\Users\User\project\scripts\main.py
 ```
 
-An absolute path identifies the script without changing the current working directory.
-
 !!! warning "Script location and working directory"
 
-    The script path determines which file Python executes, while the current working directory affects how relative paths used by the program are resolved. Do not assume that relative file paths are resolved from the script's directory.
+    An absolute script path does not change the current working directory.
 
 The working directory also interacts with Python's module search process. The next section examines how Python finds modules and why imports can behave differently from relative file access.
 
@@ -74,12 +70,11 @@ Before executing user code, Python constructs a list of locations that it can se
 
 ```py
 import sys
+
 print(sys.path) # Display the module search locations
 ```
 
-When a Python file is executed directly, the directory containing that script is normally placed at the beginning of the module search path. For example, running `python scripts/main.py` places the `scripts` directory first in the search path. **Relative file paths are interpreted from the current working directory, while the initial module search location for a directly executed script is based on the script's directory.**
-
-A script may therefore successfully import a module located beside itself while a relative file path refers to a different directory. This difference becomes especially important when Python executes a module by name rather than running a script file directly.
+When a Python file is executed directly, the directory containing that script is normally placed at the beginning of the module search path. For example, running `python scripts/main.py` normally places the `scripts` directory first in the search path. A script may therefore successfully import a module located beside itself while a relative file path refers to a different directory. This difference becomes especially important when Python executes a module by name rather than running a script file directly.
 
 ## Running Modules
 
@@ -108,7 +103,7 @@ python -m http.server
 python -m venv .venv
 ```
 
-Running a file directly and running a module use different ways to identify the code that should execute.
+To compare the two invocation methods, consider these commands.
 
 ```bash
 # Execute the file directly
@@ -118,7 +113,7 @@ python my_package/__main__.py
 python -m my_package
 ```
 
-The first command identifies a file by its filesystem path, while the second identifies a package through Python's import system. This difference also affects the initial module search path. When a script file is executed directly, the script's directory is normally placed first in `sys.path`. When `-m` is used, the current working directory is used as the initial search location instead.
+The first command identifies a file by its filesystem path, while the second identifies a package through Python's import system. The initial module search location also differs. Direct script execution normally uses the script's directory, while `-m` uses the current working directory.
 
 The invocation method can also affect `sys.argv[0]`. When a script is executed directly, it normally represents the script path supplied for execution. When `-m` is used, Python locates the module first and `sys.argv[0]` normally refers to the resulting module file rather than simply containing the module name from the command.
 
@@ -126,13 +121,26 @@ For package based projects, module execution is often preferable because Python 
 
 ## Working with Command Line Arguments
 
-**Command Line Level 1** introduced how arguments written after the script name are delivered to a program through `sys.argv`. At this level, we will access individual arguments, check that required values exist, and validate them before the program continues. Consider the following command.
+Values written after the script name can be passed to the Python program as **command line arguments**. Python passes these arguments to the program in the order in which they were written. Consider the following command.
 
 ```bash
-python main.py input.txt --verbose # ['main.py', 'input.txt', '--verbose']
+python script.py hello world
 ```
 
-Here, `input.txt` provides a value to the program, while `--verbose` is a **flag** that can enable a particular behavior, such as displaying more detailed output. Both are passed to `main.py` for the program to interpret. Inside the program, `sys.argv` contains the values in the order in which they appeared. The first element identifies the script or executable target associated with the invocation, while the remaining elements contain the supplied arguments. The exact value of the first element can depend on how Python was started, as we saw with `-m`.
+Python provides the `sys.argv` list through the `sys` module.
+
+```py
+import sys
+
+# Display the command line arguments received by the program
+print(sys.argv)  # ['script.py', 'hello', 'world']
+```
+
+The first element identifies the script or executable target associated with the invocation, while the remaining elements contain the arguments supplied after the script name. The exact value of the first element can depend on how Python was started, as we saw with `-m`. The program determines how the supplied arguments are interpreted.
+
+For example, `python main.py input.txt --verbose` passes `input.txt` as a filename to process, while `--verbose` is a **flag** that can enable a particular behavior, such as displaying more detailed output.
+
+The program can access these values through `sys.argv` by using their indexes. In this example, index `0` refers to the program, index `1` contains the input filename, and index `2` contains the optional flag.
 
 ```py
 import sys
@@ -186,7 +194,7 @@ print(input_file) # input.txt
 print(output_file) # output.txt
 ```
 
-Arguments can also be checked for particular values or validated before the program acts on them. The following example combines a required file path, a check that the file exists, and an optional `--verbose` flag.
+Arguments can also be checked for particular values or validated before the program acts on them. The following example combines a required file path, a check that the path exists, and an optional `--verbose` flag.
 
 ```py
 import os
@@ -207,7 +215,7 @@ if "--verbose" in sys.argv[2:]:
     print("Verbose output enabled") # Displayed when --verbose is supplied
 ```
 
-The first argument is reserved for the file path, so the optional flag is checked in `sys.argv[2:]`. This example assumes that the file path comes before any optional flags. The existence check does not guarantee that the path refers to a readable file. These checks are basic forms of **argument validation**. Larger command line programs often use dedicated argument parsing tools, which can be introduced in later material. When validation fails, the program may need to stop and report an unsuccessful result. The next section explains how exit codes communicate that result.
+The first argument is reserved for the file path, so the optional flag is checked in `sys.argv[2:]`. The existence check does not guarantee that the path refers to a readable file. These checks are basic forms of **argument validation**. Larger command line programs often use dedicated argument parsing tools, which can be introduced in later material. When validation fails, the program may need to stop and report an unsuccessful result. The next section explains how exit codes communicate that result.
 
 ## Exit Codes
 
@@ -224,6 +232,6 @@ print("Argument received") # Displayed when an argument is supplied
 sys.exit(0) # Report successful completion
 ```
 
-Exit codes are especially useful when Python programs are started by other tools, scripts, or automated processes because those programs can inspect the exit code instead of relying on printed output to determine whether the Python program succeeded. A program does not normally need to call `sys.exit(0)` explicitly when execution reaches the end successfully. Python exits with a successful status when the program finishes normally. An explicit `sys.exit()` is most useful when the program needs to stop at a particular point or communicate a particular status.
+Exit codes are especially useful when Python programs are started by other tools, scripts, or automated processes because those programs can inspect the exit code instead of relying on printed output to determine whether the Python program succeeded. An explicit `sys.exit(0)` is not usually necessary because a program that finishes normally already reports success. Use `sys.exit()` when the program needs to stop at a particular point or report a specific status.
 
 Together, command line arguments and exit codes allow information to travel in both directions. Arguments provide information to a program when it starts, while exit codes communicate the program's completion status back to the environment that started it.

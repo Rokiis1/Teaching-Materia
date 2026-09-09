@@ -1,6 +1,6 @@
 # Summary
 
-This summary brings together concepts from the **Data Types** module. It is designed as a quick reference for revision and preparation for questions where the main concepts, relationships and differences need to be explained clearly.
+This summary brings together the most important concepts from the **Data Types** module. It is designed as a quick reference for revision and preparation for questions where the main concepts, relationships and differences need to be explained clearly.
 
 ## Table of Contents: Data Types
 
@@ -8,15 +8,15 @@ This summary brings together concepts from the **Data Types** module. It is desi
 
 ## Level 1
 
-Level 1 establishes the foundations of **mutable and immutable objects, ordered and unordered types, core built-in data types, and type casting**. The main goal is to recognize the kinds of values Python provides, understand their basic properties, and explain how values can be converted between compatible types.
+Level 1 reviews **mutability and ordering**, the core built-in types, **`type()` and `len()`**, and basic **type casting**. The focus is on recognizing the properties of values, inspecting them, and understanding which conversions are possible.
 
 **Mutable objects** can be modified in place after they are created. Lists, dictionaries, and sets are common mutable collection types. **Immutable objects** cannot be changed in place. Common examples include `int`, `float`, `complex`, `bool`, `str`, `tuple`, `NoneType`, and `frozenset`. An operation that appears to change an immutable value creates or assigns a different object rather than modifying the original.
 
-The important distinction is that **mutation changes an existing object**, while **reassignment makes a variable refer to another object**. Reassignment is possible regardless of whether the original object is mutable or immutable. Some immutable objects are also hashable, allowing them to be used as dictionary keys or set elements. A tuple containing only hashable values can be a dictionary key, while a list cannot.
+**Mutation changes an existing object**, while **reassignment makes a variable refer to another object**. Reassignment is possible regardless of the original object's mutability. Some immutable objects are also **hashable**, allowing them to be used as dictionary keys or set elements. A tuple containing only hashable values can be a dictionary key, while a list cannot.
 
 **Ordered types** such as `list`, `tuple`, and `str` preserve the positions of their elements and support position-based access through indexes. **Unordered types** such as `set` do not provide a defined element order or positional indexing. Dictionaries preserve insertion order, but they are key-based mappings rather than index-based sequences. Their values are retrieved through keys, not numeric positions.
 
-The distinction between ordering and mutability is important because they describe different properties. A list is ordered and mutable, a tuple is ordered and immutable, and a set is mutable but unordered. These characteristics help determine how a collection can be accessed and changed.
+Ordering and mutability are independent properties. A list is ordered and mutable, a tuple is ordered and immutable, and a set is mutable but unordered.
 
 Python's three numeric types are **`int`, `float`, and `complex`**, and all three are immutable. An `int` represents whole numbers, a `float` represents decimal numbers, and a `complex` value contains real and imaginary parts. Python writes the imaginary part using `j`.
 
@@ -54,7 +54,7 @@ print(bool(10)) # True
 print(bool("Python")) # True
 ```
 
-The **`None` value** represents the absence of a value and is immutable. It is distinct from `False`, `0`, and `""`, which represent actual Boolean, numeric, and text values. Although all four are falsy, they are not equal.
+The **`None` value** is immutable and represents the absence of a value. Unlike `False`, `0`, and `""`, it does not represent an actual Boolean, numeric, or text value. Although all four are falsy, they are not equal.
 
 ```py
 example_none = None
@@ -64,7 +64,7 @@ print(None == 0) # False
 print(None == "") # False
 ```
 
-**Type conversion**, also called **type casting**, converts a value to another type when a different representation is needed. The constructors `float()`, `int()`, `str()`, and `bool()` perform common conversions. A conversion succeeds only when the source value is suitable for the requested type.
+The core types can also be inspected with built-in functions. **`type()`** returns an object's type, while **`len()`** returns the number of elements in an object that supports a length. These functions are useful for checking values and understanding the structure of data.
 
 ```py
 print(float(5)) # 5.0

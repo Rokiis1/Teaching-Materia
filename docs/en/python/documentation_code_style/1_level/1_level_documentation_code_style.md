@@ -2,12 +2,29 @@
 
 ## Table of Contents: Documentation and Code Style
 
+- [Comments](#comments)
 - [Variables, Literals, and Objects](#variables-literals-and-objects)
 - [Built-in Functions](#built-in-functions)
 - [Naming and Formatting](#naming-and-formatting)
-- [Comments and Docstrings](#comments-and-docstrings)
 
-**Documentation and Code Style Level 1** introduces the foundations needed to write small Python programs that are understandable as well as correct. We begin with literals, variables, and objects, then use built-in functions to display and inspect them. The focus then shifts to readable code through naming, formatting, comments, and docstrings.
+**Documentation and Code Style Level 1** introduces the foundations needed to write small Python programs that are understandable as well as correct. We begin with literals, variables, and objects, then introduce `print()` to display values. The focus then shifts to readable code through naming, basic spacing, and comments.
+
+## Comments
+
+A **comment** is text in source code intended for people reading the program. Python ignores comment text when executing the program, and a single-line comment begins with `#`. Comments can provide explanations, clarify decisions, and make source code easier to understand.
+
+```py
+# Display a greeting
+print("Hello, world") # Hello, world
+```
+
+The first comment appears on its own line, while the second appears after a statement. In both cases, Python ignores the comment text. Comments placed after `print()` statements can also be used to show the expected output. Comments are most useful when they explain **why** something is done, clarify a non-obvious decision, or provide context that the code itself cannot communicate clearly. A comment that merely repeats the code adds little useful information. Comments should remain accurate when code changes, and meaningful names should be preferred over comments that merely explain unclear names.
+
+!!! tip "Write comments for future readers"
+
+    Comments are especially useful when a decision is difficult to understand from the code alone, when another developer needs important context, or when you return to your own code after some time. They can also explain the reason for a workaround or document a known limitation while a bug is being investigated. Describe the relevant context rather than merely repeating the code, and update or remove comments when the situation changes.
+
+With comments established, we can now use them to explain Python examples as we explore literals, variables, and objects.
 
 ## Variables, Literals, and Objects
 
@@ -21,18 +38,9 @@ is_active = True
 selected_item = None
 ```
 
-The values on the right are literals, while the names on the left allow us to refer to their objects later. Python strings can use either single or double quotation marks, and triple quotes can create strings that span multiple lines.
+The values on the right are literals, while the names on the left allow us to refer to their objects later. Python strings can use either single or double quotation marks.
 
-```py
-city = 'Vilnius'
-description = """Line one
-Line two
-Line three"""
-```
-
-The value assigned to `description` is a string, not a comment. Triple-quoted strings also have a documentation use that we will explore in **Comments and Docstrings**.
-
-To understand assignment more precisely, it helps to think of variables as **names that refer to objects** rather than boxes that contain values. Strings, integers, floating-point numbers, Boolean values, and `None` are all objects in Python. The following diagram shows how names refer to objects and how those references change when a name is reassigned.
+To understand assignment more precisely, it helps to think of variables as **names that refer to objects** rather than boxes that contain values. The following diagram shows how names refer to objects and how those references change when a name is reassigned.
 
 ![Variables referring to objects](./assets/images/variables_referring_to_objects.png)
 
@@ -57,7 +65,7 @@ x, y, z = 1, 2, 3
 x = y = z = 10
 ```
 
-The first two statements demonstrate reassignment to a different type. The last two demonstrate **multiple assignment** and **chained assignment**. In multiple assignment, the number of values must match the number of names. If a value is intentionally not needed, the conventional name `_` can be used to receive it.
+The first two statements demonstrate reassignment to a different type, while the last two demonstrate **multiple assignment** and **chained assignment**. In multiple assignment, the number of values must match the number of names. If a value is intentionally not needed, the conventional name `_` can be used to receive it.
 
 ```py
 x, _, z = 1, 2, 3
@@ -72,56 +80,26 @@ Here, `_` receives `2`, but communicates that we do not intend to use it. It is 
 
     Using a name that has not been defined can produce a `NameError`, invalid Python syntax can produce a `SyntaxError`, and assigning the wrong number of values to multiple names can produce a `ValueError`. These errors are normal feedback while learning. We will explore errors and debugging in more detail in **Testing and Debugging Level 1**.
 
-We can now use Python's built-in functions to display and inspect objects.
+These foundations allow us to use `print()` to display the values referenced by names.
 
 ## Built-in Functions
 
-A **function** is a reusable piece of code that performs a particular task. Python provides **built-in functions** that are available without importing anything first. A function is called by writing its name followed by parentheses, and values supplied inside the parentheses are called **arguments**.
+A **function** is a reusable piece of code that performs a particular task. Python provides **built-in functions** that are available without importing anything first. A function is called by writing its name followed by parentheses, and values supplied inside the parentheses are called **arguments**. The `print()` function displays values, allowing us to see the results of a program.
 
 ```py
 print("Hello, world") # Hello, world
 
 user_name = "Vardenis"
-
 print(user_name) # Vardenis
 ```
 
-Here, `print` is the function name and `"Hello, world!"` is an argument. The first call displays a literal directly, while the second displays the object referenced by `user_name`.
+Here, `print` is the function name and `"Hello, world"` is an argument. The first call displays a literal directly, while the second displays the object referenced by `user_name`. The parentheses call the function, and the argument determines what is displayed. Other built-in functions, including `type()` and `len()`, are introduced in **Data Types Level 1**, where they can be practiced with the types they help inspect.
 
-The `type()` function tells us the type of an object, while `len()` returns the length of an object that has a defined length. For a string, `len()` returns the number of characters. How each type behaves, whether it can be changed in place, whether it preserves order, and how types can be converted, is explored in **Data Types Level 1**.
-
-```py
-item_count = 5
-
-print(type(item_count)) # <class 'int'>
-
-user_name = "Vardenis"
-
-print(len(user_name)) # 8
-```
-
-The first result shows that `item_count` refers to an object of type `int`, Python's integer type. The word `class` is part of Python's representation of the type. Classes will be explored in **Object Level 1**.
-
-The `dir()` function returns a list of names associated with an object. These include **attributes**, which provide information associated with an object, and **methods**, which are functions associated with an object. The `help()` function displays available documentation, with the amount of information depending on what documentation is available for the object.
-
-```py
-print(dir(user_name)) # Display the names associated with the string object
-help(print) # Display the available documentation for print
-```
-
-You do not need to understand every name returned by `dir()` at this level. It is enough to recognize that objects provide information and behavior that can be inspected, while `help()` provides a way to read their documentation.
-
-Built-in functions are also objects. In an interactive Python session, entering a function's name without parentheses displays its representation rather than calling it. The `>>>` prompt shows what you enter, and the following line shows Python's response.
-
-```py
-print # <built-in function print>
-```
-
-At this **Documentation and Code Style Level 1**, we only need to understand what a function is, how to call built-in functions, and how to use them with the objects introduced so far. With these basic tools in place, we can shift from whether code merely works to whether it is easy for people to read and understand.
+With this basic tool in place, we can shift from whether code works to whether it is easy for people to read and understand.
 
 ## Naming and Formatting
 
-Correct behavior is essential, but working code can still be unnecessarily difficult to read. Code is often read many times after it is written, either by the original author or by other developers who need to understand and modify it. **Code style** refers to conventions that help code remain clear and consistent. At this **Documentation and Code Style Level 1**, we focus on meaningful names, spacing, indentation, blank lines, and line length.
+Correct behavior is essential, but working code can still be unnecessarily difficult to read. Code is often read many times after it is written, either by the original author or by other developers who need to understand and modify it. **Code style** refers to conventions that help code remain clear and consistent. The initial focus is on meaningful names and basic spacing.
 
 Names communicate the purpose of values in a program. Compare the following assignments.
 
@@ -145,7 +123,7 @@ DEBUG = True
 
     Uppercase naming communicates that a value is intended to remain constant. Python does not prevent an uppercase variable from being reassigned.
 
-A good name should communicate purpose without becoming unnecessarily long. Short names such as `x` can be appropriate in limited contexts, but descriptive names are usually more useful when the purpose of a value matters.
+Names should communicate purpose without becoming unnecessarily long. Short names such as `x` are appropriate when their meaning is clear from context.
 
 Formatting provides the visual structure that makes names and expressions easier to scan. The following code works, but its missing spacing makes it harder to read.
 
@@ -156,7 +134,7 @@ total=price+tax
 print(total) # 120
 ```
 
-The same statements are clearer with spaces around operators. Commas are also normally followed by a space.
+Spaces around operators and after commas make the same statements easier to scan.
 
 ```py
 price = 100
@@ -168,74 +146,8 @@ print(total) # 120
 x, y, z = 1, 2, 3
 ```
 
-Python also uses indentation to represent the structure of code blocks. The standard convention is **four spaces for each indentation level**. You will encounter indented blocks when later material introduces statements that contain other statements. For now, you only need to recognize that indentation can affect program structure and must therefore be consistent.
+Good naming and basic spacing make code easier to read. Together with comments, these practices provide a foundation for more detailed documentation and code-style work.
 
-Blank lines can separate distinct parts of a program and make related statements easier to scan. They should be used deliberately rather than placed between every line.
+!!! info "Documentation and Code Style Level 2"
 
-```py
-user_name = "Vardenis"
-user_age = 25
-
-print(user_name) # Vardenis
-print(user_age) # 25
-```
-
-Very long lines are harder to read, especially when code is viewed beside other files or on smaller screens. **PEP 8 recommends limiting most lines to 79 characters.** At this level, treat 79 characters as a useful target.
-
-These conventions are collected in Python's official style guide, **PEP 8**, which includes recommendations for indentation, whitespace, naming, line length, imports, and other aspects of Python code style. You do not need to memorize the entire guide. The goal is to recognize the basic conventions and apply them intentionally, while later **Documentation and Code Style Level 2** will introduce formatting and linting tools that automate many style checks.
-
-Good naming and formatting allow code to communicate more clearly on its own. When code still needs additional explanation or documentation, comments and docstrings provide that next layer.
-
-## Comments and Docstrings
-
-A **comment** is text in source code intended for people reading the program. Python ignores comment text when executing the program, and a single-line comment begins with `#`. Comments are most useful when they explain **why** something is done, clarify a non-obvious decision, or provide context that the code itself cannot communicate clearly.
-
-```py
-# Store the maximum number of attempts
-MAX_ATTEMPTS = 3
-```
-
-A comment that merely repeats the code adds little useful information. For example, the comment below describes an operation that is already visible.
-
-```py
-retry_count = 0
-retry_count = retry_count + 1 # Increase retry_count by 1
-```
-
-A more useful comment explains the reason behind the statement.
-
-```py
-retry_count = 0
-# Count attempts so the retry process can be stopped at a limit.
-retry_count = retry_count + 1
-```
-
-The second comment provides context that the assignment alone does not communicate. The increment itself does not stop the retry process; the logic that checks the limit will be introduced with control flow.
-
-Meaningful names can often communicate information more clearly than comments that explain unclear names. For example, `user_age = 25` is preferable to using `a = 25` with a comment saying that `a` represents the user's age. Comments must also remain accurate, so related comments should be updated when code changes.
-
-Earlier in this **Documentation and Code Style Level 1**, we saw that triple quotes create strings rather than comments. A string literal can also serve as a **docstring** when it appears in a special position. A docstring provides structured documentation that Python can retain and documentation tools can use.
-
-At this **Documentation and Code Style Level 1**, we focus on module docstrings. A **module** is a Python file containing Python code. When a string literal appears as the first statement in a Python file, it serves as that module's docstring and describes the purpose of the file. Triple double quotes are the recommended convention for writing docstrings.
-
-```py
-"""Demonstrate basic variables and built-in functions"""
-
-user_name = "Vardenis"
-print(user_name) # Vardenis
-```
-
-Unlike a `#` comment, a docstring can be accessed by Python as documentation. The special `__doc__` attribute gives direct access to a stored docstring, while `help()` presents available documentation in a more readable form. We can demonstrate both using the built-in `len` function.
-
-```py
-print(len.__doc__)
-help(len)
-```
-
-Both statements access documentation associated with the same object. The first displays its stored docstring, while the second opens Python's documentation display.
-
-!!! info "Special names and module details"
-
-    For now, you only need to recognize that docstrings are stored by Python and can be accessed as documentation. Special names and module-related details will be explored in **Modules and Imports Level 1**.
-
-Later, after user-defined functions and classes have been introduced, we can extend docstrings to those objects and explore how they document parameters, return values, and more complex behavior. Use `#` comments to explain relevant context within source code, and use docstrings to provide structured documentation that Python can retain and documentation tools can access.
+    Level 2 develops more detailed documentation and formatting practices, including PEP 8, indentation, blank lines, line length, and formatting and linting tools. It also introduces practical use of `dir()` and `help()`, attributes and methods, and docstrings, including triple-quoted documentation strings, module documentation, `__doc__`, and documentation for functions and classes when those concepts have been introduced.
