@@ -67,7 +67,7 @@ In addition to executing Python code, the command line provides options for gett
 
 ## Checking Python Version and Help
 
-Python provides command line options for checking the interpreter version and displaying built in help.
+Python provides command line options for checking the interpreter version and displaying built in help. Command line options often have a **long form**, which begins with two hyphens, and a **short form**, which begins with one hyphen. In the following commands, `--version` and `--help` are long-form options, while `-V` and `-h` are their short-form equivalents.
 
 ```bash
 # Display the Python version
@@ -79,6 +79,6 @@ python --help
 python -h
 ```
 
-The shorter `-V` and `-h` options perform the same basic tasks as `--version` and `--help`. These commands provide information about the Python interpreter and exit without running a program. You do not need to understand every available option at this **Command Line Level 1**. The important idea is that these options let you quickly check the Python version or discover available command line options when needed.
+The shorter `-V` and `-h` options perform the same basic tasks as `--version` and `--help`. These commands provide information about the Python interpreter and exit without running a program. You do not need to understand every available option at this **Command Line Level 1**. The important idea is that command line options can control what the interpreter does, and their short and long forms provide different ways to request the same behavior when both forms are available.
 
 Together, these commands provide the foundation for starting Python, executing code, and inspecting the interpreter from the command line. **Command Line Level 2** builds on these basics by examining how Python's execution context affects programs, how modules can be executed by name, and how command line arguments and exit codes allow programs to communicate with their environment.

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="120" height="138" viewBox="0 0 120 138"
+     role="img" aria-labelledby="title desc">
+  <title id="title">Node.js logo</title>
+  <desc id="desc">A simple green hexagonal Node.js-style logo for teaching material.</desc>
+
+  <defs>
+    <linearGradient id="nodeGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7FBD42"/>
+      <stop offset="100%" stop-color="#4D8F2A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hexagon -->
+  <path d="M60 4
+           L112 34
+           L112 94
+           L60 124
+           L8 94
+           L8 34
+           Z"
+        fill="url(#nodeGreen)"/>
+
+  <!-- Inner mark -->
+  <text x="60" y="73"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="34"
+        font-weight="700"
+        fill="#ffffff">JS</text>
+
+  <text x="60" y="96"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="14"
+        font-weight="600"
+        letter-spacing="1"
+        fill="#ffffff">NODE</text>
+</svg>

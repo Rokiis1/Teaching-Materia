@@ -9,26 +9,11 @@
 - [Python Source Files](#python-source-files)
 - [Basic Project Organization](#basic-project-organization)
 
-**Environment Level 1** introduces the components that form a basic Python development environment and explains how they work together when creating and running Python programs. It begins with installing the **Python interpreter**, then covers the development environment, development tools, interactive and script workflows, Python source files, and basic project organization.
+**Environment Level 1** introduces the components that form a basic Python development environment and explains how they work together when creating and running Python programs. It begins with installing the Python interpreter, then covers the development environment, development tools, interactive and script workflows, Python source files, and basic project organization.
 
 ## Installing Python
 
-The **Python interpreter** is the program responsible for executing Python code and must be installed before Python programs can be executed. It processes the code and carries out operations such as displaying text, performing calculations, or working with files. A useful analogy is a cook following a recipe. The recipe contains instructions, while the cook follows them to prepare a dish. Similarly, Python source code contains instructions, while the interpreter processes them to produce the program's behavior.
-
-```mermaid
-flowchart LR
-    CODE["Python Code<br/>print('Hello, world')"]
-    INTERPRETER["Python Interpreter<br/>Processes and executes Python code"]
-    RESULT["Program Behavior<br/>Displays: Hello, world"]
-
-    CODE --> INTERPRETER --> RESULT
-```
-
-!!! info "Interpreter Role"
-
-    This explanation focuses on **what the Python interpreter does** rather than exactly how it works internally. The internal execution process is examined separately in **Python Under the Hood Level 2**.
-
-Python is available for Windows, macOS, Linux, and other operating systems. For general Python development, install a current stable release of **Python 3** that is supported by the operating system. Official Python downloads are available from [python.org](https://www.python.org/downloads/). Windows and macOS installers are available directly from the Python website, while Linux distributions commonly provide Python through their package management systems.
+The **Python interpreter** must be installed before Python programs can be executed. Python is available for Windows, macOS, Linux, and other operating systems. For general Python development, install a current stable release of **Python 3** that is supported by the operating system. Official Python downloads are available from [python.org](https://www.python.org/downloads/). Windows and macOS installers are available directly from the Python website, while Linux distributions commonly provide Python through their package management systems.
 
 During installation, Python may be configured so that its executable can be found through the system `PATH`. The **PATH** is an operating system setting that contains directories in which the system searches for executable programs. When the Python executable is available through `PATH`, Python can be started from a command line without specifying the executable's complete file path.
 
@@ -62,18 +47,22 @@ Detailed command-line usage, including running scripts and working with Python c
 
 ## Understanding the Python Development Environment
 
-A **Python development environment** is the collection of tools and files used to create and run Python programs on a computer. The interpreter executes Python code, development tools provide a workspace for creating and editing it, source files preserve it, and project folders keep related files together. Unlike an editor or IDE, which provides tools for working with code, the interpreter is responsible for executing it. It can receive code directly or from a saved source file, and these approaches are examined in **Interactive and Script Workflows**.
+A **Python development environment** is the collection of tools and files used to create and run Python programs on a computer. Development tools provide a workspace for creating and editing code, source files preserve it, and project folders keep related files together.
+
+The **Python interpreter** is the program responsible for executing Python code. It processes the code and carries out operations such as displaying text, performing calculations, or working with files. A useful analogy is a cook following a recipe. The recipe contains instructions, while the cook follows them to prepare a dish. Similarly, Python source code contains instructions, while the interpreter executes them to produce the program's behavior. This analogy describes the interpreter's role rather than its internal implementation, which involves more than simply reading instructions one at a time. Unlike an editor or IDE, which provides tools for creating and working with code, the interpreter is responsible for executing it.
+
+The interpreter can receive code directly or from a saved source file. These approaches are examined in **Interactive and Script Workflows**.
 
 ```mermaid
 flowchart LR
     EDITOR["Code Editor / IDE<br/>Creates and edits Python code"]
-    SOURCE["Python Source Files<br/>Store Python code"]
     INTERPRETER["Python Interpreter<br/>Executes Python code"]
-    PROJECT["Project Folder<br/>Organizes related files"]
+    SOURCE["Python Source Files<br/>Store Python code"]
+    PROJECT["Project Folders<br/>Organize related files"]
 
-    EDITOR -->|"Edits"| SOURCE
-    SOURCE -->|"Provides code"| INTERPRETER
-    PROJECT -.->|"Contains"| SOURCE
+    EDITOR <--> INTERPRETER
+    SOURCE <--> INTERPRETER
+    PROJECT <--> INTERPRETER
 ```
 
 The interpreter also provides the foundation from which different execution environments can be created. The distinction between shared and isolated Python environments is covered in **Python Environment Level 2**. The next section examines the tools used to create and edit Python code.
