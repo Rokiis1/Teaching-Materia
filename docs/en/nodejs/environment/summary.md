@@ -31,25 +31,28 @@ Hello, world
 
     **Interactive execution receives code directly**, while **script execution receives code from a saved source file**. Both workflows use the Node.js runtime.
 
-A **project folder** is a directory that keeps the files belonging to a program together. A project can contain source files as well as **subfolders**, and a subfolder can contain additional nested subfolders. Folder names should clearly indicate the project or contents they represent and should avoid forms that make project paths unnecessarily difficult to work with.
+A **project folder** is a directory that keeps the files belonging to a program together. A project can contain source files as well as **subfolders**, and a subfolder can contain additional nested subfolders. Folder naming conventions can vary between Node.js projects. In this course, folder names use lowercase letters, with **kebab-case** for names containing multiple words.
 
 ```text
-weather_app/
+weather-app/
 ├── app.js
-├── weather_data/
+├── weather-data/
 │   ├── cities.js
-│   └── archived_data/
-│       └── old_cities.js
-└── utility_tools/
+│   └── archived-data/
+│       └── oldCities.js
+└── utility-tools/
     └── converter.js
 ```
 
-Folder names that are vague, contain spaces, or use inconsistent capitalization can make project paths less clear or less convenient to work with, even when the operating system accepts them.
+Folder names should clearly indicate what they contain. Names containing spaces or inconsistent capitalization can make project paths less clear or less convenient to work with. Node.js does not require kebab-case folder names, but this course uses the convention consistently.
 
-A **JavaScript source file** is normally a plain text file with the `.js` extension and normally uses **UTF-8** encoding. A source filename should indicate what the file contains. Filenames such as `app.js`, `index.js`, and `main.js` are commonly used for an application's starting file, or entry point, but Node.js does not give these filenames any special meaning by default. Source filenames should use a single `.js` extension and avoid forms that make file paths unnecessarily difficult to work with.
+A **JavaScript source file** is normally a plain text file with the `.js` extension and normally uses **UTF-8** encoding. A source filename should indicate what the file contains. In this course, JavaScript source filenames use lowercase letters for single-word names and **camelCase** for names containing multiple words, such as `weatherData.js`, `numberConverter.js`, and `oldCities.js`. Node.js does not require this naming style.
+
+Filenames such as `app.js`, `index.js`, and `main.js` are commonly used for an application's **starting file**, or entry point, but Node.js does not give these filenames special meaning merely because of their names. Another `.js` file can also serve as the starting file. Source filenames should use a single `.js` extension and avoid spaces or unintended duplicate extensions.
 
 ```js
 console.log("Hello, world");
+print()
 console.log("JavaScript source files contain executable code");
 ```
 
@@ -57,4 +60,4 @@ console.log("JavaScript source files contain executable code");
 
     **The Node.js runtime executes JavaScript code, development tools provide a workspace for creating and editing it, project folders organize related files, and source files preserve JavaScript code.** These distinct responsibilities form the basic Node.js development environment.
 
-After reviewing Level 1, you should be able to explain **what the Node.js runtime and a Node.js development environment are**, describe the purpose of **PATH**, distinguish **text editors, code editors, and IDEs**, explain **interactive and script workflows** and the role of the **REPL**, describe how **project folders, subfolders, and nested subfolders** organize a program, and identify **JavaScript source files, UTF-8 encoding, source filename considerations, and the purpose of common entry point filenames such as `app.js`, `index.js`, and `main.js`**.
+After reviewing Level 1, you should be able to explain **what the Node.js runtime and a Node.js development environment are**, describe the purpose of **PATH**, distinguish **text editors, code editors, and IDEs**, explain **interactive and script workflows** and the role of the **REPL**, describe how **project folders, subfolders, and nested subfolders** organize a program, and identify **JavaScript source files, UTF-8 encoding, folder and source filename conventions, and the purpose of common entry point filenames such as `app.js`, `index.js`, and `main.js`**.

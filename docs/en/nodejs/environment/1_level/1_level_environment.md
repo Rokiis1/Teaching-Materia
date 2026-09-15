@@ -138,23 +138,25 @@ The distinction is that interactive execution receives code directly, while scri
 A **project folder** is a directory that provides a single location for the files belonging to a program. A small project may contain only a few files, while a larger project can use **subfolders** to keep related files organized.
 
 ```text
-weather_app/
+weather-app/
 ├── app.js
-├── weather_data/
+├── weather-data/
 │   ├── cities.js
-│   └── archived_data/
-│       └── old_cities.js
-└── utility_tools/
+│   └── archived-data/
+│       └── oldCities.js
+└── utility-tools/
     └── converter.js
 ```
 
-Here, `weather_app` is the project folder, while `weather_data` and `utility_tools` are subfolders. A subfolder can also contain another subfolder. In this example, `archived_data` is a subfolder inside `weather_data`. Folders can therefore be nested when additional organization is useful.
+Here, `weather-app` is the project folder, while `weather-data` and `utility-tools` are subfolders. A subfolder can also contain another subfolder. In this example, `archived-data` is a subfolder inside `weather-data`. Folders can therefore be nested when additional organization is useful.
 
-!!! tip "Folder Names to Avoid"
+Folder naming conventions can vary between Node.js projects. In this course, folder names use lowercase letters, with **kebab-case** for names containing multiple words, such as `weather-data` and `utility-tools`. This convention is used to keep project paths clear and consistent. Node.js does not require this naming style.
 
-    Avoid vague folder names, names containing spaces, and inconsistent capitalization, such as `stuff`, `my project`, `Sample Data`, and `New Folder`. These forms may be accepted by the operating system, but they can make project paths less clear or less convenient to work with.
+!!! tip "Folder Names"
 
-A project folder establishes where the program and its related files are organized. The JavaScript source files stored within this structure have their own format and purpose. A special folder named `node_modules`, created automatically when installing packages, is introduced in **Package Management Level 2**.
+    Use clear folder names that describe their purpose and follow the naming convention used by the project. Avoid names containing spaces or inconsistent capitalization, such as `my project`, `Sample Data`, and `New Folder`, because they can make project paths less convenient to work with. More detailed naming conventions are introduced in **Documentation and Code Style Level 1**.
+
+A project folder establishes where the program and its related files are organized. The JavaScript source files stored within this structure have their own format and purpose. A special folder named `node_modules`, used for locally installed packages and their dependencies, is introduced in **Package Management Level 2**.
 
 ## JavaScript Source Files
 
@@ -163,14 +165,16 @@ JavaScript source code is normally stored in plain text files with the `.js` fil
 ```text
 hello.js
 calculator.js
-app.js
+weatherData.js
 ```
 
-A source filename should indicate what the file contains. For example, `calculator.js` suggests code related to a calculator, while `database.js` suggests code related to working with a database. In a program containing multiple source files, one file may serve as the **starting file**, or entry point, from which the application is launched. Filenames such as `app.js`, `index.js`, or `main.js` are commonly used for this purpose, while other source files normally have names that describe the code they contain. Node.js does not give any filename special meaning by default, so another filename can also serve as the starting file.
+A source filename should indicate what the file contains. For example, `calculator.js` suggests code related to a calculator, while `databaseConnection.js` suggests code related to a database connection. JavaScript projects use different filename conventions. In this course, JavaScript source filenames use lowercase letters for single-word names and **camelCase** for names containing multiple words, such as `weatherData.js`, `numberConverter.js`, and `oldCities.js`. Node.js does not require this naming style.
+
+In a program containing multiple source files, one file may serve as the **starting file**, or entry point, from which the application is launched. Filenames such as `app.js`, `index.js`, and `main.js` are commonly used for this purpose, while other source files normally have names that describe the code they contain. Node.js does not give these filenames special meaning merely because of their names, so another `.js` file can also serve as the starting file.
 
 !!! warning "Source File Names"
 
-    Save a JavaScript source file with one `.js` extension and avoid filenames that are difficult to work with as file paths. For example, `number_converter.js` is more convenient than `number converter.js`, and `number_converter.js.js` contains an unintended second extension. More detailed naming and formatting conventions are introduced in **Documentation and Code Style Level 1**.
+    Save a JavaScript source file with one `.js` extension and follow the filename convention used by the project. In this course, a multiword source filename uses **camelCase**, such as `numberConverter.js`. Avoid spaces in filenames, such as `number converter.js`, and avoid unintended duplicate extensions, such as `numberConverter.js.js`. More detailed naming and formatting conventions are introduced in **Documentation and Code Style Level 1**.
 
 A source file can contain one statement or multiple statements that form a program. For example, the following file contains three statements that display text and a blank line.
 

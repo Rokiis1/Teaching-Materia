@@ -15,7 +15,6 @@
         - nodejs/modules/overview.md
         - nodejs/modules/1_level/1_level_modules.md
         - nodejs/modules/2_level/2_level_modules.md
-        - nodejs/modules/3_level/3_level_modules.md
         - nodejs/modules/summary.md
 
     - Package Management:
@@ -24,17 +23,19 @@
         - nodejs/package_management/2_level/2_level_package_management.md
         - nodejs/package_management/summary.md
 
+    - Code Quality and Formatting:
+        - nodejs/code_quality_formatting/overview.md
+        - nodejs/code_quality_formatting/1_level/1_level_code_quality_formatting.md
+        - nodejs/code_quality_formatting/summary.md
+
     - Environment Variables:
         - nodejs/environment_variables/overview.md
         - nodejs/environment_variables/1_level/1_level_environment_variables.md
-        - nodejs/environment_variables/2_level/2_level_environment_variables.md
         - nodejs/environment_variables/summary.md
 
     - File System:
         - nodejs/file_system/overview.md
         - nodejs/file_system/1_level/1_level_file_system.md
-        - nodejs/file_system/2_level/2_level_file_system.md
-        - nodejs/file_system/3_level/3_level_file_system.md
         - nodejs/file_system/summary.md
 
     - HTTP:

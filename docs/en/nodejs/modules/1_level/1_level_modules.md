@@ -3,9 +3,9 @@
 ## Table of Contents: Modules
 
 - [Understanding Modules](#understanding-modules)
-- [Importing Built-in Modules](#importing-built-in-modules)
-- [Creating Your Own Module](#creating-your-own-module)
-- [Importing Your Own Module](#importing-your-own-module)
+- [Importing Built-in Modules with `require()`](#importing-built-in-modules-with-require)
+- [Creating Your Own Module with `module.exports`](#creating-your-own-module-with-moduleexports)
+- [Importing Your Own Module with `require()`](#importing-your-own-module-with-require)
 
 **Modules Level 1** introduces the basic ways Node.js programs are divided into modules. You will learn what a module is, how to use built-in modules provided by Node.js, how to create your own module, and how to load it into another file.
 
@@ -16,55 +16,37 @@ A **module** is a file containing JavaScript code that can be used by other file
 ```mermaid
 flowchart LR
     MAIN["main.js"]
-    MATH["math_utils.js"]
-    TEXT["text_utils.js"]
+    MATH["mathUtils.js"]
 
     MAIN -->|"loads"| MATH
-    MAIN -->|"loads"| TEXT
 ```
 
-Node.js treats each file as its own module. Code in one file is not automatically visible to other files. To share code, a file must explicitly add it to its **module exports**, and another file must explicitly **require** it. This level covers the CommonJS module format, which uses the `require` function and `module.exports`. The ES module format and module configuration are covered in **Modules Level 2**.
+Node.js treats each file as its own module, so code in one file is not automatically visible to other files. To share code in the CommonJS module format covered in this level, one file makes values available through `module.exports` and another loads them with `require()`.
 
-Modules can come from different sources. We will begin with modules that Node.js already provides and see how they can be loaded into a program.
+Modules can come from different sources. We will begin with modules that Node.js already provides and examine how `require()` loads them into a program.
 
-## Importing Built-in Modules
+## Importing Built-in Modules with `require()`
 
-Node.js provides **built-in modules** that perform common tasks such as working with file paths, the operating system, and the file system. A built-in module is loaded by passing its name to the `require` function.
+Node.js provides **built-in modules** for common tasks such as working with file paths, the operating system, and the file system. A built-in module is loaded by passing its name to `require()`.
 
 ```js
 const path = require("node:path");
 
-console.log(path.sep); // Displays \ on Windows or / on macOS and Linux
+console.log(path); // Displays the module object
 ```
 
-This example loads the `node:path` module and reads its `sep` property, which represents the platform-specific path separator. The `node:` prefix identifies a built-in module, but it is not required for most built-in modules. For example, `require("node:path")` and `require("path")` both load the built-in `path` module. The same applies to built-in modules such as `os` and `fs`. Using the `node:` prefix makes it explicit that the module is provided by Node.js.
+This example loads the `node:path` module. Displaying `path` can help you inspect the module's exported properties, although some values may appear as `[Function]` or `[Getter]` rather than showing their full implementation.
+
+The `node:` prefix identifies a built-in module but is not required for most built-in modules. For example, `require("node:path")` and `require("path")` both load the built-in `path` module. The same applies to other built-in modules such as `os` and `fs`. Using `node:` makes it explicit that the module is provided by Node.js.
+
+Built-in modules provide functionality that is already available in Node.js, but programs often need modules containing project-specific code. Before those modules can be loaded with `require()`, they first need to define which values they make available to other files through `module.exports`.
+
+## Creating Your Own Module with `module.exports`
+
+A file can make values available to other files through **`module.exports`**, which initially refers to an empty object in a CommonJS module.
 
 ```js
-const path = require("path");
-const os = require("os");
-const fs = require("fs");
-```
-
-!!! tip "Inspecting a Module"
-
-    A quick way to see what a module provides is to display the whole module object.
-
-    ```js
-    const os = require("os");
-
-    console.log(os); // Displays the object containing the module's exported values
-    ```
-
-    The module object contains everything the module exports.
-
-Built-in modules provide functionality that is already available in Node.js, but programs often need modules that contain project-specific code. The next section shows how to create such a module and choose which values it makes available to other files.
-
-## Creating Your Own Module
-
-A file can make values available to other files by adding them to its **`module.exports`** object. This object is provided by Node.js in every CommonJS module and starts out empty.
-
-```js
-// math_utils.js
+// mathUtils.js
 function add(a, b) {
     return a + b;
 }
@@ -74,44 +56,84 @@ const PI = 3.14159;
 module.exports = { add, PI };
 ```
 
-This module exports a function named `add` and a constant named `PI`. Multiple values can be exported from a single module by placing them on the `module.exports` object.
+This module exports the `add` function and the `PI` constant. Assigning `module.exports = { add, PI }` replaces the initial empty export object with the new object.
 
-Exporting values makes them available to other modules, but another file must still load the module before it can use those values. The next section connects these two parts by requiring the module we just created.
+!!! info "Adding Exported Properties"
 
-## Importing Your Own Module
+    Instead of replacing the export object, properties can be added to it individually. For example, `module.exports.add = add` adds an `add` property to the existing object. This level primarily uses `module.exports = { ... }` when exporting multiple values.
 
-Another file can use the exported values by **requiring** the module. A module created as part of a project is required using a relative path that starts with `./`.
+Exporting values defines what the module makes available, but another file must still load that module before it can use those values. We can now connect both sides of the CommonJS pattern by importing the module with `require()`.
+
+## Importing Your Own Module with `require()`
+
+A project module can be loaded with `require()` by providing a **relative path**. A path beginning with `./` refers to a location relative to the current module.
 
 ```js
-// index.js
-const { add, PI } = require("./math_utils.js");
+// main.js
+const { add, PI } = require("./mathUtils.js");
 
 console.log(add(2, 3)); // 5
 console.log(PI); // 3.14159
 ```
 
-This example requires `math_utils.js`, takes its `add` and `PI` exports, and uses them in `main.js`. The destructuring form `const { add, PI } = ...` picks specific values from the exported object.
-
-The entire exported object can also be assigned to a variable instead of destructuring its values.
+This example loads `mathUtils.js` and uses destructuring to assign its `add` and `PI` exports to separate variables. The entire exported object can instead be assigned to one variable. This can make the source of a value clearer and can avoid naming conflicts when the current file already uses a name such as `add`.
 
 ```js
 // main.js
-const math = require("./math_utils.js");
+const math = require("./mathUtils.js");
 
 console.log(math.add(2, 3)); // 5
 console.log(math.PI); // 3.14159
 ```
 
-In this form, `require("./math_utils.js")` returns the object exported by `math_utils.js`. The `math` variable refers to that object, so its exported values can be accessed through `math.add` and `math.PI`. Both approaches load the same module. Destructuring creates variables for selected exports, while assigning the whole object keeps the module name visible when its values are used.
+Here, `require("./mathUtils.js")` returns the object exported by `mathUtils.js`, so its values are accessed through `math.add` and `math.PI`. Both forms load the same module. The difference is whether selected exports become separate variables or remain properties of the module object.
 
-The two files might be organized in a project folder like this.
+A CommonJS module does not have to export any values. If a file never changes `module.exports`, it keeps its initial empty object. Consider a module that creates a value without exporting it.
 
-```text
-calculator_app/
-├── main.js
-└── math_utils.js
+```js
+// unexported.js
+const message = "This value is not exported";
 ```
 
-When `node main.js` is run, Node.js loads `math_utils.js`, makes its exports available to `main.js`, and executes the program.
+Requiring this module returns the initial empty export object because `unexported.js` never changes `module.exports`.
 
-Built-in modules are referenced by name, while modules created in the project are referenced by a relative path. Together, `module.exports` and `require` allow a program to be divided into focused, reusable files. With these CommonJS basics established, **Modules Level 2** builds on them by examining the ES module format, default and named exports, module configuration through `package.json`, and how Node.js locates modules it loads.
+```js
+// main.js
+const unexported = require("./unexported.js");
+
+console.log(unexported); // {}
+```
+
+The file is still loaded and executed, but `message` is unavailable through `unexported` because it was never exported. Only values made available through `module.exports` are returned by `require()`.
+
+For CommonJS project modules, the `.js` extension can usually be omitted because Node.js first checks the requested path and can then try supported file extensions such as `.js` when resolving the module.
+
+```js
+const math = require("./mathUtils");
+
+console.log(math.add(2, 3)); // 5
+```
+
+This loads the same module as `require("./mathUtils.js")`. Including the extension makes the filename explicit, while omitting it is also common in CommonJS code.
+
+After a CommonJS module is loaded successfully, Node.js caches it for the lifetime of the process. Requiring the same module again does not execute its code again. Instead, `require()` returns the cached exported value, so files that require the same module receive the same exported object reference.
+
+!!! info "Modules are loaded once"
+
+    When more than one file requires the same module, those files share the same exported object. Changes made to that object can therefore be visible through another reference to it. More detailed caching and module resolution behavior is covered in **Modules Level 3**.
+
+!!! warning "Cannot Find a Module"
+
+    If Node.js cannot locate a requested module, it reports an error such as `Error: Cannot find module './mathUtils.js'`. Check that the filename and relative path are correct. A path beginning with `./` refers to a location relative to the current module. To load a module from a parent directory, a relative path can begin with `../`, as in `require("../shared/config.js")`.
+
+The main files from the earlier examples might be organized like this.
+
+```text
+calculator-app/
+├── main.js
+└── mathUtils.js
+```
+
+When `node main.js` is run from the command line, Node.js loads `mathUtils.js`, makes its exported values available to `main.js`, and executes the program.
+
+Built-in modules are referenced by name, while project modules are referenced by relative paths. Together, `module.exports` and `require()` provide the foundation for organizing Node.js programs with CommonJS modules. **Modules Level 2** builds on this foundation with the ES module format, including default and named exports, before examining module resolution in greater detail.
