@@ -1,0 +1,22 @@
+- Web Fundamentals:
+    - web_fundamentals/index.md
+
+    - Web Architecture and Communication:
+        - web_fundamentals/web_architecture_communication/overview.md
+        - web_fundamentals/web_architecture_communication/1_level/1_level_web_architecture_communication.md
+        - web_fundamentals/web_architecture_communication/summary.md
+
+    - URLs:
+        - web_fundamentals/urls/overview.md
+        - web_fundamentals/urls/1_level/1_level_urls.md
+        - web_fundamentals/urls/summary.md
+
+    - HTTP:
+        - web_fundamentals/http/overview.md
+        - web_fundamentals/http/1_level/1_level_http.md
+        - web_fundamentals/http/summary.md
+
+    - Web Security:
+        - web_fundamentals/web_security/overview.md
+        - web_fundamentals/web_security/1_level/1_level_web_security.md
+        - web_fundamentals/web_security/summary.md

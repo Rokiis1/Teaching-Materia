@@ -1,6 +1,6 @@
 # Summary
 
-This summary brings together the most important concepts from the **Code Quality and Formatting** module. It is designed as a quick reference for revision and preparation for questions where the main concepts, tools, configuration choices, and differences need to be explained clearly.
+This summary brings together the most important concepts from the **Code Quality and Formatting** module. It is designed as a quick reference for reviewing what should be understood from Level 1, including the main tools, configuration choices, commands, and differences between workflows.
 
 ## Table of Contents: Code Quality and Formatting
 
@@ -8,89 +8,141 @@ This summary brings together the most important concepts from the **Code Quality
 
 ## Level 1
 
-Level 1 establishes the foundations of **code quality, formatting, linting, ESLint, Prettier, project configuration, package scripts, and editor integration**. The main goal is to understand the separate responsibilities of linting and formatting and how automated tools can provide a consistent code-quality workflow for a JavaScript project.
+Level 1 establishes the foundations of **code quality, linting, formatting, ESLint, Prettier, project configuration, package scripts, and editor integration**. The main idea to understand is that linting and formatting have separate responsibilities, even when they are connected as part of the same development workflow. **Code quality** concerns keeping source code understandable, consistent, and easier to maintain as a project grows. **Linting** analyzes source code for problems according to configured rules, while **formatting** controls how source code is visually presented. In this workflow, ESLint handles linting and Prettier handles formatting.
 
-**Code quality** describes characteristics that make source code easier to understand, maintain, and change. **Formatting** controls the visual presentation of that code, including indentation, spacing, quotation style, semicolons, and line wrapping. A program can work correctly while still containing code-quality problems or inconsistent formatting, so automated tools are useful for checking these concerns consistently.
+A useful distinction to remember is that **ESLint checks code according to rules, while Prettier formats how code is presented**. For example, an unused variable can be reported by ESLint even when the code is already formatted correctly. Prettier can correct inconsistent spacing, indentation, quotation style, semicolons, and line wrapping, but it does not replace ESLint's code quality rules.
 
-**Linting** and **formatting** solve different problems. ESLint analyzes source code for problems that match configured rules, while Prettier rewrites supported code into a consistent visual style. A useful distinction is that **ESLint checks the code, while Prettier formats how the code looks**.
-
-For example, the following code is formatted clearly but contains an unused variable.
+ESLint is configured through a flat configuration file such as `eslint.config.js` or `eslint.config.mjs`. For the Node.js JavaScript project used in Level 1, the generated configuration contains the main structure shown below.
 
 ```js
-const userName = "Example";
-
-console.log("Hello");
-```
-
-ESLint can report `userName` because it is assigned a value but never used. This is a code-quality problem rather than a formatting problem.
-
-Prettier instead handles code such as the following.
-
-```js
-const message="Hello"
-console.log( message )
-```
-
-After formatting, the same code can be presented consistently.
-
-```js
-const message = 'Hello';
-console.log(message);
-```
-
-ESLint and Prettier are development tools, so they are normally installed as **development dependencies**. ESLint uses `eslint.config.js` to define the configuration applied when source files are checked. The recommended JavaScript configuration from `@eslint/js` provides a useful starting point.
-
-```js
+import { defineConfig } from "eslint/config";
+import globals from "globals";
 import js from "@eslint/js";
 
-export default [
-  js.configs.recommended,
-];
+export default defineConfig([
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.node },
+  },
+]);
 ```
 
-When ESLint checks a project, a reported problem identifies the location, severity, message, and rule responsible for the report. For example, an unused variable can produce output similar to this.
+`defineConfig` defines the exported ESLint configuration. `files` selects the JavaScript files to which the configuration applies. `plugins: { js }` registers the imported `@eslint/js` package under the local name `js`, allowing `"js/recommended"` to provide ESLint's recommended JavaScript checks. `globals.node` tells ESLint about global names provided by the Node.js environment.
 
-```bash
-2:7  error  'unusedValue' is assigned a value but never used  no-unused-vars
-✖ 1 problem (1 error, 0 warnings)
+Project specific ESLint rules are added through the `rules` property.
+
+```js
+rules: {
+  "no-unused-vars": "warn",
+  eqeqeq: "error",
+  curly: "error",
+}
 ```
 
-The rule name, such as `no-unused-vars`, can be looked up in the [official ESLint rules documentation](https://eslint.org/docs/latest/rules/). Rule pages explain what a rule checks, provide examples, and describe available options. ESLint can also be extended with **plugins** when a project requires rules for a particular environment or technology. The [official ESLint plugin documentation](https://eslint.org/docs/latest/use/configure/plugins) explains how plugins are added to a configuration.
+`no-unused-vars` reports variables that are declared but never used. `eqeqeq` requires strict equality operators such as `===` and `!==`. `curly` requires curly braces around control statements. ESLint rules can use `"off"`, `"warn"`, or `"error"` as severity levels. `"off"` disables a rule, `"warn"` reports a warning, and `"error"` reports an error that produces a nonzero exit code when a violation is found. An ESLint report identifies the location of the problem, its severity, the message, and the rule that reported it. The rule name can be used to find more information in the [official ESLint rules documentation](https://eslint.org/docs/latest/rules/). Some ESLint rules also support automatic fixes through `--fix`. This option applies fixes that ESLint can perform safely, while problems without an automatic fix still require a manual change.
 
-Some ESLint rules support automatic fixes. The `--fix` option asks ESLint to apply fixes that can be performed safely, but not every reported problem has an automatic solution. Problems that cannot be fixed safely remain for the developer to review and correct.
+ESLint can also exclude files and directories that should not be analyzed. With flat configuration, `globalIgnores` can be imported from `eslint/config`.
 
-**Prettier** uses its own configuration to define formatting preferences. A project can store these options in `.prettierrc.json`.
+```js
+import { defineConfig, globalIgnores } from "eslint/config";
+
+export default defineConfig([
+  globalIgnores(["dist/", "build/", "coverage/"]),
+  // Existing project configuration
+]);
+```
+
+`globalIgnores` controls files skipped by ESLint. This is separate from Prettier's ignore behavior. ESLint already ignores common locations such as `node_modules` and `.git` by default, so they normally do not need to be added manually.
+
+Prettier can use its default formatting behavior without a custom configuration. When a project needs different formatting choices, they can be stored in `.prettierrc.json`.
 
 ```json
 {
   "semi": true,
-  "singleQuote": true,
+  "singleQuote": false,
   "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "all",
   "printWidth": 80
 }
 ```
 
-These options configure semicolons, preferred quotation style, indentation width, and preferred line width. The [official Prettier options documentation](https://prettier.io/docs/options) provides the reference for available formatting options and their supported values.
+These options control semicolons, quotation style, indentation, trailing commas, and preferred line width. The same options can instead be stored under the `prettier` property in `package.json`. A project normally chooses one configuration location rather than duplicating the same settings.
 
-Prettier can either change files or only check them. The `--write` option formats supported files and saves the changes, while `--check` reports whether files already follow the configured formatting without modifying them. Paths that should not be formatted can be placed in `.prettierignore`.
+Prettier uses `.prettierignore` to identify files and directories that direct Prettier formatting should skip.
 
-Prettier supports many common file formats directly and can also be extended when additional language or formatting support is required. The [official Prettier plugin documentation](https://prettier.io/docs/plugins) explains how Prettier plugins extend its capabilities.
+```text
+# Build output
+dist/
+build/
 
-ESLint and Prettier can be used in the same project, but their responsibilities should remain separate. **`eslint-config-prettier`** disables ESLint rules that are known to conflict with Prettier. It is placed after other ESLint configurations so conflicting stylistic rules can be disabled.
+# Test coverage
+coverage/
 
-```js
-import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
-
-export default [
-  js.configs.recommended,
-  eslintConfigPrettier,
-];
+# Generated and minified files
+*.min.js
+*.min.css
 ```
 
-This configuration does not make ESLint run Prettier. ESLint continues to lint the code, while Prettier continues to format it. `eslint-config-prettier` only prevents unnecessary conflicts between those responsibilities.
+The important difference is that Prettier configuration defines **how files are formatted**, while `.prettierignore` defines **which files direct Prettier commands skip**. ESLint exclusions remain separate and are controlled through ESLint configuration such as `globalIgnores`. Prettier can either apply formatting or check whether formatting is already correct. `--write` formats files and saves the changes, while `--check` verifies formatting without modifying files. `--check` is useful when formatting should be verified rather than changed automatically, including verification workflows such as continuous integration.
 
-Common linting and formatting tasks can be stored as **package scripts** in `package.json`. The script definitions belong to the project rather than to a particular package manager, so the same named tasks can be used through the package manager chosen by the project.
+ESLint and Prettier can work together in two different ways. When they remain independent, `eslint-config-prettier` disables ESLint rules that could conflict with Prettier.
+
+```js
+import { defineConfig, globalIgnores } from "eslint/config";
+import globals from "globals";
+import js from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
+
+export default defineConfig([
+  globalIgnores(["dist/", "build/", "coverage/"]),
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.node },
+    rules: {
+      "no-unused-vars": "warn",
+      eqeqeq: "error",
+      curly: "error",
+    },
+  },
+  eslintConfigPrettier,
+]);
+```
+
+`eslint-config-prettier` only prevents conflicting ESLint formatting rules. It does not run Prettier. ESLint continues to lint the code, while Prettier continues to format it separately.
+
+A project can instead use `eslint-plugin-prettier/recommended` to run Prettier through ESLint.
+
+```js
+import { defineConfig, globalIgnores } from "eslint/config";
+import globals from "globals";
+import js from "@eslint/js";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+
+export default defineConfig([
+  globalIgnores(["dist/", "build/", "coverage/"]),
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.node },
+    rules: {
+      "no-unused-vars": "warn",
+      eqeqeq: "error",
+      curly: "error",
+    },
+  },
+  eslintPluginPrettierRecommended,
+]);
+```
+
+`eslint-plugin-prettier/recommended` enables the `prettier/prettier` rule and includes the configuration that prevents conflicting ESLint formatting rules. Prettier formatting differences can therefore be reported through ESLint. Custom Prettier options can also be supplied to `prettier/prettier` in `eslint.config.js`, so a separate `.prettierrc.json` is not required when those formatting options are kept there. The main difference to remember is that **`eslint-config-prettier` prevents conflicts while ESLint and Prettier remain separate, while `eslint-plugin-prettier/recommended` runs Prettier through ESLint**. When Prettier runs directly, `.prettierignore` controls which files Prettier skips. When Prettier runs through ESLint, ESLint controls which files reach the `prettier/prettier` rule, so ESLint file selection and `globalIgnores` control that workflow.
+
+**Package scripts** provide reusable names for common linting and formatting tasks. When ESLint and Prettier remain independent, the project can use the following scripts.
 
 ```json
 {
@@ -98,15 +150,28 @@ Common linting and formatting tasks can be stored as **package scripts** in `pac
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "check": "eslint . && prettier --check .",
+    "fix": "eslint . --fix && prettier --write ."
   }
 }
 ```
 
-The `lint` script checks the project, `lint:fix` requests supported ESLint fixes, `format` asks Prettier to rewrite supported files, and `format:check` verifies formatting without modifying files. Package scripts provide predictable project commands without requiring developers to remember the complete underlying tool commands.
+`lint` checks the project with ESLint, while `lint:fix` applies supported ESLint fixes. `format` applies Prettier formatting, while `format:check` verifies formatting without changing files. `check` verifies both linting and formatting, while `fix` applies supported ESLint fixes and Prettier formatting.
 
-Code editors can also integrate with these tools. In **Visual Studio Code**, the ESLint extension can display linting feedback while code is being edited, while the Prettier extension can provide formatting and format-on-save behavior. Editor integration improves the development experience, but project configuration and package scripts remain important because they can be used independently of a particular editor.
+When Prettier runs through `eslint-plugin-prettier`, the basic workflow can use ESLint alone.
 
-When additional rules, options, or plugins are needed, the official ESLint and Prettier documentation should be the starting point. A developer should first determine whether the required behavior is already built into the tool and then introduce a plugin or additional configuration only when the project has a specific need for it.
+```json
+{
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  }
+}
+```
 
-After reviewing Level 1, you should be able to explain **why code quality and consistent formatting matter**, distinguish **linting from formatting**, describe the separate roles of **ESLint and Prettier**, configure ESLint with `eslint.config.js`, recognize the information in an ESLint error report, explain the purpose and limits of `--fix`, configure Prettier with `.prettierrc.json`, distinguish `--write` from `--check`, explain the purpose of `.prettierignore`, describe how **`eslint-config-prettier` prevents conflicts**, define reusable **package scripts**, explain the role of optional **editor integration**, and use the official ESLint and Prettier documentation to investigate additional **rules, options, and plugins**.
+In this workflow, `lint` can report ESLint rule violations and Prettier formatting differences, while `lint:fix` can apply supported fixes from both. Package managers use different syntax to execute package scripts, but the script definitions stored in `package.json` remain the same.
+
+ESLint and Prettier are project dependencies, while editor extensions provide integration with the development environment. In Visual Studio Code, the ESLint extension can display linting feedback and apply supported fixes. When ESLint and Prettier run independently, the Prettier extension can provide Prettier formatting and formatting on save. When Prettier runs through ESLint, the ESLint extension can apply supported ESLint and Prettier fixes through the same save workflow.
+
+After reviewing Level 1, the main concepts to know are **why code quality and consistent formatting matter**, **how linting differs from formatting**, **the separate responsibilities of ESLint and Prettier**, **how the generated ESLint configuration works**, **how rules and severity levels work**, **what ESLint reports contain**, **what `--fix` does**, **how `globalIgnores` controls ESLint exclusions**, **how Prettier configuration and `.prettierignore` differ**, **how `--write` differs from `--check`**, **how `eslint-config-prettier` differs from `eslint-plugin-prettier/recommended`**, **how package scripts reflect the selected workflow**, and **how editor integration works with the project tooling**.
