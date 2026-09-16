@@ -45,7 +45,7 @@ The second version makes the structure easier to recognize without changing the 
 
 !!! info "Maintainable Code"
 
-    Working code produces the expected result. Maintainable code also remains clear enough to understand, review,
+    Working code produces the expected result. Maintainable code also remains clear enough to understand, review,
     and change as the project develops.
 
 As a project grows, maintaining these qualities manually becomes increasingly difficult. Automated tools can make the same expectations repeatable across the project. Before setting up those tools, it is useful to establish how the project environment and editor work with them.
@@ -85,7 +85,8 @@ In this workflow, a separate Prettier format-on-save action is unnecessary becau
 
 !!! info "Choose the Editor Integration That Matches the Project"
 
-    Use the Prettier extension when Prettier runs directly as the editor formatter. When Prettier runs through ESLint, the ESLint extension can provide the integrated save workflow instead.
+    Use the Prettier extension when Prettier runs directly as the editor formatter. When Prettier runs through ESLint,
+    the ESLint extension can provide the integrated save workflow instead.
 
 With the development environment prepared and the role of project tooling and editor integration established, the next section sets up ESLint for automated JavaScript code-quality checks.
 
@@ -110,7 +111,8 @@ After setup is complete, ESLint creates a configuration file such as `eslint.con
 
 !!! tip "Follow the Current ESLint Guide"
 
-    ESLint setup can change as the tool develops. Use the official Getting Started guide for the current setup command and follow the project choices described in this level.
+    ESLint setup can change as the tool develops. Use the official Getting Started guide for the current setup
+    command and follow the project choices described in this level.
 
 The setup process creates an ESLint configuration based on the selected project options. The next section examines this generated configuration and explains how its main parts control linting.
 
@@ -193,7 +195,8 @@ Each rule has a severity that determines how ESLint handles a violation. `"off"`
 
 !!! tip "Add Rules with a Purpose"
 
-    Start with the recommended configuration and add or adjust rules when they express a clear code-quality expectation for the project. Avoid adding large collections of rules without understanding what they check.
+    Start with the recommended configuration and add or adjust rules when they express a clear code-quality
+    expectation for the project. Avoid adding large collections of rules without understanding what they check.
 
 With the project's ESLint rules configured, the next section introduces Prettier for the separate task of formatting source code.
 
@@ -205,7 +208,8 @@ After installation, Prettier can format supported files using its default behavi
 
 !!! info "Local Prettier Installation"
 
-    Keeping Prettier in the project gives the project a consistent formatter version that can also be used by command-line tools and supported editor integrations.
+    Keeping Prettier in the project gives the project a consistent formatter version that can also be used by
+    command-line tools and supported editor integrations.
 
 With Prettier installed, the next section looks at the available ways to configure its formatting behavior.
 
@@ -416,6 +420,8 @@ Package managers use slightly different syntax for executing package scripts, bu
 
 !!! info "Scripts Follow the Integration"
 
-    When ESLint and Prettier run independently, package scripts can expose their separate responsibilities and provide combined commands when needed. When Prettier runs through `eslint-plugin-prettier`, the basic workflow can run through ESLint alone.
+    When ESLint and Prettier run independently, package scripts can expose their separate responsibilities and
+    provide combined commands when needed. When Prettier runs through `eslint-plugin-prettier`, the basic workflow
+    can run through ESLint alone.
 
 At this point, the project has a foundation for automated code quality and formatting that can be used consistently through reusable project commands. These foundations can later be extended with additional ESLint rules and plugins as the project's requirements become more specialized. A later Code Quality and Formatting **Code Quality and Formatting Level 2** can build on this foundation with Node-specific linting through tools such as `eslint-plugin-n`.
