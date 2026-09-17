@@ -1,0 +1,19 @@
+# Express
+
+Node.js can create HTTP servers directly, as covered previously, but larger web applications usually benefit from higher level tools for organizing common server responsibilities. Web frameworks provide abstractions for concerns such as routing, request and response handling, middleware, and error handling.
+
+![Express logo](./assets/images/express_logo.svg)
+
+**Express is a web application framework for Node.js.** It provides a relatively small set of APIs for building web applications and APIs while leaving many architectural decisions to the developer. Express is commonly described as minimal and flexible because it does not prescribe a particular project structure, database, authentication system, or overall application architecture.
+
+Express is not the only framework commonly used for server side JavaScript. Other important choices include [NestJS](https://nestjs.com/) and [Fastify](https://fastify.dev/). NestJS provides a more structured architecture with modules, controllers, services, dependency injection, and strong TypeScript support. Fastify provides a lightweight framework with an emphasis on performance, plugins, and schema based functionality. Newer tools such as [Hono](https://hono.dev/) provide additional approaches, including support for multiple JavaScript runtimes and edge environments.
+
+These frameworks address many of the same web server responsibilities but make different choices about structure and abstraction. Express leaves more architectural decisions to the developer, NestJS provides considerably more application structure, and Fastify offers a framework closer in scope to Express with different APIs and design priorities. There is no single framework that is the best choice for every application.
+
+The same principle applies beyond the JavaScript ecosystem. Using Node.js does not mean that JavaScript is always the best language or runtime for building a web server. Backend applications can also be built with technologies such as Python, Java, C#, Go, Rust, and many others. The appropriate choice depends on the requirements of the application, its surrounding ecosystem, deployment constraints, team experience, and the kinds of workloads the server must handle.
+
+Express is used here as the starting framework because its relatively small abstraction layer keeps the fundamental web server concepts visible. Routes connect HTTP methods and paths with handlers, requests and responses can be worked with directly, and middleware participates in the request handling flow. This makes Express useful for understanding how the main parts of a web application fit together before moving to frameworks that provide more structure or automation.
+
+The goal is not to treat Express as the only way to build web servers. It is to use Express to develop a clear understanding of routing, middleware, request and response handling, and error handling. Configuration is covered separately in **Environment and Configuration**. These responsibilities appear in different forms across backend frameworks and programming languages, so understanding them provides a foundation for learning other server side technologies later.
+
+The Express material begins with **Fundamentals Level 1**, which introduces the basic structure of an Express application and connects it to the HTTP foundation established previously. **Routing Level 1** then develops route matching, route parameters, route organization, and `Router` instances. **Middleware Level 1** explains the middleware request flow, `app.use()`, application level middleware, and execution order. **Request and Response** develops request and response handling in greater depth. **Error Handling** then explains how errors move through an Express application and how applications produce appropriate error responses.

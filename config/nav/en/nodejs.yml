@@ -4,6 +4,7 @@
     - Node.js Environment:
         - nodejs/environment/overview.md
         - nodejs/environment/1_level/1_level_environment.md
+        - nodejs/environment/2_level/2_level_environment.md
         - nodejs/environment/summary.md
 
     - Command Line:
@@ -27,11 +28,6 @@
         - nodejs/code_quality_formatting/overview.md
         - nodejs/code_quality_formatting/1_level/1_level_code_quality_formatting.md
         - nodejs/code_quality_formatting/summary.md
-
-    - Environment Variables:
-        - nodejs/environment_variables/overview.md
-        - nodejs/environment_variables/1_level/1_level_environment_variables.md
-        - nodejs/environment_variables/summary.md
 
     - File System:
         - nodejs/file_system/overview.md
