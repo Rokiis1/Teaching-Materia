@@ -6,17 +6,17 @@
         - express/fundamentals/1_level/1_level_fundamentals.md
         - express/fundamentals/summary.md
 
-    - Routing:
-        - express/routing/overview.md
-        - express/routing/1_level/1_level_routing.md
-        - express/routing/2_level/2_level_routing.md
-        - express/routing/summary.md
-
     - Middleware:
         - express/middleware/overview.md
         - express/middleware/1_level/1_level_middleware.md
         - express/middleware/2_level/2_level_middleware.md
         - express/middleware/summary.md
+
+    - Routing:
+        - express/routing/overview.md
+        - express/routing/1_level/1_level_routing.md
+        - express/routing/2_level/2_level_routing.md
+        - express/routing/summary.md
 
     - Request and Response:
         - express/request_response/overview.md
