@@ -8,6 +8,8 @@
 
 **Router Level 1** builds on **Fundamentals Level 1**, where Express application routing, handlers, request and response objects, and route parameters were already introduced. This level focuses on what `express.Router()` adds to that foundation. Related routes can be separated into modules, mounted under a shared path, and ordered so that overlapping route patterns are matched intentionally.
 
+For the official reference, see the [Express Routing guide](https://expressjs.com/en/guide/routing/), especially its `express.Router` section. The guide documents `express.Router()` as the Express mechanism for creating modular, mountable route handlers.
+
 ## Why Routers Exist
 
 In **Fundamentals Level 1**, routes were registered directly on the Express application. That works well for a small application, but a growing `app.js` can quickly contain routes for many unrelated parts of the application. Express routers provide a way to separate those groups while keeping them connected to the same application.
