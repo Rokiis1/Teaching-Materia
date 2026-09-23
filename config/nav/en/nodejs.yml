@@ -29,6 +29,12 @@
         - nodejs/code_quality_formatting/1_level/1_level_code_quality_formatting.md
         - nodejs/code_quality_formatting/summary.md
 
+    - Events:
+        - nodejs/events/overview.md
+        - nodejs/events/1_level/1_level_events.md
+        - nodejs/events/2_level/2_level_events.md
+        - nodejs/events/summary.md
+
     - File System:
         - nodejs/file_system/overview.md
         - nodejs/file_system/1_level/1_level_file_system.md

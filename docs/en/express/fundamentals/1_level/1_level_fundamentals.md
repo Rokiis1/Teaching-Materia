@@ -287,7 +287,7 @@ During development, source files change frequently, so restarting the applicatio
 The server port should also remain configurable rather than being fixed directly in the source code. Since `process.env` was introduced previously, the application can read a supplied port while keeping `3000` as a development fallback.
 
 ```js
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
@@ -304,10 +304,10 @@ A development script in `package.json` provides a short and consistent way to st
 }
 ```
 
-The name `dev` is a project convention rather than a special script name required by Node.js. Teams may choose `dev`, `develop`, or another name that fits their conventions, but the chosen name should be clear and used consistently. This project uses `dev` for running the application during development, while production startup and process management are introduced later with deployment concerns.
+The name `dev` is a project convention rather than a special script name required by Node.js. Teams may choose `dev`, `develop`, or another name that fits their conventions, but the chosen name should be clear and used consistently. This project uses `dev` for running the application during development.
 
-!!! info "Configuration Is Expanded Separately"
+!!! info “Related Topics Are Covered Separately”
 
-    Real applications often need configuration for databases, external services, credentials, and different runtime environments. Tools such as `dotenv`, environment-specific configuration, and environment files belong to **Environment and Configuration Level 1** rather than the Express fundamentals.
+    This section focuses on the development workflow for an Express application. Environment variables, configuration files, credentials, environment-specific settings, and production startup concerns are covered in **Environment and Configuration Level 1**.
 
 At this point, the application has the foundation needed for further Express work. You can create and run an Express application, associate HTTP methods and paths with handlers, send common responses, read basic request data, and use a convenient development workflow. The next Express topic, **Routing Level 1**, builds on this foundation by exploring route matching, route parameters, route organization, and `Router` instances in greater depth.

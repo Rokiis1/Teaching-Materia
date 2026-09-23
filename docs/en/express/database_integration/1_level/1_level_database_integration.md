@@ -15,7 +15,7 @@ PostgreSQL is the database management system used throughout this module. **pgAd
 
 !!! info "Prerequisites"
 
-    Before starting, you should be familiar with creating an Express application, defining routes, using `async` functions and `await`, and writing basic SQL statements. PostgreSQL and pgAdmin should already be installed.
+    Before starting, you should be familiar with creating an Express application, defining routes, using `async` functions and `await`, and writing basic SQL statements. This module uses **Express 5**. PostgreSQL and pgAdmin should already be installed.
 
 With the required tools in place, you can begin by looking at how database integration fits into an Express application.
 
@@ -151,9 +151,7 @@ flowchart TB
     end
 ```
 
-As introduced in **Node Environment Level 2**, this project uses dotenv to load environment variables from a `.env` file. The environment configuration is loaded once in the application's entry point and is then available through `process.env` throughout the Node.js process. The database module therefore only needs to read the values from `process.env` and does not need to load dotenv again.
-
-Store the PostgreSQL connection values in the project's `.env` file.
+As introduced in **Node Environment Level 2**, this project uses dotenv to load environment variables from a `.env` file. The environment configuration is loaded once in the application's entry point and is then available through `process.env` throughout the Node.js process. The database module therefore only needs to read the values from `process.env` and does not need to load dotenv again. Store the PostgreSQL connection values in the project's `.env` file.
 
 ```env
 PGHOST=localhost
@@ -238,7 +236,7 @@ app.listen(PORT, () => {
 });
 ```
 
-The liveness check does not depend on PostgreSQL, so it can still report that the Node.js application is running when the database is unavailable. The readiness check uses `pool.query("SELECT 1")` to verify that the pool can establish or reuse a PostgreSQL connection and successfully execute a minimal query. A successful check returns HTTP `200` with `status: "ready"`, while a database failure returns HTTP `503` with `status: "not_ready"`.
+The liveness check does not depend on PostgreSQL, so it can still report that the Node.js application is running when the database is unavailable. The readiness check uses `pool.query("SELECT 1")` to verify that the pool can establish or reuse a PostgreSQL connection and successfully execute a minimal query. A successful check returns HTTP `200` with `status: "ready"`, while a database failure returns HTTP `503` with `status: "not_ready"`. If PostgreSQL is unavailable when the application starts, the Express server can still start and `/health/live` can report `status: "ok"`, while `/health/ready` reports `status: "not_ready"`. This is why the two checks are kept separate.
 
 This keeps environment initialization in one place. `app.js` loads the `.env` configuration with dotenv, `db.js` reads the already available values from `process.env` and configures the shared PostgreSQL pool, and the rest of the application imports that pool when database access is required. Application database queries are introduced in the next section.
 
@@ -364,7 +362,11 @@ app.delete("/users/:id", async (req, res) => {
 });
 ```
 
-`RETURNING` makes the deleted row available through `result.rows[0]`. If no row matches the supplied `id`, `result.rows` is empty. Handling cases where a requested resource does not exist will be covered together with database and route errors.
+`RETURNING` makes the deleted row available through `result.rows[0]`. If no row matches the supplied `id`, `result.rows` is empty.
+
+!!! info "Error Handling in Level 2"
+
+    Error handling is not covered in **Database Integration Level 1**. Handling database errors, missing resources, and creating appropriate error responses will be introduced in **Database Integration Level 2**.
 
 The examples that use values from `req.body` or `req.params` use **parameterized queries**. node-postgres keeps the SQL text separate from the values by using placeholders such as `$1`, `$2`, and `$3` and passing the corresponding JavaScript values in an array.
 
@@ -414,35 +416,32 @@ With the main CRUD operations connected to Express routes, the application can c
 
 The application stores account information in `users` and additional user information in `profiles`. These tables are related through `profiles.user_id`, which references `users.id`. Because `user_id` is also `UNIQUE`, each user can have at most one profile. A SQL **join** allows PostgreSQL to combine columns from these related tables in one query instead of requiring the application to retrieve each table separately.
 
-Joins are especially useful when reading related data with `SELECT`. In an API, this commonly happens in `GET` routes because those routes retrieve information for the client. For the current project, joins will be used with `SELECT` queries so the focus remains on retrieving related account and profile data.
-
-For the current database structure, the important difference is whether users without profiles should appear in the result. An `INNER JOIN` keeps only users that have a matching profile, while a `LEFT JOIN` keeps every user and includes profile data only when a matching profile exists.
+Joins are especially useful when `GET` routes need to retrieve information stored across related tables. PostgreSQL determines which rows are related by comparing columns in a **join condition**. In this project, `profiles.user_id` references `users.id`, so a profile belongs to the user whose `id` has the same value. An `INNER JOIN` returns only users that have a matching profile, while a `LEFT JOIN` returns every user and includes profile data when a matching profile exists.
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Inner["INNER JOIN"]
-        IU["users"]
-        IP["profiles"]
-        IR["Only users with matching profiles"]
-        IU --> IR
-        IP --> IR
+        direction LR
+        IU["users"] --> IM["Matching rows"]
+        IP["profiles"] --> IM
+        IM --> IR["Users with profiles only"]
     end
 
     subgraph Left["LEFT JOIN"]
-        LU["users"]
-        LP["profiles"]
-        LR["All users"]
-        LM["Missing profile fields become null"]
-        LU --> LR
-        LP --> LR
-        LR --> LM
+        direction LR
+        LU["users"] --> LM["Matching rows"]
+        LP["profiles"] --> LM
+        LU --> UN["Users without profiles"]
+        LM --> LR["All users"]
+        UN --> LR
+        LR --> LN["Profile fields are null when no profile exists"]
     end
 ```
 
-Use an `INNER JOIN` when the route should return only complete user and profile pairs. The `ON` condition tells PostgreSQL how the rows are related by matching `profiles.user_id` with `users.id`.
+Use an `INNER JOIN` when the route should return only complete user and profile pairs. The `ON` condition tells PostgreSQL how the rows are related by matching `profiles.user_id` with `users.id`. The route uses `GET /profiles` so it cannot conflict with the earlier parameterized `GET /users/:id` route.
 
 ```js
-app.get("/users/profiles", async (req, res) => {
+app.get("/profiles", async (req, res) => {
     const result = await pool.query(`
         SELECT
             users.id,
@@ -460,9 +459,9 @@ app.get("/users/profiles", async (req, res) => {
 });
 ```
 
-A user can exist before a profile is created because the `users` table does not require a corresponding row in `profiles`. If the application needs to return every user, including those without profiles, use a `LEFT JOIN`. Users without a matching profile remain in the result, while `name`, `phone`, and `address` contain `null`.
+A user can exist before a profile is created because the `users` table does not require a corresponding row in `profiles`. If the application needs to return every user, including those without profiles, use a `LEFT JOIN`. Users without a matching profile remain in the result, while `name`, `phone`, and `address` contain `null`. Update the existing `GET /users` route from the CRUD section with the following version rather than registering a second `GET /users` route.
 
-```sql
+```js
 app.get("/users", async (req, res) => {
     const result = await pool.query(`
         SELECT
@@ -485,10 +484,10 @@ app.get("/users", async (req, res) => {
 
     PostgreSQL also provides `RIGHT JOIN`, `FULL JOIN`, and `CROSS JOIN`. A `RIGHT JOIN` keeps every row from the table on the right even when no matching row exists on the left. A `FULL JOIN` keeps unmatched rows from both tables. A `CROSS JOIN` produces every possible combination of rows from the joined tables. These join types are useful in specific situations, but the current project does not require them. `INNER JOIN` and `LEFT JOIN` are enough for the account and profile examples in **Database Integration Level 1**.
 
-The same join can be combined with a parameterized query when the application needs related data for one user. A `LEFT JOIN` is useful here because the account can still be returned even when its profile has not been created.
+The same join can be combined with a parameterized query when the application needs related data for one user. Update the existing `GET /users/:id` route with a `LEFT JOIN` so it can return the account together with its profile data. Because the join is a `LEFT JOIN`, the user can still be returned when a profile has not been created.
 
 ```js
-app.get("/users/:id/profile", async (req, res) => {
+app.get("/users/:id", async (req, res) => {
     const { id } = req.params;
 
     const result = await pool.query(
