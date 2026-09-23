@@ -2,7 +2,7 @@
 
 ## Table of Contents: Environment and Configuration
 
-- [Runtime Environments and Environment-Specific Configuration](#runtime-environments-and-environment-specific-configuration)(#loading-environment-specific-files-with-dotenv)
+- [Runtime Environments and Environment-Specific Configuration](#runtime-environments-and-environment-specific-configuration)
 - [A Central Configuration Module](#a-central-configuration-module)
 - [Validating Configuration and Protecting Secrets](#validating-configuration-and-protecting-secrets)
 
