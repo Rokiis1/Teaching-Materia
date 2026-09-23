@@ -24,10 +24,10 @@
         - express/error_handling/summary.md
 
     - Environment and Configuration:
-        - nodejs/environment_configuration/overview.md
-        - nodejs/environment_configuration/1_level/1_level_environment_configuration.md
-        - nodejs/environment_configuration/2_level/2_level_environment_configuration.md
-        - nodejs/environment_configuration/summary.md
+        - express/environment_configuration/overview.md
+        - express/environment_configuration/1_level/1_level_environment_configuration.md
+        - express/environment_configuration/2_level/2_level_environment_configuration.md
+        - express/environment_configuration/summary.md
 
     - Database Integration:
         - express/database_integration/overview.md
