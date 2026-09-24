@@ -259,7 +259,7 @@ flowchart LR
 
 The first CRUD operation is **Create**. A `POST` route receives data from the request body and uses `INSERT` to create a new row in the `users` table. The email from `req.body` is passed as a query value, while PostgreSQL's `RETURNING` clause returns the newly created row so it can be included in the HTTP response.
 
-``` js
+```js
 app.post("/users", async (req, res) => {
     const { email } = req.body;
 
@@ -416,29 +416,24 @@ With the main CRUD operations connected to Express routes, the application can c
 
 The application stores account information in `users` and additional user information in `profiles`. These tables are related through `profiles.user_id`, which references `users.id`. Because `user_id` is also `UNIQUE`, each user can have at most one profile. A SQL **join** allows PostgreSQL to combine columns from these related tables in one query instead of requiring the application to retrieve each table separately.
 
-Joins are especially useful when `GET` routes need to retrieve information stored across related tables. PostgreSQL determines which rows are related by comparing columns in a **join condition**. In this project, `profiles.user_id` references `users.id`, so a profile belongs to the user whose `id` has the same value. An `INNER JOIN` returns only users that have a matching profile, while a `LEFT JOIN` returns every user and includes profile data when a matching profile exists.
+PostgreSQL determines which rows are related through a **join condition**. The condition compares values from columns in the two tables. In this project, the condition `profiles.user_id = users.id` compares the `user_id` of each profile with the `id` of a user. When the values are equal, PostgreSQL treats those rows as a **match** and can combine their selected columns into one result row.
+
+An `INNER JOIN` returns only users for which a matching profile is found, so users without profiles are excluded from the result. A `LEFT JOIN` keeps every user in the result. When no matching profile is found, the user is still returned, but the selected profile fields contain `null`.
 
 ```mermaid
-flowchart LR
-    subgraph Inner["INNER JOIN"]
-        direction LR
-        IU["users"] --> IM["Matching rows"]
-        IP["profiles"] --> IM
-        IM --> IR["Users with profiles only"]
-    end
+flowchart TB
+    A["User"] --> B{"Matching profile?"}
 
-    subgraph Left["LEFT JOIN"]
-        direction LR
-        LU["users"] --> LM["Matching rows"]
-        LP["profiles"] --> LM
-        LU --> UN["Users without profiles"]
-        LM --> LR["All users"]
-        UN --> LR
-        LR --> LN["Profile fields are null when no profile exists"]
-    end
+    B -->|"Yes"| C["INNER JOIN<br/>User + profile data"]
+    B -->|"No"| D["INNER JOIN<br/>User is not returned"]
+
+    B -->|"Yes"| E["LEFT JOIN<br/>User + profile data"]
+    B -->|"No"| F["LEFT JOIN<br/>User returned<br/>Profile fields = null"]
 ```
 
-Use an `INNER JOIN` when the route should return only complete user and profile pairs. The `ON` condition tells PostgreSQL how the rows are related by matching `profiles.user_id` with `users.id`. The route uses `GET /profiles` so it cannot conflict with the earlier parameterized `GET /users/:id` route.
+Use an `INNER JOIN` when the route should return only complete user and profile pairs. The `ON` clause specifies the join condition introduced above. When a query combines columns from multiple tables, `AS` can give a selected column an **alias**. The alias becomes the name of that field in the query result without changing the actual column name in the database. In the following query, `profiles.name AS profile_name` returns the profile name as `profile_name`.
+
+The example uses `GET /profiles` so it does not conflict with the earlier parameterized `GET /users/:id` route.
 
 ```js
 app.get("/profiles", async (req, res) => {
@@ -446,7 +441,7 @@ app.get("/profiles", async (req, res) => {
         SELECT
             users.id,
             users.email,
-            profiles.name,
+            profiles.name AS profile_name,
             profiles.phone,
             profiles.address
         FROM users
@@ -459,7 +454,9 @@ app.get("/profiles", async (req, res) => {
 });
 ```
 
-A user can exist before a profile is created because the `users` table does not require a corresponding row in `profiles`. If the application needs to return every user, including those without profiles, use a `LEFT JOIN`. Users without a matching profile remain in the result, while `name`, `phone`, and `address` contain `null`. Update the existing `GET /users` route from the CRUD section with the following version rather than registering a second `GET /users` route.
+With node-postgres, the alias is used as the property name in the returned row object, so the profile name is available as `profile_name` rather than `name`. Column aliases are useful when tables contain similarly named columns or when the API response needs a clearer field name.
+
+Use a `LEFT JOIN` when the application needs to return every user, including users whose profiles have not been created yet. When a profile exists, its values are included normally. Otherwise, `profile_name`, `phone`, and `address` contain `null`. Update the existing `GET /users` route from the CRUD section with the following version rather than registering a second `GET /users` route.
 
 ```js
 app.get("/users", async (req, res) => {
@@ -467,7 +464,7 @@ app.get("/users", async (req, res) => {
         SELECT
             users.id,
             users.email,
-            profiles.name,
+            profiles.name AS profile_name,
             profiles.phone,
             profiles.address
         FROM users
@@ -484,7 +481,7 @@ app.get("/users", async (req, res) => {
 
     PostgreSQL also provides `RIGHT JOIN`, `FULL JOIN`, and `CROSS JOIN`. A `RIGHT JOIN` keeps every row from the table on the right even when no matching row exists on the left. A `FULL JOIN` keeps unmatched rows from both tables. A `CROSS JOIN` produces every possible combination of rows from the joined tables. These join types are useful in specific situations, but the current project does not require them. `INNER JOIN` and `LEFT JOIN` are enough for the account and profile examples in **Database Integration Level 1**.
 
-The same join can be combined with a parameterized query when the application needs related data for one user. Update the existing `GET /users/:id` route with a `LEFT JOIN` so it can return the account together with its profile data. Because the join is a `LEFT JOIN`, the user can still be returned when a profile has not been created.
+A join can also be combined with a parameterized query when the application needs related data for one user. Update the existing `GET /users/:id` route with a `LEFT JOIN`. This keeps the user in the result even when no profile exists, while `WHERE users.id = $1` limits the query to the requested user.
 
 ```js
 app.get("/users/:id", async (req, res) => {
@@ -495,7 +492,7 @@ app.get("/users/:id", async (req, res) => {
             SELECT
                 users.id,
                 users.email,
-                profiles.name,
+                profiles.name AS profile_name,
                 profiles.phone,
                 profiles.address
             FROM users
@@ -510,6 +507,6 @@ app.get("/users/:id", async (req, res) => {
 });
 ```
 
-The join combines the related tables, while `WHERE users.id = $1` limits the result to the requested user. In this project, joins will mainly appear in read operations when the API needs information stored across multiple tables.
+The examples show how joins retrieve related data, column aliases control field names in query results, and parameterized conditions can limit a joined query to a specific resource. In this project, joins will mainly appear in read operations when the API needs information stored across multiple tables.
 
-At this point, the Express application can connect to PostgreSQL, reuse a connection pool, execute CRUD queries, use returned rows in routes, pass values with parameterized queries, and retrieve related data with joins. **Database Integration Level 2** can build on this foundation with database error handling, transactions, migrations, stronger data access structure, and advanced query workflows.
+At this point, the Express application can connect to PostgreSQL, reuse a connection pool, execute CRUD queries, pass values with parameterized queries, work with query results, and retrieve related data with joins. **Database Integration Level 2** can build on this foundation with database error handling, transactions, migrations, stronger data access structure, and advanced query workflows.

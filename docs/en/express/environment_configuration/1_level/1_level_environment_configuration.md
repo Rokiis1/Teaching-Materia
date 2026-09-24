@@ -6,7 +6,7 @@
 - [A Central Configuration Module](#a-central-configuration-module)
 - [Validating Configuration and Protecting Secrets](#validating-configuration-and-protecting-secrets)
 
-**Environment and Configuration Level 1** builds on **Node.js Environment Level 2**, where `process.env`, `.env` files, and Node's `--env-file` option were introduced, and **Express Fundamentals Level 1**, where environment variables were used for configurable server startup. This level extends those foundations by introducing environment-specific configuration, centralized configuration access, and startup validation.
+**Environment and Configuration Level 1** builds on **Node.js Environment Level 2**, where `process.env`, `.env` files, Node.js's `--env-file` option, `.gitignore`, `.env.example`, and basic secret protection were introduced, and **Express Fundamentals Level 1**, where environment variables were applied to configurable server startup. Building on that knowledge, the material introduces environment-specific configuration, centralized configuration access, and startup validation.
 
 ## Runtime Environments and Environment-Specific Configuration
 
@@ -25,7 +25,7 @@ project/
 └── package.json
 ```
 
-Each environment file contains the configuration required for that environment. `NODE_ENV` is not stored in these files because its value is needed first to determine which file dotenv should load.
+Instead of using the single `.env` file introduced in **Node.js Environment Level 2**, this project separates configuration into environment-specific files. Each file contains the values required for its environment. `NODE_ENV` is not stored in these files because its value is needed first to determine which file dotenv should load. In this project, the package scripts supply `NODE_ENV` before the Node.js process starts.
 
 ```env
 # .env.development
@@ -45,7 +45,7 @@ PORT=3000
 BASE_URL=https://example.com
 ```
 
-Node's `--env-file` option can load an environment file directly, which makes the startup command responsible for choosing the file. This project instead uses dotenv so the application can select the file from `NODE_ENV`. Refer to the [dotenv documentation](https://github.com/motdotla/dotenv) for the current package instructions and documentation.
+Node.js's `--env-file` option can load an environment file directly, which makes the startup command responsible for choosing the file. This project instead uses dotenv so the application can select the file from `NODE_ENV`. Refer to the [dotenv documentation](https://github.com/motdotla/dotenv) for the current package instructions and documentation.
 
 ```js
 import dotenv from "dotenv";
@@ -99,15 +99,13 @@ flowchart LR
 
 !!! note "Express Also Uses NODE_ENV"
 
-    Express also checks `NODE_ENV` when determining some framework behavior. In production, `NODE_ENV=production` enables production oriented defaults, including reduced error details from the default error handler.
+    Express also checks `NODE_ENV` when determining some framework behavior. In production, `NODE_ENV=production` enables production-oriented defaults, including reduced error details from the default error handler.
 
 Environment selection and file loading are now consistent, but application modules would still need to read values from `process.env` directly. The next section moves that responsibility into one configuration module.
 
 ## A Central Configuration Module
 
-As an application grows, reading `process.env` throughout different modules can lead to repeated conversions, defaults, and configuration logic. A central configuration module creates one boundary for loading and organizing configuration and exports ordinary application values for the rest of the project.
-
-Add `config.js` beside the main application file.
+Reading `process.env` directly in multiple modules can spread environment-variable access, type conversion, defaults, and other configuration logic throughout the application. To keep these responsibilities in one place, this project uses a central `config.js` module beside the main application file. The module exports ordinary application values for the rest of the project.
 
 ```text
 project/
@@ -143,7 +141,7 @@ const config = {
 export default config;
 ```
 
-The module determines the current environment, loads its matching file, converts `PORT` from a string to a number, applies the port fallback, and exports the resulting values through one `config` object. The rest of the application can now use those properties without knowing how the values were loaded or represented in `process.env`.
+The module determines the current environment, loads the matching file, converts `PORT` from a string to a number, applies the port fallback, and exports the resulting values through one `config` object. The main application file can then import this object and use its values when starting the server without needing to know how they were loaded or represented in `process.env`.
 
 ```js
 import express from "express";
@@ -213,7 +211,7 @@ const config = {
 export default config;
 ```
 
-Because this code runs when `config.js` is loaded, a missing `BASE_URL` or invalid `PORT` stops startup immediately with a clear message instead of allowing the server to begin accepting requests with invalid configuration.
+Because `app.js` imports `config.js` before starting the server, this configuration code runs during application startup. A missing `BASE_URL` or invalid `PORT` therefore stops startup immediately with a clear message before `app.listen()` can begin accepting requests.
 
 !!! danger "Validate Early and Protect Secrets"
 
@@ -224,6 +222,6 @@ Because this code runs when `config.js` is loaded, a missing `BASE_URL` or inval
     const password = process.env.DB_PASSWORD || "default-password";
     ```
 
-    A fallback such as `"default-password"` can allow the application to start with an unintended credential and places a credential directly in source code. Keep real secret values outside the repository. Use `.env.example` to document variable names and nonsecret example values, and keep private environment files excluded according to the repository practices introduced in **Node.js Environment Level 2**.
+    A fallback such as `"default-password"` can allow the application to start with an unintended credential and places a credential directly in source code. Follow the `.gitignore`, `.env.example`, and secret-protection practices introduced in **Node.js Environment Level 2** when managing these values.
 
-At this point, the application has a consistent configuration path from runtime environment selection through loading, centralized access, conversion, and validation. **Environment and Configuration Level 2** can build on this foundation with more advanced configuration patterns and production-oriented concerns without requiring application modules to manage environment variables directly.
+At this point, the application has a consistent configuration path from runtime environment selection through loading, centralized access, conversion, validation, and server startup. **Environment and Configuration Level 2** can build on this foundation with more advanced configuration patterns and production-oriented concerns without requiring application modules to manage environment variables directly.

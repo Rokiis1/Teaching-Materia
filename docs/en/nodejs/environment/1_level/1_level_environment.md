@@ -17,11 +17,10 @@
 
 ```mermaid
 flowchart LR
-    CODE["JavaScript Code<br/>console.log('Hello, world')"]
-    RUNTIME["Node.js Runtime<br/>Processes and executes JavaScript code"]
-    RESULT["Program Behavior<br/>Displays: Hello, world"]
-
-    CODE --> RUNTIME --> RESULT
+    CODE["JavaScript Code<br/>console.log('Hello, world')"]
+    RUNTIME["Node.js Runtime<br/>Processes and executes JavaScript code"]
+    RESULT["Program Behavior<br/>Displays: Hello, world"]
+    CODE --> RUNTIME --> RESULT
 ```
 
 !!! info "Runtime Role"
@@ -30,9 +29,7 @@ flowchart LR
 
 Node.js is available for Windows, macOS, Linux, and other operating systems. For general development, install a current **Long-Term Support (LTS)** release, which receives maintenance updates for an extended period. Official downloads are available from [nodejs.org](https://nodejs.org/). Windows and macOS installers are available directly from the Node.js website, while Linux distributions and macOS commonly provide Node.js through their package management systems.
 
-During installation, Node.js may be configured so that its executable can be found through the system `PATH`. The **PATH** is an operating system setting that contains directories in which the system searches for executable programs. When the Node.js executable is available through `PATH`, Node.js can be started from a command line without specifying the executable's complete file path.
-
-The installed version can be checked from the system command line.
+During installation, Node.js may be configured so that its executable can be found through the system `PATH`. The **PATH** is an operating system setting that contains directories in which the system searches for executable programs. When the Node.js executable is available through `PATH`, Node.js can be started from a command line without specifying the executable's complete file path. The installed version can then be checked from the system command line.
 
 ```bash
 node --version
@@ -48,7 +45,6 @@ A working command displays the installed Node.js version, such as `v22.14.0`. If
     ```bash
     # Windows Command Prompt
     where node
-
     # macOS and Linux
     which node
     ```
@@ -63,35 +59,30 @@ A **Node.js development environment** is the collection of tools and files used 
 
 ```mermaid
 flowchart LR
-    EDITOR["Code Editor / IDE<br/>Creates and edits JavaScript code"]
-    SOURCE["JavaScript Source Files<br/>Store JavaScript code"]
-    RUNTIME["Node.js Runtime<br/>Executes JavaScript code"]
-    PROJECT["Project Folder<br/>Organizes related files"]
-
-    EDITOR -->|"Edits"| SOURCE
-    SOURCE -->|"Provides code"| RUNTIME
-    PROJECT -.->|"Contains"| SOURCE
+    EDITOR["Code Editor / IDE<br/>Creates and edits JavaScript code"]
+    SOURCE["JavaScript Source Files<br/>Store JavaScript code"]
+    RUNTIME["Node.js Runtime<br/>Executes JavaScript code"]
+    PROJECT["Project Folder<br/>Organizes related files"]
+    EDITOR -->|"Edits"| SOURCE
+    SOURCE -->|"Provides code"| RUNTIME
+    PROJECT -.->|"Contains"| SOURCE
 ```
 
-The runtime also provides the foundation from which different execution environments can be created. The distinction between shared and isolated Node.js environments is covered in **Environment Level 2**. Development tools provide the workspace in which the code executed by the runtime is created and managed.
+These components have distinct responsibilities within the development environment. The runtime executes the program, while development tools provide the workspace in which the source code is created and managed. The next section examines the main types of development tools used for this work.
 
 ## Text Editors, Code Editors, and IDEs
 
-A **text editor** provides basic tools for creating and editing plain text files. A **code editor** is designed specifically for source code and commonly provides features such as syntax highlighting, automatic indentation, file navigation, and code search.
-
-**Visual Studio Code** is a graphical code editor available for Windows, macOS, and Linux. It provides project navigation, extensions, and an integrated terminal. It includes built-in support for JavaScript and Node.js debugging. The Node.js runtime must be installed separately so that JavaScript programs can be executed. Visual Studio Code can be downloaded from the [official Visual Studio Code website](https://code.visualstudio.com/).
-
-**Neovim** is a terminal-based code editor available for Windows, macOS, and Linux. It provides a keyboard-driven editing interface and can be configured with plugins and language-support tools. Neovim can be downloaded from the [official Neovim website](https://neovim.io/).
+A **text editor** provides basic tools for creating and editing plain text files. A **code editor** is designed specifically for source code and commonly provides features such as syntax highlighting, automatic indentation, file navigation, and code search. **Visual Studio Code** is a graphical code editor that provides project navigation, extensions, an integrated terminal, and built-in support for JavaScript and Node.js debugging. **Neovim** is a terminal-based code editor that provides a keyboard-driven editing interface and can be configured with plugins and language-support tools. Both are available for Windows, macOS, and Linux. Visual Studio Code can be downloaded from the [official Visual Studio Code website](https://code.visualstudio.com/), while Neovim is available from the [official Neovim website](https://neovim.io/).
 
 An **integrated development environment**, or **IDE**, combines a source code editor with additional development tools in one application. **WebStorm** is an IDE designed for JavaScript and Node.js development and provides integrated debugging, project management, and runtime configuration. It is available from the [official WebStorm website](https://www.jetbrains.com/webstorm/).
 
-The choice of editor or IDE depends on the features and workflow appropriate for a particular project.
+Code editors and IDEs provide tools for creating and working with JavaScript code, but the Node.js runtime must be installed separately so that Node.js programs can be executed. The choice of editor or IDE depends on the features and workflow appropriate for a particular project.
 
 !!! warning "Word Processors"
 
     Word processors such as Microsoft Word are designed for formatted documents rather than plain source code and are not appropriate for writing Node.js programs.
 
-These development tools support both direct experimentation with JavaScript and work with code saved for repeated execution.
+These development tools support both direct experimentation with JavaScript and work with code saved for repeated execution. The next section examines these two ways of working with Node.js code.
 
 ## Interactive and Script Workflows
 
@@ -99,17 +90,15 @@ Node.js supports two basic workflows for providing code to the runtime. Code can
 
 ```mermaid
 flowchart LR
-    INTERACTIVE["Interactive Workflow"]
-    SCRIPT["Script Workflow"]
-
-    INPUT["Enter code at the > prompt"]
-    RESULT["Inspect the result"]
-    EDIT["Write code in an editor"]
-    SAVE["Save the code in a .js file"]
-    EXECUTE["Execute the saved script"]
-
-    INTERACTIVE --> INPUT --> RESULT
-    SCRIPT --> EDIT --> SAVE --> EXECUTE
+    INTERACTIVE["Interactive Workflow"]
+    SCRIPT["Script Workflow"]
+    INPUT["Enter code at the > prompt"]
+    RESULT["Inspect the result"]
+    EDIT["Write code in an editor"]
+    SAVE["Save the code in a .js file"]
+    EXECUTE["Execute the saved script"]
+    INTERACTIVE --> INPUT --> RESULT
+    SCRIPT --> EDIT --> SAVE --> EXECUTE
 ```
 
 An **interactive session** is started with the `node` command without arguments. It displays the `>` prompt and waits for JavaScript code to be entered. The following example shows code entered directly and the output produced by the runtime.
@@ -148,9 +137,9 @@ weather-app/
     └── converter.js
 ```
 
-Here, `weather-app` is the project folder, while `weather-data` and `utility-tools` are subfolders. A subfolder can also contain another subfolder. In this example, `archived-data` is a subfolder inside `weather-data`. Folders can therefore be nested when additional organization is useful.
+Here, `weather-app` is the project folder, while `weather-data` and `utility-tools` are subfolders. The `archived-data` folder shows that subfolders can also be nested when additional organization is useful.
 
-Folder naming conventions can vary between Node.js projects. In this course, folder names use lowercase letters, with **kebab-case** for names containing multiple words, such as `weather-data` and `utility-tools`. This convention is used to keep project paths clear and consistent. Node.js does not require this naming style.
+Folder naming conventions can vary between Node.js projects. In this course, folder names use lowercase letters, with **kebab-case** for names containing multiple words, such as `weather-data` and `utility-tools`. This convention keeps project paths clear and consistent, although Node.js does not require it.
 
 !!! tip "Folder Names"
 
@@ -168,7 +157,7 @@ calculator.js
 weatherData.js
 ```
 
-A source filename should indicate what the file contains. For example, `calculator.js` suggests code related to a calculator, while `databaseConnection.js` suggests code related to a database connection. JavaScript projects use different filename conventions. In this course, JavaScript source filenames use lowercase letters for single-word names and **camelCase** for names containing multiple words, such as `weatherData.js`, `numberConverter.js`, and `oldCities.js`. Node.js does not require this naming style.
+A source filename should indicate what the file contains. For example, `calculator.js` suggests code related to a calculator, while `databaseConnection.js` suggests code related to a database connection. JavaScript projects use different filename conventions. In this course, source filenames use lowercase letters for single-word names and **camelCase** for multiword names, such as `weatherData.js`, `numberConverter.js`, and `oldCities.js`. Node.js does not require this naming style.
 
 In a program containing multiple source files, one file may serve as the **starting file**, or entry point, from which the application is launched. Filenames such as `app.js`, `index.js`, and `main.js` are commonly used for this purpose, while other source files normally have names that describe the code they contain. Node.js does not give these filenames special meaning merely because of their names, so another `.js` file can also serve as the starting file.
 
@@ -186,4 +175,4 @@ console.log("JavaScript source files contain executable code");
 
 JavaScript source files normally use **UTF-8** as their **text encoding**. A text encoding is a system that represents characters as data that a computer can store and process. **UTF-8** is a widely used text encoding that supports characters from many writing systems, including letters, numbers, symbols, and other characters used in source code. The same `.js` file can be opened and edited with different text editors, code editors, and IDEs.
 
-A Node.js program can consist of a single `.js` file or multiple source files organized within a project folder. With the runtime installed, a development tool available, a project folder organized, and JavaScript source files understood, the basic development environment is in place. **Command Line Level 1** builds on this foundation by explaining the commands used to start Node.js and execute saved programs.
+A Node.js program can consist of a single `.js` file or multiple source files organized within a project folder. With the runtime installed, a development tool available, and the project and source files organized, the basic development environment is in place. **Command Line Level 1** builds on this foundation by explaining the commands used to start Node.js and execute saved programs.

@@ -1,0 +1,9 @@
+# Overview
+
+Environment and configuration determine how an Express application receives and organizes settings that can change between different runtime environments. Instead of placing environment-dependent values directly in application code, configuration can be supplied externally, loaded for the current environment, organized behind a consistent interface, and checked before the server starts.
+
+The **Environment and Configuration** module develops from the environment-variable foundations introduced in **Node.js Environment** and applied during **Express Fundamentals** to a more structured configuration workflow for Express applications. It establishes how runtime environment selection, environment-specific files, configuration modules, value conversion, defaults, validation, and secret protection work together as application configuration grows.
+
+**Level 1** introduces environment-specific configuration for `development`, `test`, `staging`, and `production`. It uses `NODE_ENV` to identify the current runtime environment, dotenv to load the matching environment file, and project scripts to supply the environment consistently across operating systems. It then centralizes access to environment variables in a `config.js` module so the rest of the application can work with ordinary configuration properties instead of reading `process.env` directly, and introduces startup validation so required and converted values are checked before the Express server begins accepting requests. Secret values remain outside source code and follow the environment-file protection practices established earlier.
+
+Together, these topics establish a consistent path from selecting a runtime environment to loading, organizing, and validating the configuration used by an Express application. **Environment and Configuration Level 2** can build on this foundation with more advanced configuration patterns and production-oriented concerns.

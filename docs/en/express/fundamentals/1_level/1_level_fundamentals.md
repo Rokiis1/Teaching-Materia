@@ -282,32 +282,45 @@ With the basic request and response flow established, the application has the es
 
 ## Development Workflow
 
-During development, source files change frequently, so restarting the application manually after every change quickly becomes inconvenient. Node.js provides a built-in [watch](https://nodejs.org/api/cli.html#--watch) mode that monitors the entry point and its dependencies and restarts the application when relevant files change. [nodemon](https://www.npmjs.com/package/nodemon) provides a similar workflow with additional control over file watching and restart behavior. For this project, Node’s built-in `--watch` mode is sufficient because it requires no additional package or watch configuration.
+During development, source files change frequently, so restarting the application manually after every change quickly becomes inconvenient. Node.js provides a built-in [watch](https://nodejs.org/api/cli.html#--watch) mode that monitors the entry point and its dependencies and restarts the application when relevant files change. [nodemon](https://www.npmjs.com/package/nodemon) provides a similar workflow with additional control over file watching and restart behavior. For this project, Node.js's built-in `--watch` mode is sufficient because it requires no additional package or watch configuration.
 
-The server port should also remain configurable rather than being fixed directly in the source code. Since `process.env` was introduced previously, the application can read a supplied port while keeping `3000` as a development fallback.
+Building on **Node.js Environment Level 2**, the Express application can use the same `NODE_ENV`, `PORT`, and `BASE_URL` configuration introduced there. `PORT` determines where the server listens, `BASE_URL` provides the configured address used in the startup message, and `NODE_ENV` identifies the current runtime environment.
 
 ```js
-const PORT = Number(process.env.PORT) || 3000;
+const environment = process.env.NODE_ENV;
+const port = Number(process.env.PORT) || 3000;
+const baseUrl = process.env.BASE_URL || `http://localhost:${port}`;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running at ${baseUrl}`);
+  console.log(`Environment: ${environment}`);
 });
 ```
 
-A development script in `package.json` provides a short and consistent way to start the application in watch mode.
+The server still passes `port` to `app.listen()` because the listening port controls where the Express server accepts connections. `baseUrl` has a different purpose and is used here to represent the configured application address. The fallback keeps port `3000` available when `PORT` is not supplied, while the `BASE_URL` fallback constructs a local address from that port. The purpose is to apply the environment-variable workflow from **Node.js Environment Level 2** rather than introduce `process.env`, conversion, or fallback values again.
+
+**Node.js Environment Level 2** also introduced `.env` files and Node.js's built-in `--env-file` option. The development configuration can therefore be stored in the project's `.env` file.
+
+```env
+NODE_ENV=development
+PORT=3000
+BASE_URL=http://localhost:3000
+```
+
+A development script in `package.json` can combine that existing configuration workflow with watch mode so the project has one short and consistent development command.
 
 ```json
 {
   "scripts": {
-    "dev": "node --watch app/app.js"
+    "dev": "node --watch --env-file=.env app/app.js"
   }
 }
 ```
 
-The name `dev` is a project convention rather than a special script name required by Node.js. Teams may choose `dev`, `develop`, or another name that fits their conventions, but the chosen name should be clear and used consistently. This project uses `dev` for running the application during development.
+When the `dev` script runs, Node.js loads the variables from `.env` before `app/app.js` starts and watches the application files for changes. The name `dev` is a project convention rather than a special script name required by Node.js. Teams may choose `dev`, `develop`, or another name that fits their conventions, but the chosen name should be clear and used consistently.
 
-!!! info “Related Topics Are Covered Separately”
+!!! info "Related Environment Topic"
 
-    This section focuses on the development workflow for an Express application. Environment variables, configuration files, credentials, environment-specific settings, and production startup concerns are covered in **Environment and Configuration Level 1**.
+    For the underlying concepts used in this workflow, refer to **Node.js Environment Level 2**, especially **Reading Environment Variables** and **Using `.env` Files**. Those sections explain `process.env`, string values and numeric conversion, fallback values, `.env` files, and Node.js's `--env-file` option. This section applies those concepts to Express development without introducing environment-specific configuration yet.
 
-At this point, the application has the foundation needed for further Express work. You can create and run an Express application, associate HTTP methods and paths with handlers, send common responses, read basic request data, and use a convenient development workflow. The next Express topic, **Routing Level 1**, builds on this foundation by exploring route matching, route parameters, route organization, and `Router` instances in greater depth.
+At this point, the application has the foundation needed for further Express work. You can create and run an Express application, associate HTTP methods and paths with handlers, send common responses, read basic request data, and use a development workflow that combines external configuration with automatic restarts. The next Express topic, **Routing Level 1**, builds on this foundation by exploring route matching, route parameters, route organization, and `Router` instances in greater depth.
