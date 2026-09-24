@@ -6,6 +6,8 @@ This summary brings together the most important concepts from the **Database Int
 
 - [Level 1](#level-1)
 
+## Level 1
+
 Level 1 establishes the foundations of **PostgreSQL integration with Express, database connections, connection pooling, CRUD queries, parameterized queries, query results, and related data**. The main goal is to understand how an Express application communicates with PostgreSQL and uses stored data when handling HTTP requests.
 
 A **database** provides persistent storage outside the running Node.js process. In this project, PostgreSQL stores account and profile data in the `users` and `profiles` tables. The `profiles.user_id` column references `users.id`, creating the relationship between a user and a profile.
