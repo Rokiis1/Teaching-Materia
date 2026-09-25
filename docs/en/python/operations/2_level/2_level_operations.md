@@ -93,7 +93,7 @@ result = first_number and second_number
 print(result) # 20
 ```
 
-Logical operators are often used with comparison results to form conditions, as shown in the following example.
+Logical operators are often used with comparison results to form conditions. The following example uses `and`, so both conditions must be truthy for the expression to produce `True`.
 
 ```py
 age = 20
@@ -122,7 +122,7 @@ result = first_number or second_number
 print(result) # 0
 ```
 
-Like `and`, the `or` operator can also combine Boolean conditions.
+Like `and`, the `or` operator can combine Boolean conditions. With `or`, only one of the conditions needs to be truthy for the expression to produce `True`.
 
 ```py
 is_admin = False
@@ -148,6 +148,20 @@ result = not text
 
 print(result) # True
 ```
+
+The logical operators can also be combined in the same expression. In the following example, `and` requires each condition to be truthy, while `not` reverses the value of `is_suspended`.
+
+```py
+age = 20
+has_id = True
+is_suspended = False
+
+result = age >= 18 and has_id and not is_suspended
+
+print(result) # True
+```
+
+Here, `age >= 18` and `has_id` are both truthy, while `not is_suspended` produces `True`. Because every operand connected by `and` is truthy, the complete expression produces `True`.
 
 The `and` and `or` operators use **short-circuit evaluation**. Python stops evaluating an `and` expression as soon as it encounters a falsy operand because the remaining operands cannot change that outcome. Similarly, Python stops evaluating an `or` expression as soon as it encounters a truthy operand.
 
