@@ -1,0 +1,40 @@
+- Software Architecture:
+    - software_architecture/index.md
+
+    - Architecture Fundamentals:
+        - software_architecture/architecture_fundamentals/overview.md
+        - software_architecture/architecture_fundamentals/1_level/1_level_architecture_fundamentals.md
+        - software_architecture/architecture_fundamentals/2_level/2_level_architecture_fundamentals.md
+        - software_architecture/architecture_fundamentals/summary.md
+
+    - Architecture Patterns:
+        - software_architecture/architecture_patterns/overview.md
+        - software_architecture/architecture_patterns/layered_architecture.md
+        - software_architecture/architecture_patterns/hexagonal_architecture.md
+        - software_architecture/architecture_patterns/clean_architecture.md
+        - software_architecture/architecture_patterns/event_driven_architecture.md
+        - software_architecture/architecture_patterns/microservices_architecture.md
+        - software_architecture/architecture_patterns/summary.md
+
+    - Application Patterns:
+        - software_architecture/application_patterns/overview.md
+        - software_architecture/application_patterns/mvc.md
+        - software_architecture/application_patterns/summary.md
+
+    - Dependency Management:
+        - software_architecture/dependency_management/overview.md
+        - software_architecture/dependency_management/1_level/1_level_dependency_management.md
+        - software_architecture/dependency_management/2_level/2_level_dependency_management.md
+        - software_architecture/dependency_management/summary.md
+
+    - Data Transfer and Boundaries:
+        - software_architecture/data_transfer_boundaries/overview.md
+        - software_architecture/data_transfer_boundaries/1_level/1_level_data_transfer_boundaries.md
+        - software_architecture/data_transfer_boundaries/2_level/2_level_data_transfer_boundaries.md
+        - software_architecture/data_transfer_boundaries/summary.md
+
+    - Application Infrastructure:
+        - software_architecture/application_infrastructure/overview.md
+        - software_architecture/application_infrastructure/1_level/1_level_application_infrastructure.md
+        - software_architecture/application_infrastructure/2_level/2_level_application_infrastructure.md
+        - software_architecture/application_infrastructure/summary.md
