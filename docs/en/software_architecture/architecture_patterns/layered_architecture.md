@@ -8,9 +8,7 @@
 - [Infrastructure Layer](#infrastructure-layer)
 - [Example Project Structure](#example-project-structure)
 
-**Layered Architecture** organizes an application into layers with distinct responsibilities. Each layer focuses on a particular type of work, which helps separate different concerns and makes the application easier to understand and maintain.
-
-In this chapter, Layered Architecture is presented using three main layers. The **Presentation layer** handles interaction with external clients, the **Application layer** coordinates application operations, and the **Infrastructure layer** handles technical implementation details such as data access. These layers represent architectural responsibilities rather than specific classes, frameworks, programming languages, or directory structures.
+**Layered Architecture** organizes an application into layers with distinct responsibilities. Each layer focuses on a particular type of work, which helps separate different concerns and makes the application easier to understand and maintain. In this chapter, Layered Architecture is presented using three main layers. The **Presentation layer** handles interaction with external clients, the **Application layer** coordinates application operations, and the **Infrastructure layer** handles technical implementation details such as data access. These layers represent architectural responsibilities rather than specific classes, frameworks, programming languages, or directory structures.
 
 ## Understanding Layered Architecture
 
@@ -18,10 +16,10 @@ The central idea of Layered Architecture is that different kinds of work belong 
 
 ```mermaid
 flowchart LR
-    A["External Input"] --> B["Presentation Layer"]
-    B --> C["Application Layer"]
-    C --> D["Infrastructure Layer"]
-    D --> E["Data Source"]
+    A["External Input"] --> B["Presentation Layer"]
+    B --> C["Application Layer"]
+    C --> D["Infrastructure Layer"]
+    D --> E["Data Source"]
 ```
 
 The flow begins at the application's external boundary. The Presentation layer receives the input and passes the requested operation to the Application layer. When the operation requires technical capabilities such as retrieving or storing data, the Application layer uses the Infrastructure layer, which communicates with the appropriate data source. Each step moves the work to the layer responsible for handling it.
@@ -191,11 +189,7 @@ The **Infrastructure layer** is responsible for technical implementation details
 
 Direct SQL is used here to make the persistence responsibility visible, but Layered Architecture does not require it. A repository can use an **ORM** or another data-access mechanism while keeping those technical details inside Infrastructure, allowing Application to work with repository operations without depending on the underlying storage technology.
 
-The Application layer uses repository operations without needing to know how those operations are implemented by Infrastructure. These operations form a boundary between the two layers. How **Interfaces and Contracts** define and protect boundaries between components is examined in more detail in **Architecture Fundamentals Level 2**.
-
-These examples also show components using other components to perform their responsibilities. The examples focus on the architectural relationships rather than on how those dependencies are created and provided. How dependencies are assembled and supplied to components is examined in more detail through **Composition and Wiring** in **Architecture Fundamentals Level 2**.
-
-With each layer examined individually, the final step is to see how these responsibilities can be reflected in a project structure.
+The Application layer uses repository operations without needing to know how those operations are implemented by Infrastructure. These operations form a boundary between the two layers, while the examples also show components using other components to perform their responsibilities. How **Interfaces and Contracts** define and protect boundaries and how **Composition and Wiring** assembles and supplies dependencies are examined in more detail in **Architecture Fundamentals Level 2**. With each layer examined individually, the final step is to see how these responsibilities can be reflected in a project structure.
 
 ## Example Project Structure
 
