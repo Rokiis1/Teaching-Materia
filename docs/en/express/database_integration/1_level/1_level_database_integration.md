@@ -509,4 +509,4 @@ app.get("/users/:id", async (req, res) => {
 
 The examples show how joins retrieve related data, column aliases control field names in query results, and parameterized conditions can limit a joined query to a specific resource. In this project, joins will mainly appear in read operations when the API needs information stored across multiple tables.
 
-At this point, the Express application can connect to PostgreSQL, reuse a connection pool, execute CRUD queries, pass values with parameterized queries, work with query results, and retrieve related data with joins. **Database Integration Level 2** can build on this foundation with database error handling, transactions, migrations, stronger data access structure, and advanced query workflows.
+At this point, the Express application can connect to PostgreSQL, reuse a connection pool, execute CRUD queries, pass values with parameterized queries, work with query results, and retrieve related data with joins. **Database Integration Level 2** can build on this foundation with database error handling, transactions, stronger data access structure, and advanced query workflows.

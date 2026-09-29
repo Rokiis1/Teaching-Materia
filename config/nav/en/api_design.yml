@@ -4,4 +4,17 @@
     - Fundamentals:
         - api_design/fundamentals/overview.md
         - api_design/fundamentals/1_level/1_level_fundamentals.md
+        - api_design/fundamentals/2_level/2_level_fundamentals.md
         - api_design/fundamentals/summary.md
+
+    - API Styles:
+        - api_design/api_styles/overview.md
+
+        - REST:
+            - api_design/api_styles/rest/overview.md
+            - api_design/api_styles/rest/1_level/1_level_rest.md
+            - api_design/api_styles/rest/2_level/2_level_rest.md
+            - api_design/api_styles/rest/3_level/3_level_rest.md
+            - api_design/api_styles/rest/summary.md
+
+        - api_design/api_styles/summary.md
