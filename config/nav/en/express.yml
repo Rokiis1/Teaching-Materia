@@ -18,10 +18,11 @@
         - express/routing/2_level/2_level_routing.md
         - express/routing/summary.md
 
-    - Error Handling:
-        - express/error_handling/overview.md
-        - express/error_handling/1_level/1_level_error_handling.md
-        - express/error_handling/summary.md
+    - Validation and Error Handling:
+        - express/validation_error_handling/overview.md
+        - express/validation_error_handling/1_level/1_level_validation_error_handling.md
+        - express/validation_error_handling/2_level/2_level_validation_error_handling.md
+        - express/validation_error_handling/summary.md
 
     - Environment and Configuration:
         - express/environment_configuration/overview.md
