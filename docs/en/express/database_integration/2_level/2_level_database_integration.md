@@ -210,45 +210,288 @@ With database operations now able to distinguish successful results from rejecte
 
 ## Building Advanced Collection Queries
 
-A collection query can combine data from `users` and `profiles`, then add filtering, search, sorting, and pagination so PostgreSQL returns only the users that match the requested collection options.
+A collection query often needs more control than simply returning every row from a table. As the amount of stored data grows, the application may need to filter rows by a specific value, search across text fields, control the order of results, and return the collection in smaller portions. This section builds these operations gradually, introducing each responsibility before combining them into a complete `findAll()` function. Begin with a basic collection query that retrieves users together with their profile information using the `LEFT JOIN` introduced in **Database Integration Level 1**.
 
 ```js
-app.get("/users", async (req, res) => {
-    const {
-        name,
-        search,
-        sort = "created_at",
-        order = "desc",
-        offset = 0,
-        limit = 10,
-    } = req.query;
+export async function findAll() {
+    const query = `
+        SELECT
+            users.id,
+            users.email,
+            users.role,
+            users.created_at,
+            users.updated_at,
+            profiles.name,
+            profiles.phone,
+            profiles.address
+        FROM users
+        LEFT JOIN profiles
+            ON profiles.user_id = users.id
+        ORDER BY users.created_at DESC;
+    `;
 
-    const conditions = [];
-    const values = [];
+    const { rows } = await pool.query(query);
 
-    // Filtering by an exact profile name
-    if (name) {
-        values.push(name);
-        conditions.push(`profiles.name = $${values.length}`);
-    }
+    return rows;
+}
+```
 
-    // Searching for text inside an email or profile name
-    if (search) {
-        values.push(`%${search}%`);
-        conditions.push(`
-            (
-                users.email ILIKE $${values.length}
-                OR profiles.name ILIKE $${values.length}
-            )
-        `);
-    }
+This provides the starting point for the collection. The query returns every user, keeps users that do not yet have a profile because it uses `LEFT JOIN`, and orders the result by creation date.
 
-    const whereClause =
-        conditions.length > 0
-            ? `WHERE ${conditions.join(" AND ")}`
-            : "";
+The first collection control to add is **filtering**. Filtering narrows the collection by requiring a supported field to contain a particular value. In this example, the collection can be filtered by the user's role using the `filterBy` and `filterValue` function parameters.
 
-    // Sorting can use only fields supported by this route
+```js
+export async function findAllRole({
+    filterBy,
+    filterValue,
+} = {})
+```
+
+The function receives its collection options as a single object. The `{ filterBy, filterValue }` syntax destructures that object so the properties can be used directly as `filterBy` and `filterValue` inside the function. This approach is useful because more collection options, such as search, sorting, and pagination, can be added to the same object without relying on the position of function arguments. The `= {}` provides an empty object when no argument is passed, allowing `findAllRole()` to be called without causing an error during destructuring.
+
+The SQL can then use `$1` for the requested filter field and `$2` for its value. The `::text` syntax casts a parameter to PostgreSQL's `text` type. This gives PostgreSQL an explicit type when it evaluates conditions such as `$1::text IS NULL`.
+
+```sql
+WHERE
+    (
+        $1::text IS NULL
+        OR $2::text IS NULL
+        OR ($1 = 'role' AND users.role = $2)
+    )
+```
+
+If no filter is supplied, `filterBy` or `filterValue` becomes `null` and the condition does not restrict the collection. When `filterBy` contains `"role"` and `filterValue` contains `"admin"`, PostgreSQL compares `users.role` with `"admin"`. Both values are passed separately from the SQL.
+
+```js
+const values = [
+    filterBy || null,
+    filterValue || null,
+];
+
+const { rows } = await pool.query(query, values);
+```
+
+At this stage, the function can retrieve all users or restrict the collection to a selected role without inserting the filter value directly into the SQL. The same collection can be implemented in different ways depending on what the application needs. The current approach keeps the supported role filter directly in the SQL, which works well when the available conditions are small and known in advance. When a collection supports several independent optional conditions, the application can instead build the `WHERE` clause gradually.
+
+```js
+const conditions = [];
+const values = [];
+
+if (filterBy === "role" && filterValue) {
+    values.push(filterValue);
+    conditions.push(`users.role = $${values.length}`);
+}
+
+const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+```
+
+The filter condition is added only when the required role value is provided. If no filter is provided, `conditions` remains empty and no `WHERE` clause is added. When conditions are added, `conditions.length > 0` checks that the array is not empty and `conditions.join(" AND ")` combines them into the `WHERE` clause. `AND` is used so that when several optional conditions are introduced, every included condition must be satisfied.
+
+!!! info "Different Ways to Build Collection Queries"
+
+    A collection query can be constructed in different ways depending on its requirements. A small, known set of optional conditions can remain directly in the SQL, as in the main example. Optional conditions can also be collected dynamically and added to the `WHERE` clause only when they are needed. In both approaches, request values remain separate from the SQL by using parameterized values.
+
+The next control is **search**. Unlike filtering, which compares a supported field with a specific value, search looks for text inside one or more searchable fields. Add `search` to the function parameters.
+
+```js
+export async function findAll({
+    filterBy,
+    filterValue,
+    search,
+} = {})
+```
+
+Search and filtering both restrict which rows are returned, so both are implemented through the SQL `WHERE` clause. Filtering usually compares a field with a specific value, while search usually performs pattern matching across one or more text fields. Because the filter condition is already present, the search condition is added with `AND`.
+
+```sql
+AND
+(
+    $3::text IS NULL
+    OR users.email ILIKE '%' || $3 || '%'
+    OR profiles.name ILIKE '%' || $3 || '%'
+)
+```
+
+The expression `$3::text` casts the third parameter to PostgreSQL's `text` type, which gives PostgreSQL an explicit type when evaluating `$3::text IS NULL`. `ILIKE` performs case-insensitive pattern matching, while `%` represents any sequence of characters and `||` concatenates text. The expression `'%' || $3 || '%'` therefore creates a pattern with the search value between two wildcards. If `$3` contains `vard`, PostgreSQL builds `%vard%`, allowing any characters to appear before or after `vard`. For example, the pattern `%vard%` can match both `Vardenis` and `vard@example.com`.
+
+The position of `%` determines where additional characters are allowed around the search value.
+
+```mermaid
+flowchart LR
+    A["Search value vard"] --> B["vard"]
+    A --> C["vard%"]
+    A --> D["%vard"]
+    A --> E["%vard%"]
+
+    B --> F["Exactly vard"]
+    C --> G["Begins with vard"]
+    D --> H["Ends with vard"]
+    E --> I["Contains vard anywhere"]
+```
+
+When `search` is not supplied, `$3::text IS NULL` allows the query to continue without restricting the collection by search. When it is supplied, PostgreSQL checks both the user's email and profile name. The parameter values follow the same order as the placeholders used in the SQL.
+
+```js
+const values = [
+    filterBy || null, // $1
+    filterValue || null, // $2
+    search || null, // $3
+];
+```
+
+Filtering and search can therefore work independently or together. The filter narrows the collection by role, while search can further narrow those results by email or profile name. The dynamic approach introduced for filtering can also be extended to search by adding it as another optional condition in the same `conditions` array.
+
+```js
+if (search) {
+    values.push(`%${search}%`);
+
+    conditions.push(`
+        (
+            users.email ILIKE $${values.length}
+            OR profiles.name ILIKE $${values.length}
+        )
+    `);
+}
+```
+
+The search condition is added only when a search value is provided. It uses the same `values` and `conditions` arrays introduced for filtering, allowing both optional operations to become part of the same dynamically constructed `WHERE` clause.
+
+The next control is **sorting**. Sorting changes the order of matching rows. Add `sort` and `order` with default values.
+
+``` js
+export async function findAll({
+    filterBy,
+    filterValue,
+    search,
+    sort = "created_at",
+    order = "desc",
+} = {})
+```
+
+The application supports only predefined sort fields.
+
+```js
+const sortFields = {
+    email: "users.email",
+    name: "profiles.name",
+    created_at: "users.created_at",
+};
+
+const sortColumn = sortFields[sort] || "users.created_at";
+const sortDirection = order === "asc" ? "ASC" : "DESC";
+```
+
+SQL placeholders such as `$1` represent values, not column names or SQL keywords. For this reason, the application maps the requested `sort` value to a known database column instead of placing an unrestricted value into `ORDER BY`. The direction is similarly restricted to `ASC` or `DESC`. The controlled values can then be used in the query.
+
+```sql
+ORDER BY ${sortColumn} ${sortDirection}
+```
+
+!!! warning "Control Dynamic SQL Identifiers"
+
+    Values such as filter values and search text should use PostgreSQL placeholders. SQL identifiers such as column names cannot use the same placeholder mechanism, so dynamic sort fields should be mapped to predefined database columns.
+
+The next control is **pagination**. Pagination returns only part of the matching collection. This application uses **offset and limit pagination**. Other pagination strategies exist, but offset and limit fit the current collection because they are straightforward to implement with PostgreSQL and work naturally with the page metadata used by this API. Add `offset` and `limit` to the function parameters.
+
+``` js
+export async function findAll({
+    filterBy,
+    filterValue,
+    search,
+    sort = "created_at",
+    order = "desc",
+    offset = 0,
+    limit = 10,
+} = {})
+```
+
+`LIMIT` controls the maximum number of rows returned, while `OFFSET` controls how many matching rows PostgreSQL skips first.
+
+```sql
+LIMIT $4
+OFFSET $5
+```
+
+Both are data values, so they can use parameterized placeholders. Add them after the existing filter and search values.
+
+```js
+const values = [
+    filterBy || null, // $1
+    filterValue || null, // $2
+    search || null, // $3
+    limit, // $4
+    offset, // $5
+];
+```
+
+For example, `limit = 10` and `offset = 20` skip the first 20 matching rows and return up to the next 10. With a limit of 10, this corresponds to the third page of results.
+
+Pagination determines which rows are returned, but the consumer may also need to know how many matching rows exist in total. This requires a second query that applies the same filtering and search conditions without `LIMIT` and `OFFSET`.
+
+``` js
+const countQuery = `
+    SELECT COUNT(*) AS total
+    FROM users
+    LEFT JOIN profiles
+        ON profiles.user_id = users.id
+    WHERE
+        (
+            $1::text IS NULL
+            OR $2::text IS NULL
+            OR ($1 = 'role' AND users.role = $2)
+        )
+        AND
+        (
+            $3::text IS NULL
+            OR users.email ILIKE '%' || $3 || '%'
+            OR profiles.name ILIKE '%' || $3 || '%'
+        );
+`;
+
+const countValues = [
+    filterBy || null,
+    filterValue || null,
+    search || null,
+];
+
+const countResult = await pool.query(countQuery, countValues);
+```
+
+`COUNT(*)` returns the number of rows that satisfy the filter and search conditions before pagination is applied. node-postgres returns this PostgreSQL count as a string, so convert it to a number before calculating pagination metadata.
+
+```js
+const total = Number(countResult.rows[0].total);
+const totalPage = Math.ceil(total / limit);
+const page = Math.floor(offset / limit) + 1;
+```
+
+The function can then return the selected rows together with information about the complete matching collection.
+
+``` js
+return {
+    data: rows,
+    meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+    },
+};
+```
+
+After each collection operation has been introduced separately, the complete function combines them into one database workflow.
+
+``` js
+export async function findAllRole({
+    filterBy,
+    filterValue,
+    search,
+    sort = "created_at",
+    order = "desc",
+    offset = 0,
+    limit = 10,
+} = {}) {
     const sortFields = {
         email: "users.email",
         name: "profiles.name",
@@ -258,61 +501,87 @@ app.get("/users", async (req, res) => {
     const sortColumn = sortFields[sort] || "users.created_at";
     const sortDirection = order === "asc" ? "ASC" : "DESC";
 
-    // Add pagination values after the optional filter and search values
-    values.push(limit);
-    const limitParameter = `$${values.length}`;
+    const countQuery = `
+        SELECT COUNT(*) AS total
+        FROM users
+        LEFT JOIN profiles
+            ON profiles.user_id = users.id
+        WHERE
+            (
+                $1::text IS NULL
+                OR $2::text IS NULL
+                OR ($1 = 'role' AND users.role = $2)
+            )
+            AND
+            (
+                $3::text IS NULL
+                OR users.email ILIKE '%' || $3 || '%'
+                OR profiles.name ILIKE '%' || $3 || '%'
+            );
+    `;
 
-    values.push(offset);
-    const offsetParameter = `$${values.length}`;
+    const countValues = [
+        filterBy || null,
+        filterValue || null,
+        search || null,
+    ];
 
-    try {
-        const result = await pool.query(
-            `
-                SELECT
-                    users.id,
-                    users.email,
-                    users.created_at,
-                    users.updated_at,
-                    profiles.name,
-                    profiles.phone,
-                    profiles.address
-                FROM users
-                LEFT JOIN profiles
-                    ON profiles.user_id = users.id
-                ${whereClause}
-                ORDER BY ${sortColumn} ${sortDirection}
-                LIMIT ${limitParameter}
-                OFFSET ${offsetParameter}
-            `,
-            values,
-        );
+    const countResult = await pool.query(countQuery, countValues);
 
-        return res.json(result.rows);
-    } catch (err) {
-        return res.status(500).json({
-            error: "Database operation failed",
-        });
-    }
-});
+    const total = Number(countResult.rows[0].total);
+    const totalPage = Math.ceil(total / limit);
+    const page = Math.floor(offset / limit) + 1;
+
+    const query = `
+        SELECT
+            users.id,
+            users.email,
+            users.role,
+            users.created_at,
+            users.updated_at,
+            profiles.name,
+            profiles.phone,
+            profiles.address
+        FROM users
+        LEFT JOIN profiles
+            ON profiles.user_id = users.id
+        WHERE
+            (
+                $1::text IS NULL
+                OR $2::text IS NULL
+                OR ($1 = 'role' AND users.role = $2)
+            )
+            AND
+            (
+                $3::text IS NULL
+                OR users.email ILIKE '%' || $3 || '%'
+                OR profiles.name ILIKE '%' || $3 || '%'
+            )
+        ORDER BY ${sortColumn} ${sortDirection}
+        LIMIT $4
+        OFFSET $5;
+    `;
+
+    const values = [
+        filterBy || null,
+        filterValue || null,
+        search || null,
+        limit,
+        offset,
+    ];
+
+    const { rows } = await pool.query(query, values);
+
+    return {
+        data: rows,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPage,
+        },
+    };
+}
 ```
 
-Filtering and search both narrow the collection, but they do so differently. The `name` filter uses `profiles.name = ...` to look for an exact profile name, while search uses `ILIKE` for case-insensitive pattern matching across `users.email` and `profiles.name`. The search value is written as `%${search}%`, where `%` represents any sequence of characters. Placing `%` on both sides means the entered text can appear anywhere in the stored value.
-
-```mermaid
-flowchart LR
-    A["Search value: jon"] --> B["jon"]
-    A --> C["jon%"]
-    A --> D["%jon"]
-    A --> E["%jon%"]
-
-    B --> B1["Exactly jon"]
-    C --> C1["Begins with jon"]
-    D --> D1["Ends with jon"]
-    E --> E1["Contains jon anywhere"]
-```
-
-If the consumer searches for `jon`, `%${search}%` becomes `%jon%`, so PostgreSQL can match values such as `Jonas`, `JONAS`, or an email containing `jon`. The search value still uses a PostgreSQL placeholder rather than being inserted directly into the SQL.
-
-Sorting is controlled by `sort` and `order`. Because placeholders such as `$1` represent values rather than SQL column names, the requested sort field is mapped to one of the supported columns in `sortFields`, while the direction is limited to `ASC` or `DESC`. Pagination then uses `LIMIT` to control the maximum number of matching rows returned and `OFFSET` to control how many matching rows PostgreSQL skips first. For example, `GET /users?name=Jonas&search=jon&sort=name&order=asc&offset=20&limit=10` applies the filter and search, sorts the matching users by profile name, skips the first 20 matches, and returns up to the next 10.
-
-`LEFT JOIN` keeps users available to the collection even when they do not have a matching profile. PostgreSQL can therefore perform the join, filtering, search, sorting, and pagination as part of one collection query instead of returning every row for the application to process afterward. As database operations become more complex, some workflows require several related queries to succeed or fail together, which leads to working with transactions.
+The completed collection query now performs filtering, search, sorting, and pagination in PostgreSQL while also returning pagination metadata. Building the function gradually makes each responsibility clear before the individual operations are combined. The next section introduces transactions for workflows in which several related database operations must succeed or fail together.
