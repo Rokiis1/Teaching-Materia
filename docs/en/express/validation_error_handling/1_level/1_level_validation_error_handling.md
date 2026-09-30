@@ -36,6 +36,8 @@ When request data does not satisfy a validation rule, the application can create
 
 ## Validating Request Data
 
+Express applications commonly receive values through request bodies, route parameters, and query strings. Each source can be validated before the application relies on its data. The same basic pattern applies in each case. The route reads the value, checks whether it satisfies the operation's requirements, and passes an error to `next(error)` when validation fails.
+
 After `express.json()` parses a JSON request body, its values are available through `req.body`. The existing `POST /users` route can validate `email` before continuing.
 
 ```js
@@ -57,7 +59,47 @@ app.post("/users", (req, res, next) => {
 
 The route reads `email` from `req.body` and checks that it is a string containing at least one nonwhitespace character. The type check appears first so `trim()` is called only when `email` is a string. The call to `trim()` is used for the validation check and does not change the value stored in `email`.
 
-When validation fails, the route creates an `Error` with the message `"Email is required"` and assigns the HTTP status `400`, which represents **Bad Request**. Calling `next(error)` passes the error into the Express error handling flow instead of continuing through the normal route path. As covered in **Middleware Level 2**, the global error handler is registered after the application's routes and other normal middleware so errors passed from those earlier parts of the application can reach it.
+```js
+app.get("/users/:id", (req, res, next) => {
+    const { id } = req.params;
+
+    if (Number.isNaN(Number(id))) {
+        const error = new Error("User ID must be a number");
+        error.status = 400;
+
+        return next(error);
+    }
+
+    return res.status(200).json({
+        id,
+    });
+});
+```
+
+Because route parameters are received as strings, this example checks whether `id` contains only digits. A request such as `GET /users/42` passes validation, while `GET /users/abc` creates a validation error and passes it to the error handling flow.
+
+Query string values are available through `req.query`. A route can validate a query parameter when the operation requires a particular value.
+
+```js
+app.get("/users", (req, res, next) => {
+    const { limit } = req.query;
+
+    if (limit !== undefined && Number.isNaN(Number(limit))) {
+        const error = new Error("Limit must be a number");
+        error.status = 400;
+
+        return next(error);
+    }
+
+    return res.status(200).json({
+        limit,
+    });
+});
+```
+
+In this example, `limit` is optional, so the validation check runs only when the query parameter is provided. A request such as `GET /users?limit=10` passes validation, while `GET /users?limit=abc` creates a validation error and passes it to `next(error)`.
+
+The request body, route parameter, and query parameter examples validate different sources of incoming data, but validation failures follow the same error handling path. The global error handler can receive each error and return the corresponding HTTP response.
 
 ```js
 app.use((err, req, res, _) => {
@@ -69,15 +111,15 @@ app.use((err, req, res, _) => {
 
 Express recognizes error handling middleware by its four parameters. This final handler does not pass the error anywhere else because it finishes the request by sending a response. The fourth parameter is still required for the error handling middleware signature, so `_` is used to show that the parameter is intentionally unused.
 
-For example, sending `{"email": ""}` causes the validation check to fail. The route creates the error and passes it with `next(error)`. The global error handler receives it and returns HTTP `400` **Bad Request** with `{"error": "Email is required"}`. The `500` value is a fallback for errors that do not provide their own status.
+For example, sending `{"email": ""}`, requesting `GET /users/abc`, or requesting `GET /users?limit=abc` causes the corresponding validation check to fail. Each route creates an error with status `400` and passes it with `next(error)`. The global error handler then returns HTTP `400` **Bad Request** with the error message created by that route. The `500` value is a fallback for errors that do not provide their own status.
 
 ```mermaid
 flowchart LR
-    A["Request"] --> B["Validate email"]
-    B -->|"Valid"| C["201 response"]
+    A["Request Data"] --> B["Validate Value"]
+    B -->|"Valid"| C["Continue Processing"]
     B -->|"Invalid"| D["next(error)"]
-    D --> E["Global error handler"]
-    E --> F["400 response"]
+    D --> E["Global Error Handler"]
+    E --> F["400 Response"]
 ```
 
 !!! tip "Validate Before Using the Data"
