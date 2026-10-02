@@ -159,9 +159,9 @@ Conditional statements allow a program to choose what should happen. The next pa
 
 ## Loops Overview
 
-A **loop** is a control structure that repeatedly executes a block of code. Instead of writing the same instructions multiple times, a loop allows a program to repeat the same logic as needed.
+A **loop** is a control structure that repeatedly executes a block of code. Instead of writing the same instructions multiple times, a loop allows a program to repeat the same logic as needed. Python provides two main loop statements, `for` and `while`. A `for` loop processes values from an iterable, while a `while` loop repeats work as long as a condition remains `True`.
 
-Python commonly uses two types of loops: a `for` loop repeats work for a sequence of values, while a `while` loop repeats work as long as a condition remains `True`. The appropriate loop depends on what controls the repetition. We will begin with the `for` loop.
+Python also provides tools commonly used with `for` loops. The `enumerate()` function adds a counter while iterating, and `range()` provides a sequence of numbers that can control repetition. To understand how these tools support iteration, we will first explore how a `for` loop processes values from an iterable.
 
 ## For Loop
 

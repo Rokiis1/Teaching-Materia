@@ -18,7 +18,7 @@ Python objects can be categorized by whether their contents can be changed after
 
 **Immutable types** cannot be changed after they are created. They are similar to a **printed page**. The page itself cannot be edited after printing, so producing different content requires a new page. In Python, an operation that appears to change an immutable value creates or assigns a different object instead of modifying the original object in place.
 
-Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`, `NoneType`, and `frozenset`. Tuples are covered in more detail in **Data Types Level 2**, while `frozenset` is introduced later.
+Common immutable types include `int`, `float`, `complex`, `bool`, `str`, `tuple`, and `NoneType`. Tuples are covered in more detail in **Data Types Level 2**.
 
 ![Immutable Python types illustrated](./assets/images/immutable_type_intro_gif.gif)
 
@@ -32,7 +32,7 @@ The next distinction concerns how elements are organized and accessed, rather th
 
 ## Ordered vs Unordered
 
-Python collection and sequence types can also be described by whether they preserve a defined order and how their elements are accessed. **Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position-based access through an `index`. Their collection operations are covered in more detail in **Data Types Level 2**.
+Python collection and sequence types can also be described by whether they preserve a defined order and how their elements are accessed. **Ordered types** such as `list`, `tuple`, and `str` preserve the position of their elements. They are similar to a **bookshelf**, where each book has a specific place. These types support position-based access through an `index`. Their collection operations are covered in more detail in **Data Types Level 3**.
 
 ![Ordered Python types](./assets/images/ordered_types_intro.png)
 
