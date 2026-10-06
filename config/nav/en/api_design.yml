@@ -18,3 +18,34 @@
             - api_design/api_styles/rest/summary.md
 
         - api_design/api_styles/summary.md
+
+    - Authentication:
+        - api_design/authentication/overview.md
+
+        - Fundamentals:
+            - api_design/authentication/fundamentals/overview.md
+            - api_design/authentication/fundamentals/1_level/1_level_fundamentals.md
+            - api_design/authentication/fundamentals/summary.md
+
+        - Authentication Methods:
+            - api_design/authentication/methods/overview.md
+
+            - Session-Based Authentication:
+                - api_design/authentication/methods/session_based/overview.md
+                - api_design/authentication/methods/session_based/1_level/1_level_session_based.md
+                - api_design/authentication/methods/session_based/summary.md
+
+            - Token-Based Authentication:
+                - api_design/authentication/methods/token_based/overview.md
+                - api_design/authentication/methods/token_based/1_level/1_level_token_based.md
+                - api_design/authentication/methods/token_based/summary.md
+
+            - api_design/authentication/methods/summary.md
+
+        - api_design/authentication/summary.md
+
+    - Authorization:
+        - api_design/authorization/overview.md
+        - api_design/authorization/1_level/1_level_authorization.md
+        - api_design/authorization/2_level/2_level_authorization.md
+        - api_design/authorization/summary.md

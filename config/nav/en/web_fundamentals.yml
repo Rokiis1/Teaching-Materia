@@ -14,7 +14,18 @@
     - HTTP:
         - web_fundamentals/http/overview.md
         - web_fundamentals/http/1_level/1_level_http.md
+        - web_fundamentals/http/2_level/2_level_http.md
         - web_fundamentals/http/summary.md
+
+    - Web Storage:
+        - web_fundamentals/web_storage/overview.md
+
+        - Cookies:
+            - web_fundamentals/web_storage/cookies/overview.md
+            - web_fundamentals/web_storage/cookies.md
+            - web_fundamentals/web_storage/cookies/summary.md
+
+        - web_fundamentals/web_storage/summary.md
 
     - Web Security:
         - web_fundamentals/web_security/overview.md
