@@ -32,12 +32,12 @@
 
             - Session-Based Authentication:
                 - api_design/authentication/methods/session_based/overview.md
-                - api_design/authentication/methods/session_based/1_level/1_level_session_based.md
+                - api_design/authentication/methods/session_based/session_based.md
                 - api_design/authentication/methods/session_based/summary.md
 
             - Token-Based Authentication:
                 - api_design/authentication/methods/token_based/overview.md
-                - api_design/authentication/methods/token_based/1_level/1_level_token_based.md
+                - api_design/authentication/methods/token_based/token_based.md
                 - api_design/authentication/methods/token_based/summary.md
 
             - api_design/authentication/methods/summary.md
