@@ -21,11 +21,11 @@
         - software_architecture/application_patterns/mvc.md
         - software_architecture/application_patterns/summary.md
 
-    - Dependency Management:
-        - software_architecture/dependency_management/overview.md
-        - software_architecture/dependency_management/1_level/1_level_dependency_management.md
-        - software_architecture/dependency_management/2_level/2_level_dependency_management.md
-        - software_architecture/dependency_management/summary.md
+    - Dependencies and Dependency Injection:
+        - software_architecture/dependencies/overview.md
+        - software_architecture/dependencies/1_level/1_level_dependencies.md
+        - software_architecture/dependencies/2_level/2_level_dependencies.md
+        - software_architecture/dependencies/summary.md
 
     - Data Transfer and Boundaries:
         - software_architecture/data_transfer_boundaries/overview.md
