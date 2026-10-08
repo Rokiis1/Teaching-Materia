@@ -46,6 +46,25 @@
 
     - Authorization:
         - api_design/authorization/overview.md
-        - api_design/authorization/1_level/1_level_authorization.md
-        - api_design/authorization/2_level/2_level_authorization.md
+
+        - Fundamentals:
+            - api_design/authorization/fundamentals/overview.md
+            - api_design/authorization/fundamentals/1_level/1_level_fundamentals.md
+            - api_design/authorization/fundamentals/summary.md
+
+        - Role-Based Access Control:
+            - api_design/authorization/rbac/overview.md
+            - api_design/authorization/rbac/rbac.md
+            - api_design/authorization/rbac/summary.md
+
+        - Attribute-Based Access Control:
+            - api_design/authorization/abac/overview.md
+            - api_design/authorization/abac/abac.md
+            - api_design/authorization/abac/summary.md
+
+        - Access Control Lists:
+            - api_design/authorization/acl/overview.md
+            - api_design/authorization/acl/acl.md
+            - api_design/authorization/acl/summary.md
+
         - api_design/authorization/summary.md
