@@ -4,9 +4,9 @@
 
 - [Defining and calling functions](#defining-and-calling-functions)
 - [Return vs print](#return-vs-print)
-- [Function composition](#function-composition)
 - [Control flow inside functions](#control-flow-inside-functions)
 - [Functions with collections](#functions-with-collections)
+- [Function composition](#function-composition)
 
 **Python Functions Level 1** introduces how to define and call functions, pass arguments, and return results. You will then use conditions and loops inside functions, work with collections, and combine functions so that one returned result becomes another function's input.
 
