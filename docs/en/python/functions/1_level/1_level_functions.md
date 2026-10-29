@@ -8,15 +8,15 @@
 - [Control flow inside functions](#control-flow-inside-functions)
 - [Functions with collections](#functions-with-collections)
 
-**Python Functions Level 1** introduces how functions are defined, called, and supplied with values through arguments. We will examine the relationship between parameters and arguments, compare `return` with `print()`, and see how a returned value can be passed directly into another function call. We will then combine functions with control flow and collections so that the same reusable logic can work with different kinds of input.
+**Python Functions Level 1** introduces how to define and call functions, pass arguments, and return results. You will then use conditions and loops inside functions, work with collections, and combine functions so that one returned result becomes another function's input.
 
 ## Defining and calling functions
 
-A **function** is a reusable block of code that performs a specific task. Python uses the `def` keyword to define a function, while a **function call** executes the function. A function definition can include **parameters**, which receive values supplied as **arguments** when the function is called.
+A **function** is a reusable block of code that performs a specific task. Python uses `def` to create a **function definition**. Defining a function does not execute its body. A **function call** runs the function by using its name followed by parentheses. A definition can include **parameters**, which receive values supplied as **arguments** when the function is called.
 
 ![Anatomy of a Python function definition](./assets/images/function_definition.png)
 
-The diagram shows the main parts of a function definition and the corresponding call syntax. The `def` keyword begins the definition, the **function name** identifies the function, parameters represent values that the function can receive, and the indented statements form the **function body** that runs when the function is called. As introduced in **Python Documentation and Code Style Level 1**, function names that contain multiple words should normally use `snake_case`. The relationship between parameters and arguments becomes clearer in an actual function.
+The diagram distinguishes the definition from the call. In a definition, `def` introduces the function, its name identifies it, and the indented statements form its **body**. Parameters appear in parentheses after the name. As introduced in **Python Documentation and Code Style Level 1**, function names containing multiple words should normally use `snake_case`.
 
 ```py
 def greet(name):
@@ -26,38 +26,52 @@ greet("Jonas") # Hello Jonas
 greet("Ieva") # Hello Ieva
 ```
 
-Here, `name` is a parameter because it appears in the function definition, while `"Jonas"` and `"Ieva"` are arguments because they are supplied when the function is called. Each call executes the same function body with a different value and uses `print()` to display the result.
+Here, `name` is a parameter, while `"Jonas"` and `"Ieva"` are arguments supplied in separate calls. Each call runs the same body with a different value and displays a greeting.
 
-> **Note:** As introduced with module level docstrings in **Python Documentation and Code Style Level 1**, docstrings can also document individual functions. A function docstring is written as the first statement in the function body and briefly describes what the function does.
+!!! info "Function docstrings"
 
-```py
-def greet(name):
-    """Display a greeting for the supplied name"""
-    print("Hello", name)
-```
+    As introduced with module docstrings in **Python Documentation and Code Style Level 1**, a function can have a **docstring** as its first statement. It briefly describes what the function does.
 
-At **Python Functions Level 1**, the important idea is to recognize where a function docstring is placed and what it describes. Function docstrings are explored in more detail in **Python Documentation and Code Style Level 2**.
+    ```py
+    def greet(name):
+        """Display a greeting for the supplied name."""
+        print("Hello", name)
+    ```
 
-A function can define several parameters when it needs several input values. It can also use `return` to send a result back to the code that called it.
+    For now, focus on recognizing its placement. Function documentation is explored further in **Python Documentation and Code Style Level 2**.
+
+Functions can also receive multiple arguments and use `return` to send a value back to the calling code.
 
 ```py
 def add_numbers(a, b):
     return a + b
 
 result = add_numbers(10, 20)
-
 print(result) # 30
 ```
 
-The parameters `a` and `b` receive the arguments `10` and `20`. The function adds those values and returns `30`, which is stored in `result`. This allows the returned value to be used outside the function instead of only being displayed while the function runs.
+In this example, arguments are matched to parameters **by position**. The first argument, `10`, is assigned to `a`, and the second, `20`, to `b`. The function adds the values and returns `30`, which is stored in `result`.
 
-> **Note:** Variables created inside a function (including parameters) exist only inside that function. They are not accessible from outside. This is called **local scope**, and it is explored in detail in **Python Under the Hood Level 1**.
+!!! warning "Incorrect number of arguments"
 
-The first example uses `print()`, while the second uses `return`. The next section examines the difference between these two approaches.
+    `add_numbers()` requires two arguments. Calling it with only one raises a `TypeError`.
+
+    ```py
+    add_numbers(10)
+    # TypeError: add_numbers() missing 1 required positional argument: 'b'
+    ```
+
+    Supply both required arguments, as in `add_numbers(10, 20)`.
+
+!!! info "Local scope"
+
+    Parameters and variables created inside a function are **local** to that function. Their names are not directly accessible outside it. This is called **local scope** and is explored in **Python Under the Hood Level 1**.
+
+The examples so far have used both `print()` and `return`. Although they may appear similar when a result is displayed, they have different purposes.
 
 ## Return vs print
 
-The `print()` function and the `return` statement can both appear to produce a result, but they serve different purposes. `print()` displays a value as output, while `return` sends a value back to the code that called the function so that it can be stored or reused. The difference becomes clearer by comparing two versions of the same function. Consider `add_numbers()` written with `print()` instead of `return`.
+**`print()` displays a value**, while **`return` sends a value back to the caller** so it can be stored or reused. Consider a function that prints a sum.
 
 ```py
 def add_numbers(a, b):
@@ -66,7 +80,7 @@ def add_numbers(a, b):
 add_numbers(10, 20) # 30
 ```
 
-This version displays `30`, but the function does not make that value available for another calculation. When the result needs to be used elsewhere in the program, the function can return it instead.
+This displays `30` but does not return the number for another calculation. Returning the sum makes it available to the rest of the program.
 
 ```py
 def add_numbers(a, b):
@@ -79,24 +93,29 @@ print(result) # 30
 print(doubled_result) # 60
 ```
 
-The call `add_numbers(10, 20)` returns `30`, which is stored in `result` and then reused to calculate `doubled_result`. A returned value can therefore be assigned to a variable, used in an expression, or passed to another function, while `print()` only displays the value.
+The returned value is stored in `result` and reused to calculate `doubled_result`. It could also be passed as an argument to another function.
 
-A function that reaches the end of its body without executing `return` automatically returns `None`. This can be observed by storing the result of a function that only prints.
+A function that finishes without executing `return` automatically returns `None`. **`None` is Python's value for representing the absence of a result.** Printing something does not change that behavior.
 
 ```py
 def show_total(a, b):
     print(a + b)
 
-result = show_total(10, 20) # 30
-
+result = show_total(10, 20) # Displays 30
 print(result) # None
 ```
 
-The call to `show_total()` displays `30`, but `result` receives `None` because the function does not return the displayed value.
+The call displays `30`, but `result` receives `None` because `show_total()` does not return the sum.
 
-> **Note:** Use `print()` when displaying information is part of the program's purpose. Use `return` when another part of the program needs to receive and reuse a result.
+!!! question "Predict the output"
 
-Executing `return` also ends the current function call, so statements that follow an executed `return` in the same execution path are not reached.
+    Before running the `show_total()` example, predict what appears on each output line. Why does the second line show `None` rather than `30`?
+
+!!! tip "Choosing between return and print"
+
+    Use `print()` to display information. Use `return` when other code needs to receive and reuse a value.
+
+Executing `return` also ends the current function call. Statements after an executed `return` in the same execution path are not reached.
 
 ```py
 def get_message():
@@ -106,11 +125,120 @@ def get_message():
 print(get_message()) # Hello
 ```
 
-Returning values makes it possible for one function to produce input for another function. The next section builds on this idea with **function composition**.
+Because a function can return different results depending on its input, `return` becomes especially useful when combined with conditions.
+
+## Control flow inside functions
+
+Functions can use **control flow** to decide what happens for different inputs. An `if` statement works inside a function just as it does elsewhere in a program. Combined with `return`, it allows a function to produce different results depending on a condition. For example, a function can check whether a password meets a minimum length requirement.
+
+```py
+def check_password_length(password):
+    if len(password) < 8:
+        return "Password too short"
+
+    return "Password length is OK"
+
+print(check_password_length("1234")) # Password too short
+print(check_password_length("securepass123")) # Password length is OK
+```
+
+If the password has fewer than eight characters, the first `return` ends the call. Otherwise, execution reaches the final `return`. This keeps the decision in one reusable function, which a loop can call for several inputs.
+
+```py
+passwords = ["1234", "mypassword", "securepass123"]
+
+for password in passwords:
+    result = check_password_length(password)
+    print(result)
+```
+
+Here, the loop handles repetition, while the function handles the validation rule. Instead of calling a function repeatedly with individual values, we can also pass a collection directly into a function.
+
+## Functions with collections
+
+Lists, dictionaries, and other collections can be passed to functions just like individual values. A function can inspect their contents, perform calculations, or make decisions. For example, a program can check whether a username appears in a list of allowed users.
+
+```py
+def is_allowed_user(username, allowed_users):
+    return username in allowed_users
+
+allowed_users = ["Jonas", "Ieva", "Mantas"]
+
+print(is_allowed_user("Jonas", allowed_users)) # True
+print(is_allowed_user("Tomas", allowed_users)) # False
+```
+
+The `username` parameter receives the name to check, while `allowed_users` receives the list. The expression `username in allowed_users` is a **membership test** that returns `True` or `False`.
+
+A function can also calculate a result from several values in a list.
+
+```py
+def calculate_average(scores):
+    return sum(scores) / len(scores)
+
+test_scores = [8, 9, 10, 7]
+
+average = calculate_average(test_scores)
+
+print(average) # 8.5
+```
+
+The function uses `sum()` to calculate the total and `len()` to count the scores, then divides the total by the count. The calling code only needs to provide the list.
+
+!!! warning "Empty lists and averages"
+
+    This version assumes that `scores` is not empty. Otherwise, `len(scores)` is `0`, and division raises a `ZeroDivisionError`. A guard can return `None` to indicate that no average is available.
+
+    ```py
+    def calculate_average(scores):
+        if len(scores) == 0:
+            return None
+
+        return sum(scores) / len(scores)
+    ```
+
+    The caller should check for `None` before using the result in a calculation.
+
+A function can also contain a loop to process every item in a collection. This example counts scores that meet a passing threshold of `5`.
+
+```py
+def count_passing_scores(scores):
+    count = 0
+
+    for score in scores:
+        if score >= 5:
+            count = count + 1
+
+    return count
+
+print(count_passing_scores([4, 7, 9, 3])) # 2
+```
+
+The loop runs inside `count_passing_scores()` and examines each score. It increases `count` when a score meets the threshold, then returns the total after the loop finishes. Unlike the earlier password example, the function itself performs the repetition.
+
+Dictionaries can also be passed as arguments when several related values describe one item or person.
+
+```py
+def get_user_status(user):
+    if user["active"]:
+        return f"{user['name']} is active"
+
+    return f"{user['name']} is inactive"
+
+
+user = {
+    "name": "Austėja",
+    "active": True
+}
+
+print(get_user_status(user))  # Austėja is active
+```
+
+The function reads `"active"` to choose a result and `"name"` to construct the message. Across these examples, functions have received different kinds of input and returned useful results. The final section shows how one function's result can become another function's input.
 
 ## Function composition
 
-**Function composition** means using the returned value of one function as the input to another function. This builds directly on `return` because one function can produce a value that another function continues working with. The process can first be written in separate steps so that the intermediate value is easy to see.
+**Function composition** means using the value returned by one function as the input to another. This can first be written in separate steps so that the intermediate value is visible.
 
 ```py
 def add_tax(price):
@@ -126,9 +254,7 @@ result = add_shipping(taxed_price)
 print(result) # 29.2
 ```
 
-The call `add_tax(price)` returns `24.2`, which is stored in `taxed_price` and then supplied as the argument to `add_shipping()`. The second function uses that value and returns `29.2`, so the returned value of the first function becomes the input to the second function.
-
-When the intermediate value does not need to be stored or reused elsewhere, the same calls can be combined directly.
+The first call returns `24.2`, which is stored in `taxed_price`. The second receives that value and adds `5`, producing `29.2`. When the intermediate value does not need to be stored separately, the calls can be nested.
 
 ```py
 def add_tax(price):
@@ -143,89 +269,14 @@ result = add_shipping(add_tax(price))
 print(result) # 29.2
 ```
 
-Python evaluates the inner call `add_tax(price)` first and receives `24.2`. That returned value becomes the argument to `add_shipping()`, which returns `29.2`. Both examples perform the same operations. The first makes the intermediate value visible with a variable, while the second passes the value directly from one function call to another.
+Python evaluates the inner call `add_tax(price)` first, then passes its returned value to `add_shipping()`. Both approaches produce the same result, but the nested version avoids an intermediate variable. This example uses the functions defined in the preceding code block.
 
-At this level, the important idea is that function composition works with the **value returned by a function call**. Passing a function itself without calling it is a different concept introduced later with first class and higher order functions.
+!!! question "Trace the function calls"
 
-Functions can also use control flow to decide which value should be returned for different inputs. The next section applies this idea with conditional statements inside functions.
+    Before running the nested example, identify which function executes first, what it returns, and what value is passed to the outer function.
 
-## Control flow inside functions
+!!! note "Function calls and returned values"
 
-Functions can use control flow to decide what should happen for different input values. Conditional statements such as `if` work inside a function just as they do elsewhere in a program, while `return` can send the appropriate result back to the caller. A common practical use is validating input before the program continues, such as checking whether a password meets a minimum length requirement.
+    Composition here uses the **value returned by a function call**. Passing a function itself without calling it is a separate concept explored at a later level.
 
-```py
-def check_password_length(password):
-    if len(password) < 8:
-        return "Password too short"
-
-    return "Password length is OK"
-
-print(check_password_length("1234")) # Password too short
-print(check_password_length("securepass123")) # Password length is OK
-```
-
-The function receives a password and returns a different message depending on its length. Keeping the decision inside the function means the same validation rule can be applied whenever another password needs to be checked. The function can also be called repeatedly when several values need the same decision making logic.
-
-```py
-passwords = ["1234", "mypassword", "securepass123"]
-
-for password in passwords:
-    result = check_password_length(password)
-    print(result)
-```
-
-The loop handles each password one at a time, while `check_password_length()` remains responsible for deciding which result to return. This separates repetition from validation and avoids rewriting the password condition for every value.
-
-So far, these function calls have received individual strings or numbers. In practical programs, related values are often grouped in collections, and an entire collection can also be supplied as a function argument.
-
-## Functions with collections
-
-Lists, dictionaries, and other collections can be supplied as function arguments just like strings, numbers, and other values. This allows a function to receive a group of related data and perform a focused operation with it. For example, an application can keep a list of users who are allowed to access a particular area.
-
-```py
-def is_allowed_user(username, allowed_users):
-    return username in allowed_users
-
-allowed_users = ["Jonas", "Ieva", "Mantas"]
-
-print(is_allowed_user("Jonas", allowed_users)) # True
-print(is_allowed_user("Tomas", allowed_users)) # False
-```
-
-The `username` parameter receives the value being checked, while `allowed_users` receives the list. The expression `username in allowed_users` performs a membership test and produces either `True` or `False`, which the function returns directly.
-
-A list can also be passed to a function when a calculation requires several values. For example, a function can calculate the average of several test scores.
-
-```py
-def calculate_average(scores):
-    return sum(scores) / len(scores)
-
-test_scores = [8, 9, 10, 7]
-
-average = calculate_average(test_scores)
-
-print(average) # 8.5
-```
-
-The `scores` parameter receives the entire list. The function uses `sum()` to calculate the total and `len()` to determine how many scores are present, then returns the average. This keeps the calculation inside the function while the caller only needs to provide the collection.
-
-Dictionaries are useful when several related values describe one item or person. A function can receive the entire dictionary and use only the values needed for its task.
-
-```py
-def get_user_status(user):
-    if user["active"]:
-        return f"{user['name']} is active"
-
-    return f"{user['name']} is inactive"
-
-user = {
-    "name": "Austėja",
-    "active": True
-}
-
-print(get_user_status(user)) # Austėja is active
-```
-
-Here, the `user` parameter receives the dictionary. The function reads `"active"` to make a decision and `"name"` to build the returned message, combining collection access with the control flow introduced in the previous section.
-
-At this **Python Functions Level 1**, the important idea is that functions can receive both individual values and collections. They can then inspect, calculate, or make decisions using the supplied data while keeping the related logic in one reusable place.
+You have now learned how to define and call functions, work with their inputs and returned values, use control flow and collections, and combine function calls. **Python Functions Level 2** builds on these foundations by introducing **default parameter values** and **keyword arguments**, which give you more flexibility when supplying arguments. It then explores **arbitrary positional arguments (`*args`)** and **arbitrary keyword arguments (`**kwargs`)**, which allow functions to receive varying numbers of arguments.
