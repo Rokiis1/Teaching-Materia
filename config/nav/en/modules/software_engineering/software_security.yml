@@ -1,0 +1,45 @@
+- software_engineering/software_security/index.md
+
+- Security Fundamentals:
+    - software_engineering/software_security/security_fundamentals/overview.md
+    - software_engineering/software_security/security_fundamentals/security_fundamentals.md
+    - software_engineering/software_security/security_fundamentals/summary.md
+
+- Authentication:
+    - software_engineering/software_security/authentication/overview.md
+    - software_engineering/software_security/authentication/fundamentals/authentication_fundamentals.md
+
+    - Authentication Methods:
+        - software_engineering/software_security/authentication/methods/overview.md
+        - software_engineering/software_security/authentication/methods/session_based/session_based.md
+        - software_engineering/software_security/authentication/methods/token_based/token_based.md
+        - software_engineering/software_security/authentication/methods/summary.md
+
+    - software_engineering/software_security/authentication/summary.md
+
+- Authorization:
+    - software_engineering/software_security/authorization/overview.md
+    - software_engineering/software_security/authorization/fundamentals/authorization_fundamentals.md
+    - software_engineering/software_security/authorization/rbac/rbac.md
+    - software_engineering/software_security/authorization/methods/token_based/token_based.md
+    - software_engineering/software_security/authorization/summary.md
+
+- Security Tokens:
+    - software_engineering/software_security/security_tokens/overview.md
+
+    - Token Types:
+        - software_engineering/software_security/security_tokens/token_types/overview.md
+        - software_engineering/software_security/security_tokens/token_types/1_level/1_1_level_token_types.md
+        - software_engineering/software_security/security_tokens/token_types/2_level/2_1_level_token_types.md
+        - software_engineering/software_security/security_tokens/token_types/summary.md
+
+    - Token Formats:
+        - software_engineering/software_security/security_tokens/token_formats/overview.md
+        - JSON Web Tokens (JWT):
+            - software_engineering/software_security/security_tokens/token_formats/jwt/overview.md
+            - software_engineering/software_security/security_tokens/token_formats/jwt/1_level/1_level_jwt.md
+            - software_engineering/software_security/security_tokens/token_formats/jwt/2_level/2_level_jwt.md
+            - software_engineering/software_security/security_tokens/token_formats/jwt/summary.md
+        - software_engineering/software_security/security_tokens/token_formats/summary.md
+
+    - software_engineering/software_security/security_tokens/summary.md

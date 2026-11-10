@@ -1,0 +1,23 @@
+- Software Engineering:
+    - software_engineering/index.md
+
+    - Software Requirements:
+        - $include: modules/software_engineering/software_requirements.yml
+
+    - Software Architecture:
+        - $include: modules/software_engineering/software_architecture.yml
+
+    - Software Design:
+        - $include: modules/software_engineering/software_design.yml
+
+    - Software Construction:
+        - $include: modules/software_engineering/software_construction.yml
+
+    - Software Maintenance:
+        - $include: modules/software_engineering/software_maintenance.yml
+
+    - Software Configuration Management:
+        - $include: modules/software_engineering/software_configuration_management.yml
+
+    - Software Security:
+        - $include: modules/software_engineering/software_security.yml

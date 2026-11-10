@@ -19,6 +19,9 @@ site_url = "https://rokiis1.github.io/Teaching-Materia/en/"
 # Additional custom stylesheet
 extra_css = ["stylesheets/extra.css"]
 
+# Interactive quizzes
+extra_javascript = ["javascripts/quiz.js"]
+
 # Theme configuration
 [project.theme]
 variant = "classic"

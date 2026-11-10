@@ -1,0 +1,68 @@
+- software_quality/software_testing/index.md
+
+- Fundamentals of Testing:
+    - software_quality/software_testing/fundamentals_of_testing/overview.md
+    - software_quality/software_testing/fundamentals_of_testing/1_level/1_fundamentals_of_testing.md
+    - software_quality/software_testing/fundamentals_of_testing/2_level/2_fundamentals_of_testing.md
+    - software_quality/software_testing/fundamentals_of_testing/3_level/3_fundamentals_of_testing.md
+    - software_quality/software_testing/fundamentals_of_testing/summary.md
+
+
+- Software Development Lifecycle & Testing:
+    - software_quality/software_testing/software_development_lifecycle_and_testing/overview.md
+
+    - Sequential Development Models:
+        - software_quality/software_testing/software_development_lifecycle_and_testing/sequential_development_models/overview.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/sequential_development_models/1_level/1_sequential_development_models.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/sequential_development_models/2_level/2_sequential_development_models.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/sequential_development_models/summary.md
+
+    - Iterative, Incremental & Agile Approaches:
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/overview.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/1_level/1_iterative_incremental_agile_approaches.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/2_level/2_iterative_incremental_agile_approaches.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/3_level/3_iterative_incremental_agile_approaches.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/4_level/4_iterative_incremental_agile_approaches.md
+        - software_quality/software_testing/software_development_lifecycle_and_testing/iterative_incremental_agile_approaches/summary.md
+
+    - software_quality/software_testing/software_development_lifecycle_and_testing/summary.md
+
+- Levels of Testing:
+    - software_quality/software_testing/levels_of_testing/overview.md
+    - software_quality/software_testing/levels_of_testing/component_testing/component_testing.md
+    - software_quality/software_testing/levels_of_testing/component_integration_testing/component_integration_testing.md
+    - software_quality/software_testing/levels_of_testing/system_testing/system_testing.md
+    - software_quality/software_testing/levels_of_testing/system_integration_testing/system_integration_testing.md
+    - software_quality/software_testing/levels_of_testing/acceptance_testing/acceptance_testing.md
+    - software_quality/software_testing/levels_of_testing/summary.md
+
+- Types of Testing:
+    - software_quality/software_testing/types_of_testing/overview.md
+    - software_quality/software_testing/types_of_testing/static_testing/reviews.md
+    - software_quality/software_testing/types_of_testing/static_testing/static_analysis.md
+    - software_quality/software_testing/types_of_testing/dynamic_testing/build_and_change_related_testing.md
+    - software_quality/software_testing/types_of_testing/dynamic_testing/installation_and_configuration_testing.md
+    - software_quality/software_testing/types_of_testing/summary.md
+
+- Test Case Design:
+    - software_quality/software_testing/test_case_design/overview.md
+    - software_quality/software_testing/test_case_design/test_design_fundamentals/test_design_fundamentals.md
+    - software_quality/software_testing/test_case_design/experience_based_testing_techniques/experience_based_testing_techniques.md
+    - software_quality/software_testing/test_case_design/black_box_testing_techniques/black_box_testing_techniques.md
+    - software_quality/software_testing/test_case_design/white_box_testing_techniques/white_box_testing_techniques.md
+    - software_quality/software_testing/test_case_design/summary.md
+
+- Test Layers:
+    - software_quality/software_testing/test_layers/overview.md
+    - software_quality/software_testing/test_layers/test_layer_ui/test_layer_ui.md
+    - software_quality/software_testing/test_layers/test_layer_api/test_layer_api.md
+    - software_quality/software_testing/test_layers/test_layer_db/test_layer_db.md
+    - software_quality/software_testing/test_layers/summary.md
+
+- Test Execution:
+    - software_quality/software_testing/test_execution/overview.md
+    - software_quality/software_testing/test_execution/1_level/1_test_execution.md
+    - software_quality/software_testing/test_execution/2_level/2_test_execution.md
+    - software_quality/software_testing/test_execution/3_level/3_test_execution.md
+    - software_quality/software_testing/test_execution/summary.md
+

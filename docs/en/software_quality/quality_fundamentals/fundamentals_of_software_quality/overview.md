@@ -1,0 +1,5 @@
+# Overview
+
+**Fundamentals of Software Quality** develops the terminology and principles needed to recognize quality problems and understand how different quality activities address them. Building on the [Software Quality introduction](../../index.md) and the [Quality Fundamentals introduction](../index.md), this module moves from general quality concepts to the distinctions used in software engineering practice.
+
+The discussion begins by distinguishing testing from debugging, then examines the relationship between errors, defects, failures, and root causes, including why defects do not always lead to observable failures. It next explores quality assurance and quality control, followed by verification and validation, which distinguish checking whether software satisfies specified requirements from determining whether it is suitable for its intended use. Finally, it considers the purposes of quality activities, including prevention, detection, correction, and improvement, and explains why testing alone cannot guarantee software quality. These topics are developed in [Fundamentals of Software Quality](fundamentals_of_software_quality.md).

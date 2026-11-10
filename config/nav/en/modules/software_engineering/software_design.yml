@@ -1,0 +1,21 @@
+- Design Principles:
+    - design_principles/index.md
+
+- Design Patterns:
+    - design_patterns/index.md
+
+- Component Design:
+    - component_design/index.md
+
+- Software Interface Design:
+    - Interface Fundamentals:
+        - software_interface_design/interface_fundamentals/overview.md
+
+    - Interface Contracts:
+        - software_interface_design/interface_contracts/overview.md
+
+    - Internal Interface Design:
+        - software_interface_design/internal_interface_design/overview.md
+
+    - Public Interface Design:
+        - software_interface_design/public_interface_design/overview.md

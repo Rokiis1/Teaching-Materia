@@ -1,0 +1,17 @@
+- Software Quality:
+    - software_quality/index.md
+
+    - Quality Fundamentals:
+        - $include: modules/software_quality/quality_fundamentals.yml
+
+    - Software Testing:
+        - $include: modules/software_quality/software_testing.yml
+
+    - Quality Engineering:
+        - $include: modules/software_quality/quality_engineering.yml
+
+    - Quality Management:
+        - $include: modules/software_quality/quality_management.yml
+
+    - Quality Attributes & Evaluation:
+        - $include: modules/software_quality/quality_attributes_and_evaluation.yml

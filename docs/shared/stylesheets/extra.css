@@ -654,3 +654,66 @@
   background-color: #5e5e5e;
   opacity: 0.55;
 }
+
+/* Interactive knowledge checks */
+
+.md-typeset .knowledge-question {
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border-color-light);
+  border-radius: 0.5rem;
+  background-color: var(--surface-color);
+}
+
+.md-typeset .knowledge-question button[data-option] {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--border-color-light);
+  border-radius: 0.375rem;
+  background-color: var(--button-bg-default);
+  color: var(--button-text-default);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.md-typeset .knowledge-question button[data-option]:hover:not(:disabled),
+.md-typeset .knowledge-question button[data-option]:focus-visible {
+  border-color: var(--primary-color);
+  outline-offset: 2px;
+}
+
+.md-typeset .knowledge-question button.quiz-correct {
+  border-color: #25834b;
+  background-color: rgb(37 131 75 / 12%);
+}
+
+.md-typeset .knowledge-question button.quiz-incorrect {
+  border-color: #c44545;
+  background-color: rgb(196 69 69 / 12%);
+}
+
+.md-typeset .knowledge-question button:disabled {
+  cursor: default;
+}
+
+.md-typeset .knowledge-question .quiz-feedback {
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .knowledge-question {
+  --surface-color: #292d34;
+  --button-bg-default: #30343c;
+  --button-text-default: #d8dbe0;
+}
+
+/* Prevent text selection in knowledge checks */
+
+.md-typeset .knowledge-question,
+.md-typeset .knowledge-question * {
+  -webkit-user-select: none;
+  user-select: none;
+}

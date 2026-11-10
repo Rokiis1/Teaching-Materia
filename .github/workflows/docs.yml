@@ -40,14 +40,20 @@ jobs:
         run: |
           mkdir -p docs/en/assets
           mkdir -p docs/en/stylesheets
+          mkdir -p docs/en/javascripts
+
           mkdir -p docs/lt/assets
           mkdir -p docs/lt/stylesheets
+          mkdir -p docs/lt/javascripts
 
           cp docs/shared/assets/techin-brand.svg docs/en/assets/techin-brand.svg
           cp docs/shared/assets/techin-brand.svg docs/lt/assets/techin-brand.svg
 
           cp docs/shared/stylesheets/extra.css docs/en/stylesheets/extra.css
           cp docs/shared/stylesheets/extra.css docs/lt/stylesheets/extra.css
+
+          cp docs/shared/javascripts/quiz.js docs/en/javascripts/quiz.js
+          cp docs/shared/javascripts/quiz.js docs/lt/javascripts/quiz.js
 
       - name: Generate navigation configs
         run: uv run python scripts/generate_config.py

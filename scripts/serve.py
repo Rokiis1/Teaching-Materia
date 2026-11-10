@@ -25,9 +25,11 @@ def copy_shared_assets():
     for language in ["en", "lt"]:
         assets_dir = Path(f"docs/{language}/assets")
         stylesheets_dir = Path(f"docs/{language}/stylesheets")
+        javascripts_dir = Path(f"docs/{language}/javascripts")
 
         assets_dir.mkdir(parents=True, exist_ok=True)
         stylesheets_dir.mkdir(parents=True, exist_ok=True)
+        javascripts_dir.mkdir(parents=True, exist_ok=True)
 
         shutil.copy2(
             "docs/shared/assets/techin-brand.svg",
@@ -37,6 +39,11 @@ def copy_shared_assets():
         shutil.copy2(
             "docs/shared/stylesheets/extra.css",
             stylesheets_dir / "extra.css",
+        )
+
+        shutil.copy2(
+            "docs/shared/javascripts/quiz.js",
+            javascripts_dir / "quiz.js",
         )
 
 def build():
