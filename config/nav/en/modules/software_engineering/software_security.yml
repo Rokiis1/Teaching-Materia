@@ -43,3 +43,19 @@
         - software_engineering/software_security/security_tokens/token_formats/summary.md
 
     - software_engineering/software_security/security_tokens/summary.md
+
+- Cryptography & Data Protection:
+    - software_engineering/software_security/cryptography_and_data_protection/overview.md
+
+    - Hashing:
+        - software_engineering/software_security/cryptography_and_data_protection/hashing/overview.md
+
+        - Password Hashing:
+            - software_engineering/software_security/cryptography_and_data_protection/hashing/password_hashing/overview.md
+            - software_engineering/software_security/cryptography_and_data_protection/hashing/password_hashing/1_level/1_level_password_hashing.md
+            - software_engineering/software_security/cryptography_and_data_protection/hashing/password_hashing/2_level/2_level_password_hashing.md
+            - software_engineering/software_security/cryptography_and_data_protection/hashing/password_hashing/summary.md
+
+        - software_engineering/software_security/cryptography_and_data_protection/hashing/summary.md
+
+    - software_engineering/software_security/cryptography_and_data_protection/summary.md

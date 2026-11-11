@@ -1,6 +1,6 @@
 # Summary
 
-This summary brings together the key concepts from the **Token Types** module. It provides a concise reference for reviewing the purposes, usage, relationships, and security requirements of different security tokens. The material is divided into **Level 1**, which establishes the practical foundations of access, ID, refresh, and session tokens, and **Level 2**, which examines their relationships, lifecycle management, usage constraints, and security considerations.
+This summary brings together the key concepts from the **Token Types** topic, providing a reference for reviewing the purposes, usage, and relationships of common security tokens. It covers the foundations introduced in **Level 1**, alongside the lifecycle management, usage constraints, and security considerations explored in **Level 2**.
 
 ## Table of Contents: Token Types Summary
 
@@ -9,112 +9,101 @@ This summary brings together the key concepts from the **Token Types** module. I
 
 ## Token Types Level 1
 
-Level 1 establishes the fundamental distinctions between **access tokens**, **ID tokens**, **refresh tokens**, and **session tokens**. Each serves a particular purpose within authentication, authorization, or session management, and the systems receiving them must interpret them according to their intended use.
+**Access tokens**, **session tokens**, **refresh tokens**, and **ID tokens** support different aspects of authentication, authorization, and session management. Although each serves a distinct purpose, several may be used together within the same application.
 
-**Access tokens** are credentials presented to protected resources, such as APIs, to request access. They represent an authorization granted under the applicable protocol and may carry or reference information about the client, authorized permissions, and other relevant conditions. A resource server must validate the token and determine whether the requested operation is permitted. **A valid access token does not automatically authorize every operation.**
-
-**ID tokens** are used in **OpenID Connect (OIDC)** to communicate information about an authentication event and the authenticated user to the intended client application. They are JWTs containing claims such as the issuer, subject, audience, and relevant authentication information. An ID token helps the client establish information about the authenticated user, but **it is not a substitute for an access token when requesting protected API resources**.
-
-**Refresh tokens** allow eligible clients to obtain new access tokens without requiring the user to repeat the entire authorization process. They are generally presented to an authorization server rather than a resource server. Refresh tokens may be long-lived relative to access tokens, making their secure storage, restricted use, and lifecycle management particularly important. Their issuance and use depend on the applicable authorization flow and security policy.
-
-**Session tokens** identify or represent an established session, allowing an application to maintain authenticated state across multiple requests. In server-managed sessions, a session identifier commonly refers to information stored on the server. Session tokens are often carried in browser cookies, although a cookie is a transport and storage mechanism rather than a token type itself. The application must associate the presented token with an active, valid session before accepting it.
-
-These token types can work together within the same application, although not every system uses all four. The following diagram illustrates a simplified workflow in which a client receives tokens after authentication, uses an access token to request protected resources, renews access when permitted, and maintains a separate application session.
+For example, a website may receive and validate an ID token during an OpenID Connect authentication process, then establish its own application session to recognize the user across subsequent requests. The application may also use access tokens to request protected API resources and, if a refresh token is issued, request replacement access tokens when needed. The following diagram illustrates this possible arrangement.
 
 ```mermaid
 flowchart TB
-    U["User"] -->|"Authenticates"| AS["Authorization Server / Identity Provider"]
+    U["User"]
+    I["Identity Provider / Authorization Server"]
+    C["Client Application"]
+    S["Application Session"]
+    B["Browser"]
+    API["Protected API"]
+    D["Access Decision"]
 
-    AS -->|"ID Token"| C["Client Application"]
-    AS -->|"Access Token"| C
-    AS -->|"Refresh Token (if issued)"| C
+    U -->|"Completes sign-in process"| I
+    I -->|"ID token through OIDC process"| C
+    I -->|"Access token"| C
+    I -.->|"Refresh token, if issued"| C
 
-    C -->|"Access Token"| API["Protected API"]
-    API -->|"Validates token and checks authorization"| R["Resource Access Decision"]
+    C -->|"Creates session, if used"| S
+    C -->|"Sets session cookie"| B
+    B -->|"Session cookie on later requests"| C
+    C -->|"Checks application session"| S
 
-    C -->|"Refresh Token"| AS
-    AS -->|"New Access Token (if permitted)"| C
+    C -->|"Access token"| API
+    API -->|"Validates token and checks permissions"| D
 
-    C -->|"Establishes application session"| S["Application Session"]
-    S -->|"Session Token"| B["Browser"]
-    B -->|"Session Token on subsequent requests"| S
+    C -.->|"Refresh token for renewal"| I
+    I -.->|"Replacement access token, if approved"| C
 ```
 
-The diagram shows that **token issuance, resource access, renewal, and session management are distinct operations**. An ID token communicates authentication information to the client, an access token is presented to a protected resource, a refresh token supports obtaining new access tokens, and a session token maintains continuity within the application. The exact sequence and tokens issued depend on the protocol and system architecture.
-
-The following table summarizes their fundamental differences.
-
-| Token type        | Primary purpose                        | Typical recipient                      | Common usage                                                     |
-| ----------------- | -------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| **Access token**  | Request access to protected resources  | Resource server or API                 | Accessing an authorized endpoint                                 |
-| **ID token**      | Communicate authentication information | Client application                     | Processing an OpenID Connect sign-in                             |
-| **Refresh token** | Obtain new access tokens               | Authorization server                   | Renewing access without repeating the full authorization process |
-| **Session token** | Maintain an established session        | Session-managing application or server | Recognizing an authenticated browser session                     |
-
-These tokens may participate in the same application workflow, but **their purposes are not interchangeable**. A client may receive an ID token after authentication, use an access token to request API resources, and later use a refresh token to obtain renewed access. Separately, an application may establish a session to maintain the user's authenticated state across browser requests. Understanding these distinctions helps explain why each token must be issued, processed, and accepted according to its intended purpose.
+This example demonstrates how the token types can complement one another without being interchangeable. **ID tokens** communicate authentication information, **session tokens** represent established application sessions, **access tokens** support requests to protected resources, and **refresh tokens** support access-token renewal. Not every application requires all four, and each token must be processed according to its intended purpose and the system's security requirements.
 
 ## Knowledge Check
 
-Test your understanding of the key concepts covered in the Token Types module. Select one answer for each question to receive feedback and an explanation.
+Test your understanding of the key concepts covered in the Token Types topic. Select one answer for each question to receive feedback and an explanation.
 
 <div class="knowledge-check">
 
-  <div class="knowledge-question" data-answer="B" data-explanation="Access tokens are presented to protected resources, such as APIs, to request access according to the permissions and restrictions associated with the token.">
+  <div class="knowledge-question" data-answer="B" data-explanation="An access token allows a client application to request protected resources. The resource server must validate the token and determine whether the requested operation is permitted.">
     <p><strong>Access Tokens</strong></p>
-    <p>What is the primary purpose of an access token?</p>
+    <p>How is an access token used when accessing a protected API?</p>
     <div class="quiz-options">
-      <button type="button" data-option="A">A. Maintain an application session across browser requests</button>
-      <button type="button" data-option="B">B. Request access to protected resources</button>
-      <button type="button" data-option="C">C. Communicate authentication information to an OIDC client</button>
-      <button type="button" data-option="D">D. Obtain a new access token from an authorization server</button>
+      <button type="button" data-option="A">A. It automatically grants access to every operation supported by the API</button>
+      <button type="button" data-option="B">B. It is presented to the API, which validates it and checks whether the requested access is permitted</button>
+      <button type="button" data-option="C">C. It is exchanged directly with the browser to establish a server-managed session</button>
+      <button type="button" data-option="D">D. It replaces the need for the API to perform authorization checks</button>
     </div>
     <p class="quiz-feedback" role="status" aria-live="polite"></p>
   </div>
 
-  <div class="knowledge-question" data-answer="C" data-explanation="An OpenID Connect ID token communicates authentication information to its intended client application. It is not intended to replace an access token when accessing protected APIs.">
-    <p><strong>ID Tokens</strong></p>
-    <p>Which statement correctly describes an ID token?</p>
-    <div class="quiz-options">
-      <button type="button" data-option="A">A. It authorizes every API request made by the authenticated user</button>
-      <button type="button" data-option="B">B. It maintains a server-side session through a browser cookie</button>
-      <button type="button" data-option="C">C. It communicates authentication information to the intended client application</button>
-      <button type="button" data-option="D">D. It is used to renew expired access tokens at a resource server</button>
-    </div>
-    <p class="quiz-feedback" role="status" aria-live="polite"></p>
-  </div>
-
-  <div class="knowledge-question" data-answer="A" data-explanation="A refresh token is presented to the authorization server to request a new access token when renewal is permitted. It is not intended for direct access to protected resources.">
-    <p><strong>Refresh Tokens</strong></p>
-    <p>Where is a refresh token typically presented?</p>
-    <div class="quiz-options">
-      <button type="button" data-option="A">A. To an authorization server when requesting a new access token</button>
-      <button type="button" data-option="B">B. To a protected API when requesting application data</button>
-      <button type="button" data-option="C">C. To a browser to verify the user's identity directly</button>
-      <button type="button" data-option="D">D. To a resource server to establish a new application session</button>
-    </div>
-    <p class="quiz-feedback" role="status" aria-live="polite"></p>
-  </div>
-
-  <div class="knowledge-question" data-answer="D" data-explanation="Session tokens identify or represent established sessions, allowing an application to recognize subsequent requests associated with the same active session.">
+  <div class="knowledge-question" data-answer="C" data-explanation="A session token identifies or represents an established application session. In a server-managed session, a session identifier commonly allows the application to locate and validate session information stored on the server.">
     <p><strong>Session Tokens</strong></p>
-    <p>What is the primary role of a session token?</p>
+    <p>What is the role of a session token in a server-managed application session?</p>
     <div class="quiz-options">
-      <button type="button" data-option="A">A. Describe an authentication event to an OpenID Connect client</button>
-      <button type="button" data-option="B">B. Grant access to every protected API in a system</button>
-      <button type="button" data-option="C">C. Renew access tokens without contacting an authorization server</button>
-      <button type="button" data-option="D">D. Maintain continuity across requests associated with an established session</button>
+      <button type="button" data-option="A">A. It authorizes access to any protected API without further checks</button>
+      <button type="button" data-option="B">B. It obtains replacement access tokens from an authorization server</button>
+      <button type="button" data-option="C">C. It allows the application to recognize and validate an established session across requests</button>
+      <button type="button" data-option="D">D. It communicates an OpenID Connect authentication result to the client application</button>
     </div>
     <p class="quiz-feedback" role="status" aria-live="polite"></p>
   </div>
 
-  <div class="knowledge-question" data-answer="B" data-explanation="Token types have different purposes and intended recipients. A token valid for one purpose cannot automatically be substituted for another, and token validity alone does not authorize every operation.">
-    <p><strong>Token Types and Intended Use</strong></p>
-    <p>Which statement about different token types is correct?</p>
+  <div class="knowledge-question" data-answer="A" data-explanation="A refresh token is presented to an authorization server to request a replacement access token. The authorization server evaluates the renewal request and may approve or reject it.">
+    <p><strong>Refresh Tokens</strong></p>
+    <p>What happens when a client application uses a refresh token?</p>
     <div class="quiz-options">
-      <button type="button" data-option="A">A. Any valid token can be used interchangeably for authentication and authorization</button>
-      <button type="button" data-option="B">B. Each token type must be processed according to its intended purpose and recipient</button>
-      <button type="button" data-option="C">C. All applications must issue access, ID, refresh, and session tokens together</button>
-      <button type="button" data-option="D">D. A valid access token automatically permits every operation on a protected resource</button>
+      <button type="button" data-option="A">A. It requests a replacement access token from the authorization server, subject to approval</button>
+      <button type="button" data-option="B">B. It gains direct access to protected resources without an access token</button>
+      <button type="button" data-option="C">C. It automatically receives a new access token regardless of the refresh token's validity</button>
+      <button type="button" data-option="D">D. It establishes an application session on the resource server</button>
+    </div>
+    <p class="quiz-feedback" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="knowledge-question" data-answer="D" data-explanation="An OpenID Connect ID token communicates information about an authenticated user and the authentication event to its intended client application. The client must validate the token before trusting its claims.">
+    <p><strong>ID Tokens</strong></p>
+    <p>Which statement correctly describes the purpose of an ID token?</p>
+    <div class="quiz-options">
+      <button type="button" data-option="A">A. It grants the client permission to perform any operation on a protected API</button>
+      <button type="button" data-option="B">B. It allows a resource server to renew expired access tokens</button>
+      <button type="button" data-option="C">C. It replaces application session management in every authentication system</button>
+      <button type="button" data-option="D">D. It communicates authentication information to the intended client application, which must validate it</button>
+    </div>
+    <p class="quiz-feedback" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="knowledge-question" data-answer="B" data-explanation="Token types have distinct purposes and are not interchangeable. An application may use several token types together, but the combination depends on its architecture and security requirements.">
+    <p><strong>Token Types and Their Relationships</strong></p>
+    <p>Which statement correctly describes how different token types may be used within an application?</p>
+    <div class="quiz-options">
+      <button type="button" data-option="A">A. Every application must use all four token types to support authentication</button>
+      <button type="button" data-option="B">B. Different token types may work together, but each must be processed according to its intended purpose</button>
+      <button type="button" data-option="C">C. Access tokens and session tokens are interchangeable because both can be used across multiple requests</button>
+      <button type="button" data-option="D">D. A valid ID token can always replace an access token when requesting protected API resources</button>
     </div>
     <p class="quiz-feedback" role="status" aria-live="polite"></p>
   </div>

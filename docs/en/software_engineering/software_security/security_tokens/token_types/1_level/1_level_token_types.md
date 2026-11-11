@@ -3,130 +3,164 @@
 ## Table of Contents: Token Types
 
 - [Access Tokens](#access-tokens)
-- [ID Tokens](#id-tokens)
-- [Refresh Tokens](#refresh-tokens)
 - [Session Tokens](#session-tokens)
-- [Comparison of Token Types](#comparison-of-token-types)
+- [Refresh Tokens](#refresh-tokens)
+- [ID Tokens](#id-tokens)
 
-**Token Types Level 1** builds on the introductory overview by examining the practical use of each token type. The following sections explain when tokens are issued, which systems receive and process them, and how they support common application workflows through examples. A final comparison brings together their key characteristics and usage requirements.
+**Token Types Level 1** introduces four common security token types, including **access tokens**, **session tokens**, **refresh tokens**, and **ID tokens**. Each serves a distinct purpose within authentication, authorization, or session management. The following sections explore their roles, intended recipients, and practical usage through examples and diagrams, while also showing how these token types may be used independently or together within an application. The discussion begins with **access tokens** and their role in requesting access to protected resources.
 
 ## Access Tokens
 
-An **access token** is a security token that a client presents when requesting access to a protected resource. It represents authorization granted under particular conditions, allowing the receiving system to determine whether the requested operation is permitted. An access token does not necessarily authorize every resource or operation.
+An **access token** is a security token issued by an **authorization server** that allows a client application to request access to protected resources, such as APIs. The client presents the token to a **resource server**, which validates it and determines whether the requested access is permitted.
 
-Access tokens are issued by a trusted component, such as a **token-issuing service**, and presented to a **resource server**, such as a protected API. The resource server validates the token and evaluates the request against applicable authorization rules. For example, a token might permit reading calendar events without allowing them to be modified or deleted.
-
-Consider a calendar application that retrieves events from a calendar API. The application obtains an access token and includes it when requesting events. If the token is valid and the request is authorized, the API returns the permitted data. The following diagram illustrates this simplified interaction.
+Consider a calendar application that retrieves events from a protected calendar API. The application obtains an access token from the authorization server and presents it when requesting calendar events. The API checks the token and the applicable permissions before returning the requested data or rejecting the request. The following diagram illustrates this interaction and its possible outcomes.
 
 ```mermaid
 sequenceDiagram
     participant C as Calendar Application
-    participant I as Token-Issuing Service
+    participant A as Authorization Server
     participant R as Calendar API
 
-    C->>I: Request access token
-    I-->>C: Return access token if permitted
-    C->>R: Request calendar events with access token
-    Note over R: Validate token and check authorization
-    R-->>C: Return permitted calendar events
+    C->>A: Request access token
+
+    alt Token request approved
+        A-->>C: Issue access token
+        C->>R: Request calendar events with access token
+        R->>R: Validate token and check permissions
+
+        alt Token valid and access permitted
+            R-->>C: Return calendar events
+        else Token invalid or access not permitted
+            R-->>C: Reject access request
+        end
+    else Token request denied
+        A-->>C: Reject token request
+    end
 ```
 
-Access tokens support authorization to protected resources, but they do not communicate authentication results to a client application. In OpenID Connect, that responsibility belongs to ID tokens.
-
-## ID Tokens
-
-An **ID token** is a security token defined by **OpenID Connect (OIDC)**, an identity protocol built on OAuth 2.0. It communicates claims about an authenticated user and their authentication event to a client application. Authentication itself does not require OIDC or OAuth 2.0; applications using other authentication approaches, such as locally managed email-and-password sign-in, do not need to issue OIDC ID tokens.
-
-An **OpenID Provider** issues ID tokens to a **client application**. The client validates the token and uses its claims to identify the authenticated user in the provider's identity system and obtain information about the authentication event. An ID token is intended for the client, not for accessing protected APIs.
-
-Consider a website that offers **Sign in with Google**. The website initiates an OIDC sign-in process, and Google authenticates the user. In the Authorization Code Flow, the website receives an authorization code through a browser redirect and exchanges it for tokens, including an ID token. After validating the ID token, the website can identify the user and may establish its own application session. The following diagram simplifies this process by abbreviating the browser redirects and interactions.
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant C as Website
-    participant P as Google (OpenID Provider)
-
-    U->>C: Choose Sign in with Google
-    C->>P: Initiate OpenID Connect sign-in
-    P->>U: Authenticate user
-    P-->>U: Redirect with authorization code
-    U->>C: Deliver authorization code
-    C->>P: Exchange code for tokens
-    P-->>C: Return tokens including ID token
-    Note over C: Validate ID token and identify user
-    C-->>U: Continue with authenticated session
-```
-
-ID tokens and access tokens may be issued during the same OpenID Connect process, but they serve different purposes. An ID token communicates authentication information to the client, while an access token is used to request protected resources. When access tokens expire, applications may use refresh tokens to request replacements without requiring users to authenticate again.
-
-## Refresh Tokens
-
-A **refresh token** is a security token that a client uses to request a new access token when an existing one expires or needs to be replaced. It supports continued access without requiring the user to authenticate again each time an access token expires. Refresh tokens can be used in different token-based systems, independently of the authentication method or access-token format.
-
-When a system supports refresh tokens, the client presents one to a **token-issuing service**, rather than to the API serving protected resources. The service checks whether the refresh token is valid and whether renewal is permitted. It may reject a request if the token has expired, been revoked, or otherwise fails the system's requirements.
-
-Consider a mobile calendar application with its own email-and-password sign-in. After authentication, its backend issues an access token and a refresh token. When the access token expires, the application requests a replacement using the refresh token. If renewal is permitted, it can continue accessing calendar events without another sign-in. The following diagram illustrates this interaction.
-
-```mermaid
-sequenceDiagram
-    participant C as Calendar Application
-    participant T as Token-Issuing Service
-    participant R as Calendar API
-
-    Note over C: Access token expires
-    C->>T: Request replacement using refresh token
-    Note over T: Validate refresh token and renewal request
-    T-->>C: Return new access token if permitted
-    C->>R: Request events with new access token
-    Note over R: Validate token and check authorization
-    R-->>C: Return permitted calendar events
-```
-
-Refresh tokens support access-token renewal, whereas session tokens help applications maintain continuity across requests within an established session.
+An access token may be used for multiple requests while it remains valid and the requested access is permitted. Applications can also use **session tokens** to recognize established application sessions. Although both can support authenticated interactions, they serve different purposes, as explored in the following section.
 
 ## Session Tokens
 
-A **session token** is a security token or identifier used to associate incoming requests with an established application session. It allows a system to recognize an existing session across requests without requiring the user to authenticate for every interaction. A common implementation uses a **session identifier** that refers to session information stored on a server, although other designs are possible.
+A **session token** is a security token or identifier that allows an application to recognize an established session across multiple requests without requiring the user to sign in repeatedly. In a common **server-managed session**, the application stores session information on the server and provides the browser with a **session identifier**, usually through a cookie. When the browser sends this identifier with later requests, the server uses it to locate the session, verify that it remains valid, and check whether the requested operation is permitted.
 
-In a **server-managed session**, the application creates a session after successful authentication and stores its associated information on the server. It provides the client with a session identifier, often in a **session cookie**. When the browser's cookie transmission conditions are met, it sends the cookie with later requests. The server uses the identifier to find the session, verify that it remains valid, and evaluate the request. The cookie carries the identifier; the session information remains on the server.
+Session tokens and access tokens can both support authenticated requests, but they serve different purposes. Session tokens identify or represent established application sessions, while access tokens represent authorization to access protected resources. Depending on the application's design, either may be used without requiring both.
 
-Consider an online shopping website. After a customer signs in with an email address and password, the website creates a session and sets a session cookie in the browser. When the customer opens the shopping cart, the browser includes the cookie, allowing the website to locate the existing session and return the permitted cart information without another sign-in.
+Consider an employee portal that uses **Microsoft Entra ID** for authentication and maintains its own server-managed sessions. When an employee signs in, Microsoft Entra ID verifies their identity through the configured sign-in process. After validating the authentication result, the portal creates a session and sends a session cookie to the browser. When the employee later opens their profile, the portal uses the cookie to recognize the existing session and determine whether the requested information can be accessed. The following diagram illustrates this approach and its possible outcomes.
+
+```mermaid
+sequenceDiagram
+    participant E as Employee
+    participant B as Browser
+    participant P as Employee Portal
+    participant I as Microsoft Entra ID
+
+    E->>B: Open employee portal
+    B->>P: Request portal
+    P-->>B: Redirect to Microsoft Entra ID
+    B->>I: Complete sign-in process
+
+    alt Authentication successful
+        Note over B,P: Browser returns to portal through sign-in process
+        P->>P: Validate authentication result
+        P->>P: Create application session
+        P-->>B: Set session cookie
+        B-->>E: Display employee dashboard
+
+        E->>B: Open employee profile
+        B->>P: Request profile with session cookie
+        P->>P: Check session and permissions
+
+        alt Session valid and access permitted
+            P-->>B: Return employee profile
+            B-->>E: Display profile
+        else Session invalid or access denied
+            P-->>B: Reject request
+            B-->>E: Display access error
+        end
+    else Authentication unsuccessful
+        I-->>B: Report sign-in failure
+        B-->>E: Display sign-in error
+    end
+```
+
+While session tokens represent established application sessions, maintaining access to protected resources may involve a different mechanism. **Refresh tokens** support this by allowing client applications to obtain replacement access tokens when needed.
+
+## Refresh Tokens
+
+A **refresh token** is a security token that a client application presents to an **authorization server** to obtain a new access token without requiring the user to authenticate again. It is typically used when an existing access token expires or needs to be replaced, provided that the authorization server approves the renewal request.
+
+Refresh tokens allow access tokens to have shorter lifetimes while reducing the need for repeated user authentication. Unlike access tokens, refresh tokens are not intended for requesting protected resources directly. They are presented to the authorization server, which determines whether a replacement access token can be issued. Because refresh tokens may remain valid for longer periods, they require appropriate protection against unauthorized use.
+
+Consider a mobile calendar application that has received an access token and a refresh token following a successful sign-in. In this example, the access token is configured to expire after 15 minutes. Once it expires, the application presents its refresh token to the authorization server to request a replacement. If the request is approved, the application receives a new access token and can continue accessing the calendar API. The following diagram illustrates this process and its possible outcomes.
+
+```mermaid id="pt6a4w"
+sequenceDiagram
+    participant C as Calendar Application
+    participant A as Authorization Server
+    participant R as Calendar API
+
+    Note over C: Access token expires after 15 minutes
+    C->>A: Request new access token using refresh token
+    A->>A: Validate refresh token and renewal request
+
+    alt Renewal approved
+        A-->>C: Issue new access token
+        C->>R: Request events with new access token
+        R->>R: Validate token and check permissions
+
+        alt Token valid and access permitted
+            R-->>C: Return calendar events
+        else Token invalid or access not permitted
+            R-->>C: Reject access request
+        end
+    else Renewal denied
+        A-->>C: Reject renewal request
+    end
+```
+
+While refresh tokens support the renewal of access tokens, other tokens communicate information about a user's authentication. The following section introduces **ID tokens** and their role in this process.
+
+## ID Tokens
+
+An **ID token** is a security token defined by **OpenID Connect (OIDC)** and issued by an **OpenID Provider** as part of the authentication process. It contains claims about the authenticated user and the authentication event. Unlike access tokens, ID tokens are intended for the **client application**, such as a website where the user is signing in, rather than for requesting access to protected APIs.
+
+Consider a website that offers **Sign in with Google**. When a user selects this option, Google authenticates the user through OpenID Connect. After the required sign-in interactions, the website receives an ID token and validates its claims to identify the authenticated user. The following diagram illustrates this simplified interaction and its possible outcomes.
 
 ```mermaid
 sequenceDiagram
     participant U as User
     participant B as Browser
-    participant S as Shopping Website
+    participant C as Website
+    participant P as Google (OpenID Provider)
 
-    U->>B: Sign in with email and password
-    B->>S: Submit login credentials
-    Note over S: Authenticate user and create session
-    S-->>B: Set session cookie
-    B-->>U: Display signed-in page
+    U->>B: Choose Sign in with Google
+    B->>C: Request sign-in
+    C-->>B: Redirect to Google
+    B->>P: Complete sign-in process
 
-    U->>B: Open shopping cart
-    B->>S: Request cart with session cookie
-    Note over S: Look up session, verify validity, check permissions
-    S-->>B: Return permitted shopping cart data
-    B-->>U: Display shopping cart
+    alt Authentication successful
+        P-->>B: Redirect back with authorization response
+        B->>C: Deliver authorization code
+        C->>P: Exchange authorization code for tokens
+        P-->>C: Return tokens including ID token
+        C->>C: Validate ID token
+
+        alt ID token valid
+            C-->>B: Complete application sign-in
+            B-->>U: Display signed-in page
+        else ID token invalid
+            C-->>B: Reject sign-in
+            B-->>U: Display sign-in error
+        end
+    else Authentication unsuccessful
+        P-->>B: Return authentication failure
+        B->>C: Deliver failure response
+        C-->>B: Display sign-in error
+        B-->>U: Sign-in unsuccessful
+    end
 ```
 
-Unlike an access token, whose primary purpose is to convey authorization for requests to protected resources, a session token primarily identifies or represents an application session. The application uses the session information to determine the user's authentication state and evaluate applicable permissions. A system may use both kinds of token, or it may use session-based authentication without separate access tokens.
+The examples throughout this topic illustrate how security tokens support different aspects of authentication, authorization, and session management. **Access tokens** allow applications to request protected resources, while **session tokens** can help recognize established application sessions. **Refresh tokens** support access-token renewal, and **ID tokens** communicate authentication information to client applications. These roles may also complement one another within the same system. For example, an application might process an ID token during authentication, establish its own session for subsequent requests, and use access tokens to communicate with protected APIs. If needed and available, a refresh token can support continued access without requiring repeated authentication. The combination of tokens depends on the application's design and security requirements.
 
-## Comparison of Token Types
-
-Although these token types may be used together, they perform different responsibilities within a software system. The following table summarizes their primary purposes and typical recipients.
-
-| Token type        | Primary purpose                                | Typical recipient                        |
-|-------------------|----------------------------------------------- |----------------------------------------- |
-| **Access token**  | Request access to protected resources          | Resource server or API                   |
-| **ID token**      | Communicate authentication information         | Client application                       |
-| **Refresh token** | Request new access tokens                      | Token-issuing service                    |
-| **Session token** | Associate requests with an established session | Session-managing application or server   |
-
-!!! important "Use tokens for their intended purposes"
-
-    These token types are not interchangeable simply because they may appear in the same application. In particular, an **ID token** is not a substitute for an **access token** when calling a protected API, and a **refresh token** should be sent to the service responsible for token renewal rather than to a resource API.
-
-These distinctions establish the fundamental roles of each token type. [Token Types Level 2](../2_level/2_token_types.md) builds on this foundation by examining how tokens interact, the constraints governing their use, and their lifecycle and security considerations.
+[Token Types Level 2](../2_level/2_token_types.md) builds on these concepts by examining token relationships, lifecycle management, usage constraints, and security considerations.
