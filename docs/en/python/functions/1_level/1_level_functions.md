@@ -238,7 +238,7 @@ The function reads `"active"` to choose a result and `"name"` to construct the m
 
 ## Function composition
 
-**Function composition** means using the value returned by one function as the input to another. This can first be written in separate steps so that the intermediate value is visible.
+**Function composition** means using the value returned by one function as the input to another. This allows functions to work together, with each performing a specific operation. To understand how values move between functions, consider a calculation that adds tax and shipping to a price.
 
 ```py
 def add_tax(price):
@@ -254,7 +254,7 @@ result = add_shipping(taxed_price)
 print(result) # 29.2
 ```
 
-The first call returns `24.2`, which is stored in `taxed_price`. The second receives that value and adds `5`, producing `29.2`. When the intermediate value does not need to be stored separately, the calls can be nested.
+The call `add_tax(price)` returns `24.2`, which is stored in `taxed_price` and then passed to `add_shipping()`. The second function adds `5` and returns `29.2`. When the intermediate value does not need to be stored separately, the same calculation can be written using **nested function calls**.
 
 ```py
 def add_tax(price):
@@ -269,14 +269,67 @@ result = add_shipping(add_tax(price))
 print(result) # 29.2
 ```
 
-Python evaluates the inner call `add_tax(price)` first, then passes its returned value to `add_shipping()`. Both approaches produce the same result, but the nested version avoids an intermediate variable. This example uses the functions defined in the preceding code block.
+Python evaluates the inner call first and passes its returned value to the outer function. Both approaches produce the same result, but the nested version avoids an intermediate variable.
+
+This approach also works with **built-in functions**. For example, `sum()` and `len()` can provide values for calculating an average, while `round()` can round the result to a specified number of decimal places.
+
+```py
+scores = [8, 9, 10, 7]
+
+average = round(sum(scores) / len(scores), 2)
+
+print(average) # 8.5
+```
+
+Here, `sum(scores)` returns `34` and `len(scores)` returns `4`. Dividing these values produces `8.5`, which is passed to `round()` along with `2`, the requested number of decimal places. Function calls can therefore be combined with other expressions to produce a final result.
+
+The same principle extends to **three or more functions**, allowing a calculation to be divided into smaller operations. For example, a program can apply a discount, calculate tax, and add shipping.
+
+```py
+def apply_discount(price):
+    return price * 0.9
+
+def add_tax(price):
+    return price * 1.21
+
+def add_shipping(price):
+    return price + 5
+
+result = add_shipping(add_tax(apply_discount(100)))
+
+print(result) # 113.9
+```
+
+Python starts with the innermost call, `apply_discount(100)`, which returns `90.0`. That value is passed to `add_tax()`, producing `108.9`, before `add_shipping()` returns the final result of `113.9`. Each function completes its calculation before the surrounding function uses its returned value.
+
+A function with **multiple parameters** can also receive results from separate function calls. Instead of passing one returned value through several functions, different functions can calculate the arguments needed by the same outer function.
+
+```py
+def apply_discount(price):
+    return price * 0.9
+
+def calculate_shipping(quantity):
+    return quantity * 2
+
+def calculate_total(price, shipping):
+    return price + shipping
+
+result = calculate_total(
+    apply_discount(20),
+    calculate_shipping(3)
+)
+
+print(result) # 24.0
+```
+
+The calls `apply_discount(20)` and `calculate_shipping(3)` return `18.0` and `6`, respectively. These become the two arguments to `calculate_total()`, which adds them and returns `24.0`. This demonstrates how separate calculations can provide the values needed by a single function.
 
 !!! question "Trace the function calls"
 
-    Before running the nested example, identify which function executes first, what it returns, and what value is passed to the outer function.
+    Consider the expression `add_shipping(add_tax(apply_discount(100)))`. Before running it, identify which function executes first, what each function returns, and how the values move between the calls.
 
 !!! note "Function calls and returned values"
 
-    Composition here uses the **value returned by a function call**. Passing a function itself without calling it is a separate concept explored at a later level.
+    At this **Python Functions Level 1**, function composition uses the **value returned by a function call**. Passing a function itself as an argument without calling it is a different concept explored in **Python Functions Level 3**, where you will learn about **callback functions** and how functions can be passed to other functions for later execution.
 
-You have now learned how to define and call functions, work with their inputs and returned values, use control flow and collections, and combine function calls. **Python Functions Level 2** builds on these foundations by introducing **default parameter values** and **keyword arguments**, which give you more flexibility when supplying arguments. It then explores **arbitrary positional arguments (`*args`)** and **arbitrary keyword arguments (`**kwargs`)**, which allow functions to receive varying numbers of arguments.
+These examples complete **Python Functions Level 1** by showing how functions can combine individual operations into larger calculations. **Python Functions Level 2** builds on this foundation by introducing **default parameter values** and **keyword arguments**, which provide more flexibility when supplying arguments, followed by **arbitrary positional arguments (`*args`)** and **arbitrary keyword arguments (`**kwargs`)**, which allow functions to accept varying numbers of arguments.
