@@ -592,7 +592,7 @@ The completed collection query now performs filtering, search, sorting, and pagi
 Some database operations require several related queries. For example, creating an account may involve inserting a user into `users`, storing a password hash in `user_credentials`, and assigning a default role through `user_roles`. If an earlier query succeeds but a later query fails, the account may be only partially created. A **transaction** prevents this by grouping related database changes so they are saved together or undone together. PostgreSQL uses `BEGIN` to start a transaction, `COMMIT` to save its changes, and `ROLLBACK` to undo changes made within it. The application commits only after all required operations succeed.
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["BEGIN"] --> B["Insert user"]
     B --> C["Insert credentials"]
     C --> D["Assign default role"]
