@@ -4,7 +4,8 @@
 
 - [Handling Database Errors](#handling-database-errors)
 - [Building Advanced Collection Queries](#building-advanced-collection-queries)
-<!-- - [Working with Transactions](#working-with-transactions)
+- [Working with Transactions](#working-with-transactions)
+<!-- - [Resource Identifiers and UUIDs](#resource-identifiers-and-uuids)
 - [Structuring Database Access](#structuring-database-access) -->
 
 **Database Integration Level 2** builds on the PostgreSQL connection, shared connection pool, CRUD queries, parameterized queries, query results, and joins introduced in **Database Integration Level 1**. It extends that foundation by handling database failures deliberately, building more capable collection queries, coordinating related database operations, and organizing database access as the application grows.
@@ -585,3 +586,179 @@ export async function findAllRole({
 ```
 
 The completed collection query now performs filtering, search, sorting, and pagination in PostgreSQL while also returning pagination metadata. Building the function gradually makes each responsibility clear before the individual operations are combined. The next section introduces transactions for workflows in which several related database operations must succeed or fail together.
+
+## Working with Transactions
+
+Some database operations require several related queries. For example, creating an account may involve inserting a user into `users`, storing a password hash in `user_credentials`, and assigning a default role through `user_roles`. If an earlier query succeeds but a later query fails, the account may be only partially created. A **transaction** prevents this by grouping related database changes so they are saved together or undone together. PostgreSQL uses `BEGIN` to start a transaction, `COMMIT` to save its changes, and `ROLLBACK` to undo changes made within it. The application commits only after all required operations succeed.
+
+```mermaid
+flowchart TD
+    A["BEGIN"] --> B["Insert user"]
+    B --> C["Insert credentials"]
+    C --> D["Assign default role"]
+    D --> E{"All operations succeeded?"}
+    E -->|Yes| F["COMMIT"]
+    E -->|No| G["ROLLBACK"]
+    F --> H["Release client"]
+    G --> H
+```
+
+A transaction must use the **same database connection** from beginning to end. Separate `pool.query()` calls can use different connections, so node-postgres provides `pool.connect()` to obtain a dedicated client. Every query within the transaction then uses `client.query()`.
+
+```js
+const client = await pool.connect();
+
+try {
+    await client.query("BEGIN");
+
+    // Execute related queries using the same client.
+
+    await client.query("COMMIT");
+} catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+} finally {
+    client.release();
+}
+```
+
+The `try` block contains the operations that must succeed together. If a query fails, the `catch` block rolls back the transaction and rethrows the error so the application's existing error-handling layer can handle it. The `finally` block releases the client back to the pool whether the transaction succeeds or fails.
+
+!!! warning "Release the Database Client"
+
+    Always release a client obtained with `pool.connect()` when it is no longer needed. Otherwise, the pool can run out of available connections and later requests may be left waiting.
+
+Before implementing account creation, the database must contain the required tables. If an existing `users` table already stores password hashes in a `password_hash` column, the data can be moved into a separate `user_credentials` table without losing the existing records. This change can also be performed inside a transaction.
+
+```sql
+BEGIN;
+
+-- 1. Create the new table.
+CREATE TABLE user_credentials (
+    user_id INTEGER PRIMARY KEY
+        REFERENCES users(id) ON DELETE CASCADE,
+    password_hash TEXT NOT NULL
+);
+
+-- 2. Move existing password hashes.
+INSERT INTO user_credentials (user_id, password_hash)
+SELECT id, password_hash
+FROM users
+WHERE password_hash IS NOT NULL;
+
+-- 3. Remove the old column.
+ALTER TABLE users
+DROP COLUMN password_hash;
+
+COMMIT;
+```
+
+The `INSERT ... SELECT` statement copies existing password hashes into `user_credentials`, preserving their relationship through `user_id`. The old column is removed after the data has been transferred. Because these statements run inside a transaction, PostgreSQL can roll back the schema and data changes if an operation fails before `COMMIT`. This example assumes that `user_credentials` does not already exist and that `users.password_hash` is still present.
+
+!!! warning "Changing Tables That Already Contain Data"
+
+    Schema changes can affect existing records, so important data should be backed up and the transfer verified before applying changes to a production database. This example demonstrates a manual, one-time schema change. Version-controlled database migrations will be introduced in **Database Integration Level 3**.
+
+The account creation operation also requires the `roles` and `user_roles` tables, including an existing role named `user`. Once the required tables are prepared, the first step is to insert a user and retrieve the generated ID using `RETURNING`.
+
+```js
+const query = `
+    INSERT INTO users (email)
+    VALUES ($1)
+    RETURNING id, email, created_at
+`;
+
+const values = [email];
+
+const result = await client.query(query, values);
+const user = result.rows[0];
+```
+
+The returned `user.id` identifies the account and connects it to its credentials. The next query stores the password hash in `user_credentials`.
+
+```js
+await client.query(
+    `
+        INSERT INTO user_credentials (user_id, password_hash)
+        VALUES ($1, $2)
+    `,
+    [user.id, password]
+);
+```
+
+The `password` argument must already contain a securely generated password hash. This function stores the hash but does not perform password hashing itself.
+
+The final operation assigns the default role by finding the record named `user` in `roles` and inserting its relationship into `user_roles`.
+
+```js
+const roleQuery = `
+    INSERT INTO user_roles (user_id, role_id)
+    SELECT $1, id
+    FROM roles
+    WHERE name = 'user'
+`;
+
+await client.query(roleQuery, [user.id]);
+```
+
+The `INSERT ... SELECT` statement inserts a relationship only when its `SELECT` finds a matching role. If the `user` role does not exist, the statement can finish without inserting a row or reporting an error. The current implementation therefore assumes that the default role has already been created.
+
+The three operations can now be combined into one function that uses a dedicated client and commits only after the queries have completed.
+
+```js
+async create(email, password) {
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        const query = `
+            INSERT INTO users (email)
+            VALUES ($1)
+            RETURNING id, email, created_at
+        `;
+
+        const values = [email];
+
+        const result = await client.query(query, values);
+        const user = result.rows[0];
+
+        await client.query(
+            `
+                INSERT INTO user_credentials (user_id, password_hash)
+                VALUES ($1, $2)
+            `,
+            [user.id, password]
+        );
+
+        const roleQuery = `
+            INSERT INTO user_roles (user_id, role_id)
+            SELECT $1, id
+            FROM roles
+            WHERE name = 'user'
+        `;
+
+        await client.query(roleQuery, [user.id]);
+
+        await client.query("COMMIT");
+
+        return user;
+
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+},
+```
+
+When the required queries complete successfully, `COMMIT` saves their changes and the function returns the created user. If a query fails, `ROLLBACK` undoes the changes made within the transaction, preventing a partially completed operation. The dedicated client is then released back to the pool.
+
+!!! info "Assigning Default Roles with Triggers"
+
+    PostgreSQL can also assign a default role through a **database trigger** that runs automatically when a user is inserted. This places the role-assignment rule in the database rather than requiring an explicit query in the application. Trigger operations participate in the transaction that caused them, so their changes are committed or rolled back together with the user insertion. However, a trigger does not replace the need for a transaction when the application must coordinate other changes, such as storing credentials. The choice depends on the system's architecture and whether the default-role rule belongs in application logic or database logic. Trigger implementation is outside the scope of this section.
+
+!!! info "When to Use a Transaction"
+
+    Use a transaction when several database changes form one operation and partial completion would be incorrect. A single SQL statement is already atomic in PostgreSQL and usually does not require an explicit transaction.

@@ -7,13 +7,11 @@
 - [Creating Custom AJV Validators](#creating-custom-ajv-validators)
 - [Customizing AJV Validation Errors](#customizing-ajv-validation-errors)
 
-**Validation and Error Handling Level 2** builds on manual request validation by introducing **AJV**, a JSON Schema validator for JavaScript. It develops schema-based validation for request bodies, route parameters, and query parameters, extends AJV with a reusable custom validator, and then customizes validation messages with `ajv-errors`. Together, these techniques move validation rules out of individual conditional checks and into reusable schemas.
-
-The first step is to understand how AJV performs schema-based validation, why it is used in this module, and how it fits into the existing Express validation flow.
+**Validation and Error Handling Level 2** builds on manual request validation by introducing **AJV**, a JSON Schema validator for JavaScript. It uses reusable schemas to validate request bodies, route parameters, and query parameters, then extends those schemas with custom rules, format checks through `ajv-formats`, and clearer messages through `ajv-errors`. These techniques keep validation logic separate from Express routes while preserving the existing error-handling flow.
 
 ## Introducing AJV
 
-AJV validates JavaScript data against a schema. A schema describes the structure and requirements that data must satisfy, while AJV compiles that schema into a reusable validation function. Incoming data is then passed to the compiled function, which reports whether the data satisfies the schema and provides validation errors when it does not.
+AJV validates JavaScript data against JSON Schema, which describes the structure and requirements that data must satisfy. It compiles each schema into a reusable function that returns `true` for valid data or `false` for invalid data, with details of any failures available through the function's `errors` property.
 
 ```mermaid
 sequenceDiagram
@@ -22,13 +20,11 @@ sequenceDiagram
     participant A as AJV
     participant V as Validation Function
     participant R as Request Data
-
     D->>A: Create AJV instance
     D->>S: Define JSON Schema
     D->>A: Compile schema
     A->>V: Create validation function
     R->>V: Pass request data
-
     alt Valid data
         V-->>D: Return true
     else Invalid data
@@ -36,11 +32,9 @@ sequenceDiagram
     end
 ```
 
-The diagram separates AJV's two main stages. During setup, the application creates an AJV instance, defines a schema, and compiles that schema into a validation function. During request processing, incoming data is passed directly to the compiled function. The schema therefore does not need to be recreated or compiled for every request.
+As the diagram illustrates, schemas are compiled during application setup, while incoming requests use the resulting functions without recompiling them. This approach differs from other JavaScript validation libraries. [express-validator](https://express-validator.github.io/docs/) provides validation and sanitization middleware for Express, [Joi](https://joi.dev/api/) defines schemas through a JavaScript API, and [Zod](https://zod.dev/) offers schema validation with TypeScript-oriented type inference. This module uses AJV for its JSON Schema support and separation of validation rules from route handlers; the [AJV Why use AJV](https://ajv.js.org/guide/why-ajv.html) documentation describes its standards support and compilation model in more detail.
 
-AJV is one of several validation libraries available in the JavaScript ecosystem. [express-validator](https://express-validator.github.io/docs/) provides validation and sanitization middleware for Express, [Joi](https://joi.dev/api/) defines schemas through its own JavaScript API, and [Zod](https://zod.dev/) provides schema validation with a TypeScript-oriented API and static type inference. AJV is used in this module because it validates data with JSON Schema, keeps schemas independent of Express routes, and compiles schemas into reusable validation functions. The [AJV Why use AJV](https://ajv.js.org/guide/why-ajv.html) documentation provides more information about its standards support and compiled validation model.
-
-Before using AJV, add it to the project using the installation method appropriate for the project's package manager. The [AJV Getting Started](https://ajv.js.org/guide/getting-started.html) documentation provides the current installation instructions and introductory examples. AJV can then be initialized in a dedicated file so the configured instance has one shared location and can be imported wherever schemas need to be compiled.
+Install AJV using the project's package manager, following the [AJV Getting Started](https://ajv.js.org/guide/getting-started.html) documentation. The optional packages covered later are installed separately when needed. To share configuration across schema modules, create `src/config/ajv.js` within the application structure.
 
 ```text
 src/
@@ -50,7 +44,7 @@ src/
 └── schemas/
 ```
 
-The `config/ajv.js` file creates and exports the AJV instance.
+The module exports a single AJV instance that can be configured with additional validation features as the application develops.
 
 ```js
 import Ajv from "ajv";
@@ -60,11 +54,11 @@ const ajv = new Ajv();
 export default ajv;
 ```
 
-Keeping AJV initialization in one file provides a shared location for configuration and later extensions while allowing schema modules to reuse the same instance. The AJV instance is now ready to compile application schemas, so the next section applies this process to request validation.
+With the instance available for import, schemas can define the expected values of incoming Express requests without placing those rules inside route handlers.
 
 ## Schema-Based Request Validation
 
-A JSON Schema describes the requirements that data must satisfy. Because `req.body`, `req.params`, and `req.query` all follow the same AJV validation process, their schemas can be kept together in the `schemas` folder so validation rules remain separate from routes and AJV configuration.
+Express exposes incoming data through `req.body`, `req.params`, and `req.query`. Each can be checked against a JSON Schema, so the user routes define their requirements together in `src/schemas/user.js`, alongside the shared AJV configuration.
 
 ```text
 src/
@@ -75,7 +69,7 @@ src/
     └── user.js
 ```
 
-JSON Schema provides standard keywords for describing valid data, including `type`, `properties`, `required`, `pattern`, and `additionalProperties`. The [AJV JSON Schema Reference](https://ajv.js.org/json-schema.html) explains these keywords and provides a useful reference when defining schemas. In this project, `user.js` uses them to define the request body, route parameter, and query parameter schemas required by the user routes, then compiles each schema with the shared AJV instance and exports the resulting validation functions.
+JSON Schema provides standard keywords such as `type`, `properties`, `required`, `pattern`, and `additionalProperties` describe which values are accepted; their behavior is documented in the [AJV JSON Schema Reference](https://ajv.js.org/json-schema.html).
 
 ```js
 import ajv from "../config/ajv.js";
@@ -120,13 +114,13 @@ export const validateUserParams = ajv.compile(userParamsSchema);
 export const validateUsersQuery = ajv.compile(usersQuerySchema);
 ```
 
-The three schemas apply the same JSON Schema structure to different request sources. `userBodySchema` requires an `email` string containing at least one character, `userParamsSchema` requires an `id` containing digits, and `usersQuerySchema` allows an optional `limit` that must contain digits when provided. Compiling them with `ajv.compile()` produces reusable validation functions that can be imported by the routes instead of recreating or compiling validation rules for every request.
+The body schema requires a nonempty `email` string, the parameter schema requires an `id` made of digits, and the query schema accepts an optional `limit` made of digits. Each compiled function can then validate its corresponding request object before the route processes it.
 
 !!! note "Compile Schemas Once"
 
-    Define and compile schemas outside request handlers so the same validation functions can be reused for incoming requests.
+    Define and compile schemas outside request handlers so incoming requests reuse the same validation functions.
 
-The routes import the compiled functions and apply each one to its corresponding request data.
+The routes import these functions and pass invalid requests to Express with status `400` and the AJV error details attached.
 
 ```js
 import {
@@ -176,117 +170,122 @@ app.get("/users", (req, res, next) => {
 });
 ```
 
-The same pattern is used in all three routes. Each request object is passed to its compiled validation function, valid data continues through the route, and invalid data creates a `400` error containing the AJV validation details. For example, `{"email": "vardenis@example.com"}`, `GET /users/42`, and `GET /users?limit=10` satisfy their corresponding schemas, while values that violate those rules fail validation. The schemas therefore define the rules while the routes only apply them. When the built-in JSON Schema keywords are not enough to express an application-specific rule, AJV can extend this validation model with custom validators.
+For example, `{"email": "vardenis@example.com"}`, `GET /users/42`, and `GET /users?limit=10` satisfy their respective schemas. Missing required fields, unexpected properties, and values that fail a defined pattern instead produce validation errors. More specialized requirements, such as checking password strength, can be added without moving validation logic into these handlers.
 
 ## Creating Custom AJV Validators
 
-JSON Schema provides many built-in validation keywords, but an application can define a custom rule when its requirements are not expressed by the built-in keywords used by the project. AJV supports reusable custom keywords through `ajv.addKeyword()`. The [AJV User-Defined Keywords](https://ajv.js.org/guide/user-keywords.html) documentation provides a broader reference for extending AJV. In this example, the shared AJV instance registers a `nonEmpty` keyword before schemas using it are compiled.
+AJV supports application-specific validation through `ajv.addKeyword()`, as described in the [AJV User-Defined Keywords](https://ajv.js.org/guide/user-keywords.html) documentation. A registration form, for example, might require a password of at least eight characters containing uppercase and lowercase letters and a number. The application can define this rule once as `strongPassword` in `src/config/strong-password.js`.
+
+```js
+export function registerStrongPassword(ajv) {
+    ajv.addKeyword({
+        keyword: "strongPassword",
+        type: "string",
+        schemaType: "boolean",
+
+        validate(enabled, password) {
+            if (!enabled) {
+                return true;
+            }
+
+            const hasUppercase = password.match(/[A-Z]/) !== null;
+            const hasLowercase = password.match(/[a-z]/) !== null;
+            const hasNumber = password.match(/[0-9]/) !== null;
+
+            return (
+                password.length >= 8 &&
+                hasUppercase &&
+                hasLowercase &&
+                hasNumber
+            );
+        },
+    });
+}
+```
+
+The `keyword` property names the rule, `type: "string"` restricts it to string data, and `schemaType: "boolean"` allows schemas to enable it with `strongPassword: true`. AJV passes that setting and the submitted value to `validate()`, which returns whether the password meets the rule. This example demonstrates custom validation rather than a complete password-security policy.
+
+Before compiling a schema that uses the keyword, register it in `src/config/ajv.js`. The configuration also enables `$data`, which lets supported schema keywords refer to other values in the validated data.
 
 ```js
 import Ajv from "ajv";
+import { registerStrongPassword } from "./strong-password.js";
 
-const ajv = new Ajv();
-
-ajv.addKeyword({
-    keyword: "nonEmpty",
-    schemaType: "boolean",
-    validate: function (schema, data) {
-        if (schema) {
-            return typeof data === "string" && data.trim().length > 0;
-        }
-
-        return true;
-    },
+const ajv = new Ajv({
+    $data: true,
 });
+
+registerStrongPassword(ajv);
 
 export default ajv;
 ```
 
-The `keyword` property defines the name available to schemas, while `schemaType: "boolean"` means the keyword accepts a Boolean value such as `true`. When AJV encounters `nonEmpty: true`, it passes that schema value and the submitted field value to `validate`. Returning `true` means the value satisfies the rule, while returning `false` causes validation to fail.
-
-Once the keyword is registered, `schemas/user.js` can use it alongside built-in JSON Schema keywords. The schema is compiled normally, so the resulting `validateUserBody` function includes the custom rule automatically.
+The `src/schemas/registration.js` module can now enforce password strength and confirm that `repeatPassword` matches `password`. The custom keyword handles strength, while the standard `const` keyword uses a `$data` reference to compare the two fields.
 
 ```js
 import ajv from "../config/ajv.js";
 
-const userBodySchema = {
+const registrationSchema = {
     type: "object",
     properties: {
-        email: {
+        password: {
             type: "string",
-            nonEmpty: true,
+            strongPassword: true,
+        },
+        repeatPassword: {
+            type: "string",
+            const: { $data: "1/password" },
         },
     },
-    required: ["email"],
+    required: ["password", "repeatPassword"],
     additionalProperties: false,
 };
 
-export const validateUserBody = ajv.compile(userBodySchema);
+export const validateRegistration = ajv.compile(registrationSchema);
 ```
 
-The route does not call the custom `validate` function directly. It continues to call `validateUserBody(req.body)`. A value such as `{"email": "vardenis@example.com"}` passes, while `{"email": "   "}` causes the `nonEmpty` validator to return `false`. AJV then places information about the failed rule in `validateUserBody.errors`, and the route follows the same `400` error path already established for schema validation.
-
-```mermaid
-flowchart LR
-    A["validateUserBody(req.body)"] --> B["AJV evaluates schema"]
-    B --> C["nonEmpty: true"]
-    C --> D["Custom validate function"]
-    D --> E{"Valid?"}
-    E -->|Yes| F["Continue route"]
-    E -->|No| G["validateUserBody.errors"]
-    G --> H["Create 400 error"]
-    H --> I["next(error)"]
-```
-
-!!! note "Custom Keywords Extend AJV"
-
-    Register reusable custom keywords on the shared AJV instance before compiling schemas that use them. Routes continue to call the compiled schema validator rather than the custom keyword function directly.
-
-The custom validator now determines whether the submitted value satisfies the application-specific rule, but AJV still provides a generated validation message when the rule fails. The next section customizes these messages with `ajv-errors`.
+The reference `"1/password"` retrieves the sibling `password` value from the containing object, which `const` then compares with `repeatPassword`. The [AJV $data Reference](https://ajv.js.org/guide/combining-schemas.html#data-reference) explains this syntax. Calling `validateRegistration(req.body)` accepts `{"password": "Example123", "repeatPassword": "Example123"}` but rejects weak passwords or mismatched confirmation values. As with the user routes, failed checks are available through `validateRegistration.errors` and can be forwarded as `400` errors. These errors can also be made easier for API clients to understand by customizing their messages.
 
 ## Customizing AJV Validation Errors
 
-When a compiled AJV validation function returns `false`, its `errors` property describes the failed rules. AJV provides generated messages by default, while the `ajv-errors` package allows schemas to define clearer application-specific messages. The [ajv-errors documentation](https://ajv.js.org/packages/ajv-errors.html) provides installation instructions and the supported message customization patterns. After the package has been added, enable it on the same shared AJV instance that contains the `nonEmpty` custom keyword.
+AJV supplies default messages for failed rules, but `ajv-errors` lets schemas replace them through `errorMessage`. The `ajv-formats` package adds checks for recognized string formats such as `email`, `date`, and `uri`. Both extend the shared instance and are documented in the [ajv-errors](https://ajv.js.org/packages/ajv-errors.html) and [ajv-formats](https://ajv.js.org/packages/ajv-formats.html) references.
+
+Update `src/config/ajv.js` to register these packages alongside the existing custom keyword and `$data` option.
 
 ```js
 import Ajv from "ajv";
 import ajvErrors from "ajv-errors";
+import addFormats from "ajv-formats";
+import { registerStrongPassword } from "./strong-password.js";
 
 const ajv = new Ajv({
     allErrors: true,
+    $data: true,
 });
 
-ajv.addKeyword({
-    keyword: "nonEmpty",
-    schemaType: "boolean",
-    validate: function (schema, data) {
-        if (schema) {
-            return typeof data === "string" && data.trim().length > 0;
-        }
-
-        return true;
-    },
-});
-
+addFormats(ajv);
 ajvErrors(ajv);
+registerStrongPassword(ajv);
 
 export default ajv;
 ```
 
-The `allErrors: true` option is required by `ajv-errors`. The body schema can now keep the custom `nonEmpty` rule and add `errorMessage` entries for the validation failures that should be presented more clearly.
+The `allErrors: true` option allows AJV to collect multiple validation failures and is required by `ajv-errors`. Calling `addFormats(ajv)` registers the predefined formats, while `ajvErrors(ajv)` enables the `errorMessage` keyword. These extensions are registered before schemas are compiled so their validation rules and messages are available throughout the application.
+
+The existing `userBodySchema` in `src/schemas/user.js` can now validate email formatting and provide specific messages for different failures. The route parameter and query parameter schemas remain unchanged.
 
 ```js
-import ajv from "../config/ajv.js";
-
 const userBodySchema = {
     type: "object",
     properties: {
         email: {
             type: "string",
-            nonEmpty: true,
+            minLength: 1,
+            format: "email",
             errorMessage: {
                 type: "Email must be a string",
-                nonEmpty: "Email must not be empty",
+                minLength: "Email must not be empty",
+                format: "Email must be valid",
             },
         },
     },
@@ -303,17 +302,12 @@ const userBodySchema = {
 export const validateUserBody = ajv.compile(userBodySchema);
 ```
 
-The responsibilities are now separate. `nonEmpty` determines whether the value satisfies the custom rule, while `errorMessage` determines how a failure is described. A missing `email` produces `"Email is required"`, an empty or whitespace-only value produces `"Email must not be empty"`, and an unexpected property produces `"Unexpected property"`.
+The `format: "email"` check recognizes an email-address structure with a local part, an `@` symbol, and a domain. For example, `"vardenis@example.com"` passes, while `"vardenis.example.com"` fails because it lacks `@`. This validates syntax, not whether the mailbox exists. The `minLength: 1` rule rejects an empty string, and `errorMessage` supplies descriptions for invalid types, formats, missing fields, and unexpected properties. It does not reject whitespace-only strings through `minLength` alone.
 
-The route still uses the same compiled validator. The only change is that it can now use the first customized AJV message when creating the error passed to Express.
+The `POST /users` handler can use the first AJV message when forwarding a failed request, while retaining the complete error details.
 
 ```js
-import express from "express";
-import { validateUserBody } from "../schemas/user.js";
-
-const router = express.Router();
-
-router.post("/users", (req, res, next) => {
+app.post("/users", (req, res, next) => {
     if (!validateUserBody(req.body)) {
         const error = new Error(validateUserBody.errors[0].message);
         error.status = 400;
@@ -324,14 +318,8 @@ router.post("/users", (req, res, next) => {
 
     return res.status(201).json(req.body);
 });
-
-export default router;
 ```
 
-For invalid data, AJV applies the built-in and custom schema rules, stores the resulting details in `validateUserBody.errors`, and the route transfers the customized message into the `Error` object before calling `next(error)`. This preserves the existing Express error flow without duplicating validation logic in the route.
+A missing `email` produces `"Email is required"`, while an empty value can produce `"Email must not be empty"` and a malformed address can produce `"Email must be valid"`. Because `allErrors: true` may report several failures, the first message is not always predictable; `error.details` retains the full set. The route still forwards the error through `next(error)`, leaving response handling to the existing Express error flow.
 
-!!! tip "Keep Rules and Messages Together"
-
-    When custom validation messages are part of the application's validation requirements, defining them with the schema keeps the rules and their corresponding messages in the same place.
-
-**Validation and Error Handling Level 2** establishes reusable schema-based validation, custom validation rules, and customized validation messages while preserving the existing Express error flow. With validation organized around reusable schemas, **Validation and Error Handling Level 3** develops centralized error handling so validation, application, and database errors can be processed consistently in one place.
+With reusable schemas, custom rules, format checks, and descriptive messages in place, **Validation and Error Handling Level 3** develops centralized Express error handling for validation, application, and database errors.
