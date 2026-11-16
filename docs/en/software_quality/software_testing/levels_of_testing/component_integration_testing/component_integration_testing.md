@@ -1,4 +1,6 @@
-# Table of Contents: Component Integration Testing
+# Component Integration Testing
+
+## Table of Contents: Component Integration Testing
 
 - [Component Integration Testing](#component-integration-testing)
 - [Objectives of Component Integration Testing](#objectives-of-component-integration-testing)
@@ -9,8 +11,6 @@
 - [Roles and Responsibilities](#roles-and-responsibilities)
 
 After individual units are verified in isolation, the next step is to validate how they interact when combined.
-
-## Component Integration Testing
 
 Component integration testing is a testing level that focuses on verifying interactions and communication between integrated components within the system. After individual units have been validated during unit testing, this level checks whether connected components work together correctly.
 

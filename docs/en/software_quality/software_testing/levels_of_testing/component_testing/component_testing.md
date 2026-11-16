@@ -1,6 +1,7 @@
-# Table of Contents: Component Testing (Unit Testing)
+# Component Testing (Unit Testing)
 
-- [Component Testing](#component-testing)
+## Table of Contents: Component Testing (Unit Testing)
+
 - [Objectives and Scope of Component Testing](#objectives-and-scope-of-component-testing)
 - [Test Isolation and Test Doubles](#test-isolation-and-test-doubles)
 - [Test Design and White-Box Techniques](#test-design-and-white-box-techniques)
@@ -9,8 +10,6 @@
 - [Code Coverage](#code-coverage)
 
 Component testing verifies individual units of code in isolation before they are combined with other parts of the application.
-
-## Component Testing
 
 Component testing, also known as **unit testing**, verifies that individual units of software behave correctly in isolation.
 

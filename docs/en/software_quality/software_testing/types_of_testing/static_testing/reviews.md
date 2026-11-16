@@ -1,4 +1,6 @@
-# Table of Contents - Static Testing (Reviews)
+# Reviews
+
+## Table of Contents: Reviews
 
 - [Benefits of Early and Frequent Stakeholder Feedback](#benefits-of-early-and-frequent-stakeholder-feedback)
 - [Roles and Responsibilities](#roles-and-responsibilities)

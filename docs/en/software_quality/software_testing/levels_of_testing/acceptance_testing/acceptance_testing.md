@@ -1,14 +1,13 @@
-# Table of Contents: Acceptance Testing
+# Acceptance Testing
 
-- [Acceptance Testing](#acceptance-testing)
+## Table of Contents: Acceptance Testing
+
 - [Types of Acceptance Testing](#types-of-acceptance-testing)
 - [Roles and Responsibilities](#roles-and-responsibilities)
 - [Collaboration-Based Test Approaches](#collaboration-based-test-approaches)
 - [Acceptance Testing in Agile](#acceptance-testing-in-agile)
 
 Acceptance testing shifts the focus from technical verification to whether the system satisfies business needs and is acceptable to its intended stakeholders.
-
-## Acceptance Testing
 
 Acceptance testing evaluates a system against **acceptance criteria, application requirements, user needs, and other relevant requirements** to determine whether it is acceptable to its intended stakeholders.
 

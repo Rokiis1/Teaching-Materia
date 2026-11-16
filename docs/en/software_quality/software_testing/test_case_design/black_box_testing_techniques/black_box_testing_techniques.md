@@ -1,4 +1,6 @@
-# Content of test case design level 3
+# Black Box Testing Techniques
+
+## Table of Contents: # Black Box Testing Techniques
 
 - [Equivalence Partitioning](#equivalence-partitioning)
 - [Boundary Value Analysis](#boundary-value-analysis)

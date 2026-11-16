@@ -37,10 +37,15 @@
 
 - Types of Testing:
     - software_quality/software_testing/types_of_testing/overview.md
-    - software_quality/software_testing/types_of_testing/static_testing/reviews.md
-    - software_quality/software_testing/types_of_testing/static_testing/static_analysis.md
-    - software_quality/software_testing/types_of_testing/dynamic_testing/build_and_change_related_testing.md
-    - software_quality/software_testing/types_of_testing/dynamic_testing/installation_and_configuration_testing.md
+
+    - Dynamic Testing:
+        - software_quality/software_testing/types_of_testing/dynamic_testing/functional_testing/build_and_change_related_testing.md
+        # - software_quality/software_testing/types_of_testing/dynamic_testing/installation_and_configuration_testing.md
+
+    - Static Testing:
+        - software_quality/software_testing/types_of_testing/static_testing/reviews.md
+        - software_quality/software_testing/types_of_testing/static_testing/static_analysis.md
+
     - software_quality/software_testing/types_of_testing/summary.md
 
 - Test Case Design:
@@ -62,6 +67,5 @@
     - software_quality/software_testing/test_execution/overview.md
     - software_quality/software_testing/test_execution/1_level/1_test_execution.md
     - software_quality/software_testing/test_execution/2_level/2_test_execution.md
-    - software_quality/software_testing/test_execution/3_level/3_test_execution.md
     - software_quality/software_testing/test_execution/summary.md
 

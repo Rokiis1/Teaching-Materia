@@ -1,4 +1,6 @@
-# Table of Contents: Test Execution Level 1
+# Level 1
+
+## Table of Contents: Test Execution
 
 - [What is Test Execution](#what-is-test-execution)
 - [Manual Testing](#manual-testing)

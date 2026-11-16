@@ -1,4 +1,6 @@
-# Table of Contents: Types of Testing Summary
+# Summary
+
+## Table of Contents: Types of Testing Summary
 
 - [Usability Testing](#usability-testing)
 - [Compatibility Testing](#compatibility-testing)

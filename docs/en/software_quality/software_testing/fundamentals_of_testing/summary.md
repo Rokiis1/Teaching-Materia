@@ -52,174 +52,174 @@ A **test oracle** is a source of information used to establish expected results 
 
 ## Knowledge Check
 
-Test your understanding of the key concepts covered in both levels. Select one answer for each question to receive feedback and an explanation.
+Test your understanding of the key concepts covered in Fundamentals of Testing. Select one answer for each question to receive feedback and an explanation.
 
 <div class="knowledge-check">
 
-<div class="knowledge-question" data-answer="B" data-explanation="The System Under Test is the software or system being evaluated. Its boundaries depend on the testing scope, and external dependencies may still influence its behavior.">
+<div class="knowledge-question" data-answer="B" data-explanation="The System Under Test is defined by the testing scope and objectives. Its boundaries determine which components are being evaluated, even when external dependencies influence their behavior.">
 
 <p><strong>System Under Test</strong></p>
 
-<p>What determines which components belong to the System Under Test?</p>
+<p>When testing an application that communicates with external services, how should the System Under Test be defined?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. The number of developers working on the application</button>
-<button type="button" data-option="B">B. The testing scope and purpose of the evaluation</button>
-<button type="button" data-option="C">C. Whether the software has already been released</button>
-<button type="button" data-option="D">D. The programming language used</button>
+<button type="button" data-option="A">A. Include every service that exchanges data with the application</button>
+<button type="button" data-option="B">B. Identify the components included in the agreed testing scope</button>
+<button type="button" data-option="C">C. Include only components developed by the internal team</button>
+<button type="button" data-option="D">D. Identify the components deployed in the same environment</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="C" data-explanation="Testing can reveal defects and provide evidence about quality, but it cannot prove that software is completely free of defects.">
+<div class="knowledge-question" data-answer="C" data-explanation="Testing provides evidence about software behavior and can reveal defects, but passing tests do not establish that defects are absent.">
 
 <p><strong>Principles of Testing</strong></p>
 
-<p>Which statement correctly reflects a fundamental testing principle?</p>
+<p>A team has executed all planned tests without observing a failure. Which conclusion is justified?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Successful testing proves that no defects remain</button>
-<button type="button" data-option="B">B. Every possible input and condition must be tested</button>
-<button type="button" data-option="C">C. Testing can show the presence of defects but not prove their absence</button>
-<button type="button" data-option="D">D. The same testing approach is suitable for every project</button>
+<button type="button" data-option="A">A. The application meets all possible user expectations</button>
+<button type="button" data-option="B">B. The application contains no remaining implementation defects</button>
+<button type="button" data-option="C">C. The tested conditions revealed no observed failures</button>
+<button type="button" data-option="D">D. The testing process has covered every relevant condition</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="A" data-explanation="The pesticide paradox highlights that repeatedly using unchanged tests may become less effective at revealing new defects. Reviewing and updating tests helps address this limitation.">
+<div class="knowledge-question" data-answer="A" data-explanation="The pesticide paradox describes how repeatedly executing unchanged tests may become less effective at finding new defects. Tests should be reviewed and adapted as risks and software behavior change.">
 
 <p><strong>Pesticide Paradox</strong></p>
 
-<p>Why should existing tests be reviewed and updated?</p>
+<p>A regression suite continues to pass, but users report defects in recently changed workflows. What is the most appropriate response?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Repeatedly using unchanged tests may fail to reveal new kinds of defects</button>
-<button type="button" data-option="B">B. Every test becomes invalid after its first execution</button>
-<button type="button" data-option="C">C. Updating tests guarantees complete coverage</button>
-<button type="button" data-option="D">D. Tests should always be replaced rather than maintained</button>
+<button type="button" data-option="A">A. Review the suite and add tests for newly identified risks</button>
+<button type="button" data-option="B">B. Execute the existing suite more frequently without modifying it</button>
+<button type="button" data-option="C">C. Replace the regression suite with tests of unchanged features</button>
+<button type="button" data-option="D">D. Increase test execution speed while retaining the same conditions</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="D" data-explanation="Test roles describe groups of responsibilities rather than fixed job titles. One person may perform responsibilities from both the test management role and the testing role.">
+<div class="knowledge-question" data-answer="D" data-explanation="Test management and testing are groups of responsibilities rather than fixed job titles. Depending on the project, one person may perform activities from both roles.">
 
 <p><strong>Test Roles and Responsibilities</strong></p>
 
-<p>Which statement about testing roles is correct?</p>
+<p>In a small project, a tester plans testing activities, executes tests, and reports results. How should these responsibilities be understood?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Test management and testing must always be performed by different people</button>
-<button type="button" data-option="B">B. Only employees with the job title tester can perform testing activities</button>
-<button type="button" data-option="C">C. Testing roles are identical in every organization</button>
-<button type="button" data-option="D">D. One person may perform responsibilities from both principal testing roles</button>
+<button type="button" data-option="A">A. Planning activities belong to development rather than testing roles</button>
+<button type="button" data-option="B">B. Executing tests transfers responsibility for managing the test process</button>
+<button type="button" data-option="C">C. Reporting results requires a separate person responsible for management</button>
+<button type="button" data-option="D">D. One person can perform both test management and testing responsibilities</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="B" data-explanation="Test analysis identifies what needs to be tested by examining the test basis and identifying test conditions. Test design then develops those conditions into test cases.">
+<div class="knowledge-question" data-answer="B" data-explanation="Test analysis examines the test basis to identify test conditions and determine what needs to be tested. Test design develops these conditions into test cases.">
 
 <p><strong>Test Process and Activities</strong></p>
 
-<p>Which testing activity primarily answers the question "What should be tested?"</p>
+<p>A tester reviews requirements to identify which behaviors and conditions need verification. Which test activity is being performed?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Test execution</button>
-<button type="button" data-option="B">B. Test analysis</button>
-<button type="button" data-option="C">C. Test completion</button>
-<button type="button" data-option="D">D. Test implementation</button>
+<button type="button" data-option="A">A. Test implementation, preparing procedures and execution resources</button>
+<button type="button" data-option="B">B. Test analysis, identifying test conditions from the test basis</button>
+<button type="button" data-option="C">C. Test design, developing test cases from identified conditions</button>
+<button type="button" data-option="D">D. Test execution, comparing observed results with expected behavior</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="C" data-explanation="Testware supports testing activities, while deliverables are agreed outputs provided or communicated to stakeholders. The same work product may serve both purposes.">
+<div class="knowledge-question" data-answer="C" data-explanation="Testware consists of work products created or used during testing. Deliverables are outputs provided to stakeholders. A test plan may be both testware and an agreed deliverable.">
 
 <p><strong>Testware and Deliverables</strong></p>
 
-<p>Which statement correctly distinguishes testware from deliverables?</p>
+<p>A test plan is used by the testing team and submitted to stakeholders as an agreed project output. How should it be classified?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Testware consists only of automated test scripts</button>
-<button type="button" data-option="B">B. Deliverables can never be used during testing</button>
-<button type="button" data-option="C">C. A test plan can be both testware and a deliverable</button>
-<button type="button" data-option="D">D. Testware and deliverables must always be separate documents</button>
+<button type="button" data-option="A">A. As testware only, because the testing team uses it</button>
+<button type="button" data-option="B">B. As a deliverable only, because stakeholders receive it</button>
+<button type="button" data-option="C">C. As both testware and a deliverable in this context</button>
+<button type="button" data-option="D">D. As neither, because it does not contain executable tests</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="A" data-explanation="Independent testing can introduce different perspectives and challenge assumptions, but greater independence does not automatically improve testing effectiveness.">
+<div class="knowledge-question" data-answer="A" data-explanation="Testing independence can provide different perspectives and reduce shared assumptions, but its benefits should be balanced against collaboration, communication, and project needs.">
 
 <p><strong>Independence of Testing</strong></p>
 
-<p>What is an important consideration when deciding the level of testing independence?</p>
+<p>A project is deciding whether developers or an independent team should perform certain tests. Which consideration is most appropriate?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Independence should be balanced with collaboration and project needs</button>
-<button type="button" data-option="B">B. External testing is always more effective than internal testing</button>
-<button type="button" data-option="C">C. Developers should never test their own work</button>
-<button type="button" data-option="D">D. Independence eliminates the need for communication</button>
+<button type="button" data-option="A">A. Balance independent perspectives with collaboration and project needs</button>
+<button type="button" data-option="B">B. Prefer external testers because organizational separation ensures effectiveness</button>
+<button type="button" data-option="C">C. Assign testing to developers because implementation knowledge prevents bias</button>
+<button type="button" data-option="D">D. Separate testers from developers to avoid influencing test decisions</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="D" data-explanation="The whole team approach encourages everyone to contribute to quality using their different skills and responsibilities. It does not require everyone to perform identical tasks.">
+<div class="knowledge-question" data-answer="D" data-explanation="The whole team approach encourages collaboration and shared responsibility for quality. Team members contribute through their different skills and roles rather than performing identical testing activities.">
 
 <p><strong>Whole Team Approach</strong></p>
 
-<p>What does the whole team approach emphasize?</p>
+<p>How should a team apply the whole team approach when planning quality-related activities?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Testers are solely responsible for software quality</button>
-<button type="button" data-option="B">B. Every team member must perform the same testing tasks</button>
-<button type="button" data-option="C">C. Independent testing must be eliminated</button>
-<button type="button" data-option="D">D. Quality is a shared responsibility supported by collaboration</button>
+<button type="button" data-option="A">A. Assign final quality responsibility to the dedicated testing specialists</button>
+<button type="button" data-option="B">B. Rotate all testing tasks equally among team members each iteration</button>
+<button type="button" data-option="C">C. Let developers manage quality while testers independently verify releases</button>
+<button type="button" data-option="D">D. Share responsibility for quality while contributing through different roles</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="B" data-explanation="Testability influences how easily testers can establish conditions, control states, observe behavior, and investigate failures. It does not guarantee that the software is correct.">
+<div class="knowledge-question" data-answer="B" data-explanation="Testability improves when testers can establish relevant conditions, control system states, observe outcomes, and investigate failures. These capabilities make testing more effective without guaranteeing correctness.">
 
 <p><strong>Testability</strong></p>
 
-<p>Which characteristic indicates better software testability?</p>
+<p>Which change would most directly improve the testability of an application?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Testers cannot control relevant system states</button>
-<button type="button" data-option="B">B. Testers can establish conditions and observe behavior easily</button>
-<button type="button" data-option="C">C. Failures provide no diagnostic information</button>
-<button type="button" data-option="D">D. Components can only be tested through unavailable external services</button>
+<button type="button" data-option="A">A. Reduce the number of supported user workflows in the application</button>
+<button type="button" data-option="B">B. Provide ways to control test states and observe system behavior</button>
+<button type="button" data-option="C">C. Increase the number of features included in each test scenario</button>
+<button type="button" data-option="D">D. Restrict diagnostic information to the production support team</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>
 
 </div>
 
-<div class="knowledge-question" data-answer="C" data-explanation="A test oracle provides a basis for establishing expected results and evaluating actual results. When an exact expected value is unknown, testers may use known properties or constraints.">
+<div class="knowledge-question" data-answer="C" data-explanation="When an exact expected result is unavailable, a test oracle may use known properties, constraints, or relationships to evaluate whether the observed result is acceptable.">
 
 <p><strong>Test Oracles</strong></p>
 
-<p>What can testers do when the exact expected result of a complex calculation is unknown?</p>
+<p>A complex calculation produces an output whose exact expected value is difficult to determine. How can the tester evaluate the result?</p>
 
 <div class="quiz-options">
-<button type="button" data-option="A">A. Assume that the software's output is correct</button>
-<button type="button" data-option="B">B. Skip evaluating the result entirely</button>
-<button type="button" data-option="C">C. Evaluate known properties, constraints, or relationships</button>
-<button type="button" data-option="D">D. Treat every result as a confirmed defect</button>
+<button type="button" data-option="A">A. Compare the result with previous outputs from the same implementation</button>
+<button type="button" data-option="B">B. Accept the result when the calculation finishes without an error</button>
+<button type="button" data-option="C">C. Check the result against known mathematical properties and constraints</button>
+<button type="button" data-option="D">D. Repeat the calculation and accept the result when outputs agree</button>
 </div>
 
 <p class="quiz-feedback" role="status" aria-live="polite"></p>

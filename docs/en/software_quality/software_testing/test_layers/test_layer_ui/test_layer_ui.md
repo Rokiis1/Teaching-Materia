@@ -1,4 +1,6 @@
-# Table of Contents: Test Layer UI
+# Test Layer UI
+
+## Table of Contents: Test Layer UI
 
 - [Goal of UI Testing](#goal-of-ui-testing)
 - [Preparing for UI Testing](#preparing-for-ui-testing)

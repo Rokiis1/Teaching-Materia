@@ -1,6 +1,7 @@
-# Table of Contents: System Testing
+# System Testing
 
-- [System Testing](#system-testing)
+## Table of Contents: System Testing
+
 - [Objectives and Scope of System Testing](#objectives-and-scope-of-system-testing)
 - [System Testing Across Layers](#system-testing-across-layers)
 - [Types of System Testing](#types-of-system-testing)
@@ -9,8 +10,6 @@
 - [Test Environment and Data](#test-environment-and-data)
 
 Once components and their interactions are verified, the complete integrated system must be validated as a whole.
-
-## System Testing
 
 System testing is a testing level in which the complete and fully integrated system is evaluated against specified requirements. Unlike earlier testing levels that focus on isolated components or interactions between modules, system testing validates the behavior of the application as a whole and ensures that its parts work together correctly under realistic conditions.
 

@@ -1,4 +1,6 @@
-# Table of Contents - Static Testing (Static Analysis)
+# Static Analysis
+
+## Table of Contents: Static Analysis
 
 - [What is Static Analysis](#what-is-static-analysis)
 - [Objectives of Static Analysis](#objectives-of-static-analysis)

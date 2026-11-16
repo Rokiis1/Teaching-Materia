@@ -1,6 +1,7 @@
-# Table of Contents: System Integration Testing
+# System Integration Testing
 
-- [System Integration Testing](#system-integration-testing)
+## Table of Contents: System Integration Testing
+
 - [Objectives and Scope of System Integration Testing](#objectives-and-scope-of-system-integration-testing)
 - [Types of System Integration Testing](#types-of-system-integration-testing)
 - [Integration Scenarios and Interfaces](#integration-scenarios-and-interfaces)
@@ -9,8 +10,6 @@
 - [Test Environment and Data](#test-environment-and-data)
 
 After the complete integrated system has been validated within its own system boundary during system testing, the next level focuses on how that system interacts with external systems and services.
-
-## System Integration Testing
 
 System integration testing validates the interactions between the complete system and **external systems, services and other external dependencies**.
 

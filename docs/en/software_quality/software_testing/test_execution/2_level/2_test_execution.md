@@ -1,4 +1,6 @@
-# Table of Contents: Test Execution Level 2
+# Level 2
+
+## Table of Contents: Test Execution
 
 - [When to Use Manual Testing](#when-to-use-manual-testing)
 - [When to Use Automation Testing](#when-to-use-automation-testing)
