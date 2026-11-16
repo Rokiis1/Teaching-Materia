@@ -24,7 +24,7 @@ flowchart LR
     G --> H([Continue program])
 ```
 
-The diagram follows the usual pattern of checking a condition inside the loop and exiting early when that condition is met. The general structure follows this pattern.
+The diagram shows how a condition inside the loop can end repetition early. The general structure follows the same pattern.
 
 ```py
 for item in collection:
@@ -57,7 +57,7 @@ while True:
     print("Command received:", command) # Prints the entered command
 ```
 
-Here, `while True` would keep repeating unless something inside the loop stops it. Entering `"exit"` triggers `break`, so the final `print()` is skipped. For any other command, the message is printed and another iteration begins. In **Control Flow Level 1**, a changing `while` condition was used to stop a loop; `break` provides an alternative when the decision to exit is made inside the body.
+Here, `while True` would continue indefinitely without an exit inside the body. Entering `"exit"` triggers `break`, skipping the final `print()` and leaving the loop. In **Control Flow Level 1**, a changing `while` condition controlled when repetition ended; `break` provides an alternative when the decision is made inside the loop.
 
 !!! note "Loop-Only Statement"
 
@@ -75,9 +75,9 @@ for order in orders:
         break
 ```
 
-This works when the target exists, but the code does not yet report what happens when it is missing. Python provides a loop `else` clause for exactly this kind of distinction.
+This example prints a result when the order exists, but it does not yet handle a missing target. Python provides a loop `else` clause for distinguishing a completed search from one stopped by `break`.
 
-An `else` block attached to a `for` or `while` loop runs when the loop finishes **without executing `break`**. It is not an alternative branch of an `if` statement, and it does not mean that the loop condition was false on every iteration. In a search, the `else` block can handle the case where no match was found.
+An `else` block attached to a `for` or `while` loop runs when the loop finishes **without executing `break`**. In a search, it can report that no match was found, even when the collection is empty.
 
 ```py
 orders = ["ORD-1001", "ORD-1002", "ORD-1003"]
@@ -91,7 +91,7 @@ else:
     print("Order not found") # Order not found
 ```
 
-Because the target is absent, the loop checks every order and then runs `else`. If the target were present, `break` would skip `else`. The same rule applies to `while`. When its condition eventually becomes `False`, `else` runs unless the loop was exited with `break`.
+Because the target is absent, the loop checks every order and then runs `else`. If the target were present, `break` would skip that block. The same rule applies to `while` when its condition eventually becomes `False`.
 
 ```py
 attempts = 0
@@ -104,27 +104,47 @@ else:
 
 The `while` condition eventually becomes `False`, so this example completes normally and prints the final message. Loop `else` is most useful when the difference between *completed normally* and *stopped early* matters; it is not necessary for every loop.
 
-Inside a function, `return` can stop a search too, but it has a broader effect. While `break` exits only the current loop, `return` exits the **entire function** and can send a value back to the caller. This connects loop control to the function behavior introduced in **Functions Level 1**.
+The difference between `break` and `return` becomes important when a search takes place inside a function. A function can use **both statements** when it needs to stop the loop, finish some work after the loop, and then return a result. The result does not have to be `True` or `False`. In the following example, `found_order` starts as `None`, changes to the matching order when one is found, and is returned after the search finishes.
+
+```py
+def find_order(orders, target):
+    found_order = None
+
+    for order in orders:
+        if order == target:
+            found_order = order
+            break
+
+    print("Search finished")
+    return found_order
+
+
+orders = ["ORD-1001", "ORD-1002", "ORD-1003"]
+
+print(find_order(orders, "ORD-1002")) # Search finished, then ORD-1002
+print(find_order(orders, "ORD-1004")) # Search finished, then None
+```
+
+Here, `break` stops the loop once the order is found, but the function still prints `"Search finished"` before `return` sends the result to the caller. If no order matches, `found_order` remains `None`. There is no need for a separate Boolean tracking variable, because the matching value itself tells the caller whether the search succeeded.
+
+If the function has no work to perform after finding the order, the same search can be written more simply with `return` alone. Returning from inside the loop already ends both the loop and the function, so an additional `break` would not help.
 
 ```py
 def find_order(orders, target):
     for order in orders:
         if order == target:
-            return True
+            return order
 
-    return False
+    return None
 
 
 orders = ["ORD-1001", "ORD-1002", "ORD-1003"]
-target_order = "ORD-1003"
 
-if find_order(orders, target_order):
-    print("Search successful") # Search successful
-else:
-    print("Order not found") # Not printed
+print(find_order(orders, "ORD-1002")) # ORD-1002
+print(find_order(orders, "ORD-1004")) # None
 ```
 
-If a match is found, `return True` ends the function immediately. If no match is found, execution reaches `return False` after the loop. Use `break` when only the current loop should end, and `return` when the function itself should finish. When the goal is to skip just one iteration rather than stop the loop, use `continue`.
+Both versions return the matching order or `None` when it is missing. **Use `break` followed by `return` when statements after the loop still need to run**, and use `return` directly when the function can finish as soon as a result is known. Neither approach requires returning `True` or `False` unless a Boolean result is what the program needs. When the goal is to skip only the rest of the **current iteration** rather than stop the loop, Python provides `continue`.
 
 ## The `continue` Statement
 
