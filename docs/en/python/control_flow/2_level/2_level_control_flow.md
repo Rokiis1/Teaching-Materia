@@ -6,29 +6,25 @@
 - [The `continue` Statement](#the-continue-statement)
 - [The `pass` Statement](#the-pass-statement)
 
-Python loops normally continue until all values have been processed or until a `while` condition becomes `False`. Sometimes, however, a program needs more direct control over what happens during an iteration. In this level, we will learn three statements used for this purpose: `break`, `continue`, and `pass`. Each affects execution differently, so understanding where control moves after each statement is important.
-
-We will begin with `break`, which immediately exits the current loop and continues execution with the first statement after that loop.
+Python loops normally continue until every value has been processed or a `while` condition becomes `False`. Sometimes a program needs more direct control over what happens during an iteration. This level introduces `break`, `continue`, and `pass`. They behave differently. `break` exits a loop, `continue` skips the remaining work in the current iteration, and `pass` does nothing. We will begin with `break`, then examine how the other statements affect execution.
 
 ## The `break` Statement
 
-The `break` statement is used when a loop should stop before reaching its normal end. It is most useful when the loop has already achieved its goal, such as finding a target value, receiving a command that should stop a process, or reaching a condition that makes further iterations unnecessary.
+The `break` statement stops the current `for` or `while` loop immediately, even if more iterations would normally follow. It is useful when a search has found its target, a user requests that a process stop, or continuing would no longer be useful. Execution resumes with the first statement after the loop.
 
 ```mermaid
 flowchart LR
     A([Start]) --> B[Enter loop]
     B --> C[Run loop code]
     C --> D{Break condition met?}
-
     D -->|No| E[Continue iteration]
     E --> B
-
     D -->|Yes| F[break]
     F --> G[Exit loop]
     G --> H([Continue program])
 ```
 
-The diagram shows how `break` exits the current loop immediately and transfers execution to the first statement after the loop. The basic structure is shown below.
+The diagram follows the usual pattern of checking a condition inside the loop and exiting early when that condition is met. The general structure follows this pattern.
 
 ```py
 for item in collection:
@@ -36,7 +32,7 @@ for item in collection:
         break
 ```
 
-When the condition becomes `True`, `break` stops the loop. The following `for` example shows this behavior when `i` reaches `5`.
+For example, `range(10)` supplies the numbers from `0` through `9`, but the following loop stops as soon as it reaches `5`.
 
 ```py
 for i in range(10):
@@ -46,9 +42,9 @@ for i in range(10):
         break
 ```
 
-Although `range(10)` can produce the values from `0` through `9`, the loop does not process all of them. Once `i == 5` becomes `True`, `break` exits the loop immediately, so the values from `6` through `9` are never processed.
+The value `5` is printed because `print()` runs before the condition is checked. Once `i == 5` becomes `True`, the loop exits and never reaches `6` through `9`. If the `break` check came before `print()`, the value `5` would not be printed. This illustrates why the position of a statement inside a loop matters.
 
-The `break` statement is also common in `while` loops, especially when the number of iterations is not known in advance. In the following example, the loop continues accepting commands until the user enters `"exit"`.
+A `while` loop can also use `break`, particularly when the stopping command comes from user input and the number of repetitions is unknown.
 
 ```py
 while True:
@@ -61,13 +57,13 @@ while True:
     print("Command received:", command) # Prints the entered command
 ```
 
-Here, `while True` creates a loop whose condition does not become `False` on its own. When the user enters an `"exit"` command, `break` stops the loop immediately. For any other command, the final `print()` runs and the loop begins another iteration.
+Here, `while True` would keep repeating unless something inside the loop stops it. Entering `"exit"` triggers `break`, so the final `print()` is skipped. For any other command, the message is printed and another iteration begins. In **Control Flow Level 1**, a changing `while` condition was used to stop a loop; `break` provides an alternative when the decision to exit is made inside the body.
 
 !!! note "Loop-Only Statement"
 
-    The `break` statement can only be used inside a `for` or `while` loop. Using `break` outside a loop causes a `SyntaxError`.
+    `break` must appear inside a `for` or `while` loop. Using it outside a loop causes a `SyntaxError`.
 
-Another common use of `break` is stopping a search once the required value has been found.
+Searching a collection is another practical reason to exit early. Once the target order has been found, there is no need to inspect the remaining orders.
 
 ```py
 orders = ["ORD-1001", "ORD-1002", "ORD-1003", "ORD-1004"]
@@ -79,9 +75,9 @@ for order in orders:
         break
 ```
 
-Once `"ORD-1003"` is found, there is no reason to continue checking the remaining orders. The `break` statement therefore prevents unnecessary iterations.
+This works when the target exists, but the code does not yet report what happens when it is missing. Python provides a loop `else` clause for exactly this kind of distinction.
 
-Python also allows an `else` clause to be attached to a loop. The loop's `else` block runs only when the loop finishes normally without reaching `break`. This is particularly useful for searches because it provides a direct place to handle the case where no match was found.
+An `else` block attached to a `for` or `while` loop runs when the loop finishes **without executing `break`**. It is not an alternative branch of an `if` statement, and it does not mean that the loop condition was false on every iteration. In a search, the `else` block can handle the case where no match was found.
 
 ```py
 orders = ["ORD-1001", "ORD-1002", "ORD-1003"]
@@ -95,7 +91,7 @@ else:
     print("Order not found") # Order not found
 ```
 
-In this example, the target does not appear in the list, so the `for` loop finishes normally and the `else` block runs. If the target were found, `break` would exit the loop and the `else` block would be skipped. A `while` loop follows the same rule: its `else` block runs when the loop condition becomes `False`, but it is skipped when `break` exits the loop early.
+Because the target is absent, the loop checks every order and then runs `else`. If the target were present, `break` would skip `else`. The same rule applies to `while`. When its condition eventually becomes `False`, `else` runs unless the loop was exited with `break`.
 
 ```py
 attempts = 0
@@ -106,9 +102,9 @@ else:
     print("All attempts completed") # All attempts completed
 ```
 
-Here, `attempts < 3` eventually becomes `False`, so the loop completes normally and the `else` block runs. This pattern is useful when code should run only after normal loop completion rather than after an early exit.
+The `while` condition eventually becomes `False`, so this example completes normally and prints the final message. Loop `else` is most useful when the difference between *completed normally* and *stopped early* matters; it is not necessary for every loop.
 
-When search logic belongs inside a function, `return` can serve a different purpose by ending the entire function as soon as a result is known. This pattern connects loop control with the function behavior introduced in **Functions Level 1**.
+Inside a function, `return` can stop a search too, but it has a broader effect. While `break` exits only the current loop, `return` exits the **entire function** and can send a value back to the caller. This connects loop control to the function behavior introduced in **Functions Level 1**.
 
 ```py
 def find_order(orders, target):
@@ -128,29 +124,25 @@ else:
     print("Order not found") # Not printed
 ```
 
-The function checks each order one at a time. When the target is found, `return True` immediately exits the entire function. If every order is checked without a match, the function reaches `return False`. The returned Boolean value is then used by the `if-else` statement to decide which message to display.
-
-The important distinction is where execution stops. `break` exits only the current loop, while `return` exits the entire function. When only the current iteration should be skipped, Python provides `continue`.
+If a match is found, `return True` ends the function immediately. If no match is found, execution reaches `return False` after the loop. Use `break` when only the current loop should end, and `return` when the function itself should finish. When the goal is to skip just one iteration rather than stop the loop, use `continue`.
 
 ## The `continue` Statement
 
-The `continue` statement skips the remaining code in the current iteration and moves directly to the next iteration of the loop. It is useful when certain values should be ignored while the loop continues processing the rest of the data, such as filtering records, skipping invalid values, or excluding items that do not meet a requirement.
+The `continue` statement skips the remaining statements in the **current iteration** and moves on to the next iteration of the same loop. Unlike `break`, it does not exit the loop. This is useful for ignoring invalid records, filtering out unwanted values, or skipping work that does not apply to a particular item.
 
 ```mermaid
 flowchart LR
     A([Start]) --> B[Enter loop]
     B --> C[Run loop code]
     C --> D{Continue condition met?}
-
     D -->|No| E[Run remaining code]
     E --> F[Next iteration]
     F --> B
-
     D -->|Yes| G[continue]
     G --> F
 ```
 
-The diagram shows how `continue` skips the remaining work in the current iteration without exiting the loop. The basic structure is shown below.
+The key point is that code after `continue` is skipped **only for that iteration**. The general structure follows this pattern.
 
 ```py
 for item in collection:
@@ -158,7 +150,7 @@ for item in collection:
         continue
 ```
 
-When the condition becomes `True`, `continue` moves directly to the next iteration. The following `while` example uses this behavior to skip even numbers.
+A `while` loop demonstrates why the order of its updates matters. In this example, the counter increases before `continue` can skip the print statement.
 
 ```py
 i = 0
@@ -172,17 +164,13 @@ while i < 10:
     print(f"Odd number: {i}") # Skip the rest of the loop for even numbers
 ```
 
-When `i` is even, `continue` skips the `print()` call for that iteration. The loop itself does not stop, so execution continues until `i < 10` becomes `False`. Only the odd numbers reach the `print()` statement.
+When `i` is even, `continue` skips the `print()` statement and Python checks the `while` condition again. Because `i += 1` happens first, the counter still advances on every iteration. Placing that update after `continue` could cause an infinite loop when the counter reaches an even number.
 
-!!! note "Loop-Only Statement"
+!!! warning "Updating a `while` Loop"
 
-    Like `break`, the `continue` statement can only be used inside a `for` or `while` loop. Using `continue` outside a loop causes a `SyntaxError`.
+    Before using `continue` in a `while` loop, check that every possible path still allows the stopping condition to be reached. A skipped update can leave the condition permanently `True`.
 
-!!! warning "Updating a While Loop"
-
-    When using `continue` in a `while` loop, make sure the values needed to reach the stopping condition are updated. Otherwise, the loop may repeat indefinitely.
-
-This behavior is useful when processing records because invalid or incomplete entries can be skipped without stopping the entire operation.
+A practical use is skipping records with missing information. The following example processes only records whose email field is not empty.
 
 ```py
 records = [
@@ -201,36 +189,38 @@ def process_valid_emails(records):
 process_valid_emails(records)
 ```
 
-The function checks every record. When the email field is empty, `continue` skips the remaining code for that record and moves to the next one. Records with an email address reach the `print()` call and are processed.
+The second record is skipped, but the loop still processes the third. This checks only whether the field is empty; it does not validate an email address or actually send an email. For straightforward conditions, an `if` statement without `continue` may be just as readable. Use `continue` when skipping early makes the remaining processing easier to follow.
+
+!!! note "Loop-Only Statement"
+
+    Like `break`, `continue` must appear inside a `for` or `while` loop. Using it outside a loop causes a `SyntaxError`.
 
 Sometimes Python requires a statement even though no action should happen yet. For that situation, Python provides `pass`.
 
 ## The `pass` Statement
 
-The `pass` statement is a placeholder that performs no action. It is useful when Python requires a statement inside a block but the code for that block has not been implemented yet, or when a branch is intentionally left empty.
-
-For example, `pass` can keep an unfinished conditional block syntactically valid.
+The `pass` statement differs from both `break` and `continue` because it performs **no action**. Python requires a statement inside an `if` block, loop, function, or class definition, even when the body has not been implemented yet. The `pass` statement keeps the code syntactically valid until the intended behavior is added, making it useful for marking an unfinished conditional branch, as shown in the following example.
 
 ```py
 if condition:
     pass # Implement this later
 ```
 
-The same idea can be used while building a function whose implementation will be added later.
+The same placeholder works when a function has been defined but its implementation is not ready.
 
 ```py
 def my_function():
     pass # Implement this later
 ```
 
-A class body also requires at least one statement, so `pass` can be used when defining an empty class as a temporary structure.
+A class definition can also use `pass` when its body will be added later.
 
 ```py
 class MyClass:
     pass # Add class behavior later
 ```
 
-The `pass` statement can also appear inside a loop when the loop body or one of its branches is intentionally unfinished. Unlike `continue`, `pass` does not skip the rest of the iteration.
+In all three structures, `pass` is only a placeholder. Inside a loop, this distinction becomes especially important because `pass` does not behave like `continue`.
 
 ```py
 for number in range(3):
@@ -240,6 +230,6 @@ for number in range(3):
     print(number) # 0, then 1, then 2
 ```
 
-When `number` equals `1`, Python executes `pass` and then continues with the next statement in the same iteration, so `print(number)` still runs. This is different from `continue`, which would skip that `print()` call and move directly to the next iteration.
+Even when `number` equals `1`, the `print()` statement still runs. Replacing `pass` with `continue` would skip that print and produce only `0` and `2`. Replacing it with `break` would stop the loop when `number` reaches `1`, producing only `0`. This comparison captures the practical difference among the three statements.
 
-You can now distinguish these statements by their effect on execution. `break` leaves the current loop, `continue` skips the rest of the current iteration, and `pass` performs no action at all. These tools help you handle early exits, skipped values, and intentionally empty blocks while keeping your program's behavior clear. They also prepare you for the more complex control-flow patterns introduced in **Control Flow Level 3**.
+The distinction is based on what should happen next. Use `break` when further iterations are unnecessary, `continue` when the current iteration should be skipped, and `pass` when Python needs a statement but no behavior is required yet. Together, these statements complete the core loop-control tools for **Control Flow Level 2**. In **Control Flow Level 3**, we will build on them through nested loops and explore how loop-control statements behave when loops are combined.
