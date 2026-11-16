@@ -61,7 +61,7 @@ Determining whether observed behavior is correct requires more than the ability 
 
 ## Test Oracles
 
-A **test oracle** is a source of information used to determine whether the actual results of a test are correct. It provides the basis for establishing expected results, which testers compare with the behavior observed during test execution. Differences between these results may indicate defects that require further investigation. The **ISTQB Certified Tester Foundation Level Syllabus** (ISTQB, 2024, Section 1.4.1) identifies test oracles as sources used to determine expected results.
+A **test oracle** is a source of information used to determine whether the actual results of a test are correct. It provides the basis for establishing expected results, which testers compare with the behavior observed during test execution. Differences between these results may indicate defects that require further investigation. The **ISTQB Certified Tester Foundation Level Syllabus (ISTQB, 2024, Section 1.4.1)** identifies test oracles as sources used to determine expected results.
 
 Test oracles can come from different sources depending on the software being tested and the information available. **Requirements and specifications** describe intended behavior, while **acceptance criteria** define conditions that a feature must satisfy. **Business rules** establish constraints and decisions that the software must follow. **Existing systems**, **reference implementations**, and **domain knowledge** may also help testers determine expected results.
 

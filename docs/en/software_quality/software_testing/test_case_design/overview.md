@@ -2,7 +2,7 @@
 
 Test case design is the process of developing tests to determine what should be tested and how software behavior should be verified. It uses requirements, testing objectives, risks, and other available information to identify relevant test conditions and develop test cases with appropriate test data. Because testing every possible situation is rarely practical, test design techniques help testers select meaningful tests to achieve appropriate coverage **(ISTQB, 2024, Sections 1.4 and 4.1)**.
 
-The **Test Case Design** module covers both the foundations of designing tests and three complementary families of techniques. These are **experience-based**, **black-box**, and **white-box testing techniques**, each offering a different way to identify useful tests.
+The **Test Case Design** module covers both the foundations of designing tests and three complementary families of techniques. These are **experience-based**, **black-box**, and **white-box testing** techniques, each offering a different way to identify useful tests.
 
 ![Test Design Fundamentals and Three Families of Testing Techniques](./assets/images/test_design_technique_families.png)
 

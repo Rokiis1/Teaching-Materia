@@ -1,4 +1,3 @@
-
 # Summary
 
 This summary brings together the key concepts from the **Fundamentals of Testing** module. It provides a concise reference for reviewing how testing is scoped, organized, performed, and evaluated. The material is divided into **Level 1**, which establishes the foundations of testing, and **Level 2**, which introduces testability and test oracles.

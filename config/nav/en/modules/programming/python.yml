@@ -33,6 +33,7 @@
     - Inputs and Outputs Operations:
         - python/input_output_operations/overview.md
         - python/input_output_operations/1_level/1_level_input_output_operations.md
+        - python/input_output_operations/2_level/2_level_input_output_operations.md
         - python/input_output_operations/summary.md
 
     - Control Flow:
