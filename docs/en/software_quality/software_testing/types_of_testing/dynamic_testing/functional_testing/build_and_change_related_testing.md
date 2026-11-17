@@ -1,6 +1,6 @@
-## Build and Change-Related Testing
+# Build and Change-Related Testing
 
-# Table of Contents: Build and Change-Related Testing
+## Table of Contents: Build and Change-Related Testing
 
 - [Smoke Testing](#smoke-testing)
 - [Sanity Testing](#sanity-testing)
@@ -8,81 +8,70 @@
 - [Regression Testing](#regression-testing)
 - [Build and Change-Related Testing Workflow](#build-and-change-related-testing-workflow)
 
-The focus here is on testing types that are commonly performed when new **builds** or **changes** are introduced to the system. These changes may include **defect fixes**, **feature updates**, **enhancements**, upgrades or other modifications. The purpose is to determine whether the build is suitable for testing, whether a specific change works correctly, whether a reported defect has been fixed and whether existing functionality still works after the change.
+Software changes introduce new functionality, correct defects, and improve existing behavior, but they can also introduce unexpected problems. **Build and change-related testing** covers testing activities performed when a new **software build** or modification becomes available. These changes may include defect fixes, feature updates, enhancements, configuration changes, or upgrades.
 
-Unlike test design techniques, which focus on selecting test conditions, inputs and coverage, these testing types describe **why and when testing is performed** during the development and delivery process.
-
-The four testing types have different purposes.
-
-| Testing Type             | Main Question                                         |
-| ------------------------ | ----------------------------------------------------- |
-| **Smoke Testing**        | Is this build stable enough for further testing?      |
-| **Sanity Testing**       | Does the changed area work correctly?                 |
-| **Confirmation Testing** | Has this specific reported defect been fixed?         |
-| **Regression Testing**   | Did the change break existing functionality?          |
-
-These activities can be used together during the same development cycle. The required testing depends on the type of change, affected functionality, project risk and available test coverage.
+These activities help evaluate the readiness of new builds, verify intended changes, confirm defect fixes, and detect unintended effects on existing functionality. The appropriate combination depends on the nature of the change, its potential impact, project risks, and available test coverage.
 
 ## Smoke Testing
 
-**Smoke testing** is a small set of tests performed on a new software build to quickly verify that the **most critical functionality works** and that the build is stable enough for further testing. Before smoke testing begins, the required build should be successfully deployed and the test environment should be available.
+**Smoke testing** is a small set of tests performed on a new software build to quickly verify that its **most critical functionality works** and that the build is stable enough for further testing. It is typically performed after deployment to an available test environment. Common checks include application startup, system access, basic navigation, and critical features. For example, in an application with account functionality, smoke tests might verify that the application loads, the login page is accessible, a user can log in successfully, and the main application area opens.
 
-Typical smoke testing may verify that the application starts successfully, users can access the system, basic navigation works and critical features are available. For an application with account functionality, this might include verifying that the application loads, the login page is accessible, a user can log in and the main application area can be opened.
+Smoke testing provides **broad but shallow coverage**, focusing on major problems rather than examining features in detail. If the smoke tests **pass**, more detailed testing can proceed. If they **fail**, the build is generally returned for investigation or correction because significant failures may prevent meaningful further testing.
 
-Smoke testing provides **broad but shallow coverage**. Its purpose is not to test every feature in detail but to detect major problems that would prevent meaningful further testing. If the smoke test **passes**, more detailed testing can continue. If it **fails**, the build is normally rejected or returned for investigation because continuing detailed testing on an unstable build may waste time.
-
-Smoke tests are commonly good candidates for **automation** because the same critical checks are repeatedly executed for new builds. In **CI/CD workflows**, automated smoke tests may run after deployment and prevent an unsuitable build from progressing further. Depending on the project, smoke testing may therefore be performed automatically before QA receives the build or manually by QA.
-
-Once the build is considered stable enough for further testing, more focused testing can be performed when particular areas have changed.
+Because smoke tests repeatedly check critical functionality across builds, they are well suited to **automation**. In **continuous integration and continuous delivery (CI/CD) workflows**, automated smoke tests may run after deployment and act as a quality gate before further testing begins. Manual execution is also possible when appropriate. Once a build passes these initial checks, testing can focus on specific areas affected by recent changes through more targeted checks, such as sanity testing.
 
 ## Sanity Testing
 
-**Sanity testing** is a focused check performed after a **specific change**, such as a minor feature update, configuration change or defect fix. Unlike smoke testing, which checks the general stability of the build, sanity testing concentrates on the **changed area and closely related functionality**.
+**Sanity testing** is a focused check performed after a **specific change**, such as a minor feature update, configuration change, or defect fix. Unlike smoke testing, which assesses the general stability of a build, sanity testing concentrates on the **changed area and closely related functionality**. Its purpose is to establish whether the change works as intended before investing in more extensive testing.
 
-In practice, smoke testing asks **Is this build stable enough to test?** while sanity testing asks **Did this specific change work correctly?**
+Sanity testing typically involves a limited selection of relevant tests rather than executing a large test suite. For example, after changes to account registration, it might verify that registration can be completed, input validation works, and users can access the application after creating an account. These checks provide quick confidence in the affected functionality without necessarily repeating the exact steps that originally revealed a defect. When the objective is specifically to verify that a reported defect has been corrected, **confirmation testing** is used.
 
-Sanity testing may selectively use existing test cases related to the changed area rather than executing a large test suite. It provides quick confidence that the changed area works as a whole but does not necessarily repeat the exact steps that originally reproduced a particular defect.
-
-For example, if changes were made to account registration, sanity testing might verify that registration can still be completed, validation works and the user can continue into the application after creating an account. When the purpose is specifically to verify that a previously reported defect no longer occurs, **confirmation testing** is used instead.
+The distinction between smoke and sanity testing is not applied uniformly across all organizations. Some teams use the terms interchangeably, so their intended scope and purpose should be defined within the project's testing strategy. Unlike these broader checks, confirmation testing specifically verifies whether a previously reported defect has been corrected.
 
 ## Confirmation Testing (Retesting)
 
-**Confirmation testing**, also called **retesting**, verifies that a previously reported **defect has been fixed**. The tester reruns the **same test cases or reproduction steps** that originally detected the defect and compares the new result with the expected behavior.
+**Confirmation testing**, also called **retesting**, verifies that a previously reported **defect has been fixed**. It involves repeating the **same test cases or reproduction steps** that originally revealed the defect and comparing the actual results with the expected behavior. Where practical, testing should be performed in the **same environment in which the defect was originally observed**, or in a representative equivalent environment. This is particularly important when the problem depends on a specific browser, operating system, device, configuration, or other environmental condition.
 
-Where practical, the defect should be verified in the **same environment in which it was originally observed**, or in a representative equivalent environment. This is particularly important when the problem may depend on a specific browser, operating system, device, configuration or other environmental condition.
+For example, suppose selecting **Create Account** after entering valid registration information previously produced an error instead of creating an account. After the fix is delivered, confirmation testing repeats the original conditions and reproduction steps. If registration now completes as expected and the original problem no longer occurs, the defect fix can be considered confirmed.
 
-For example, suppose a defect was reported because selecting **Create Account** after entering valid registration information produced an error instead of creating the account. After the fix is delivered, confirmation testing repeats the conditions and steps that produced the original problem. If registration now completes according to the expected behavior, the fix can be considered confirmed for that defect.
-
-Confirmation testing is deliberately **narrow**. It determines whether the specific defect was corrected but does not establish that the change had no unintended effect elsewhere. That broader risk is addressed through **regression testing**.
+Confirmation testing has a **narrow scope**, focusing on the specific defect. A successful result does not establish that the change has left other functionality unaffected. Identifying such unintended effects is the purpose of **regression testing**.
 
 ## Regression Testing
 
-**Regression testing** verifies that changes to the system have not negatively affected **existing functionality that previously worked**. It may be required after **defect fixes**, **feature changes**, enhancements, configuration changes, upgrades, migrations or other modifications that could affect existing behavior.
+**Regression testing** verifies that changes to software or its environment have not introduced unintended adverse effects on **previously established behavior or quality characteristics**. It may be performed after defect fixes, feature updates, enhancements, configuration changes, upgrades, migrations, or other modifications. For example, a change to account registration may also affect login, account verification, profile creation, or functionality that shares authentication or account-management components. Regression testing examines relevant existing behavior to detect these unintended effects.
 
-For example, a change to account registration may also affect login, account verification, profile creation or other functionality that shares authentication or account-management components. Regression testing checks relevant existing behavior to identify these unintended side effects.
+Regression testing does not necessarily require rerunning every existing test. Its scope depends on the **nature of the change, affected areas, and associated risks**. **Full regression testing** executes the complete regression suite and may be appropriate for major releases or changes with broad impact. **Partial regression testing** focuses on the changed area and related functionality, while **risk-based regression testing** prioritizes tests based on business importance, technical impact, previous defects, and the likelihood of regression.
 
-Regression testing does not always mean rerunning every existing test. The appropriate scope depends on the **change, affected areas and risk**. **Full regression** executes the complete regression suite and may be appropriate for major releases or changes with broad impact. **Partial regression** focuses on the changed area and related functionality, while **risk-based regression** prioritizes tests according to factors such as business importance, technical impact, previous defects and the likelihood of regression.
+Regression suites are well suited to **test automation** because the same tests are executed repeatedly as the application evolves. Automated testing can provide faster feedback, while manual testing remains useful when human observation, exploratory investigation, or functionality unsuitable for automation is involved. Regression testing can also cover relevant **non-functional characteristics**, such as performance, security, usability, and compatibility, when changes may affect them.
 
-Regression suites are strong candidates for **test automation** because the same tests are executed repeatedly as the product changes. Automated regression testing can provide faster feedback, while manual regression remains useful when human observation, exploratory investigation or functionality unsuitable for automation is required.
-
-Although regression testing is commonly associated with functional testing, it can also be applied to relevant **non-functional characteristics** when a change may affect areas such as performance, security, usability or compatibility. Its overall purpose is to provide confidence that functionality outside the immediate change continues to behave as expected.
+As the application evolves, regression suites should be reviewed and maintained to preserve relevant coverage. Tests covering obsolete behavior may need to be updated or removed, while new tests can be added for important functionality and previously discovered defects. This helps keep the suite effective without unnecessarily increasing execution time. While each testing activity serves a distinct purpose, they can also be combined to assess builds and changes throughout the development cycle.
 
 ## Build and Change-Related Testing Workflow
 
-Smoke, sanity, confirmation and regression testing are related, but they answer different questions and are not necessarily executed in the same order for every change.
+Smoke, sanity, confirmation, and regression testing may be combined within the same development cycle, although their selection and order depend on the situation. The following workflow illustrates how these activities may be selected when a defect is discovered and corrected during testing.
 
-A practical workflow may look like this.
+```mermaid
+flowchart TD
+    A["New build deployed"] --> B["Smoke testing"]
+    B --> C{"Build suitable for testing?"}
+    C -- No --> D["Investigate and correct build issues"]
+    D --> A
+    C -- Yes --> E["Planned testing"]
+    E --> F["Defect identified"]
+    F --> G["Defect fix implemented"]
+    G --> H["Updated build deployed"]
+    H --> I["Select relevant checks"]
+    I --> J["Confirmation testing"]
+    I --> K["Sanity testing"]
+    I --> L["Regression testing"]
+    J --> M["Evaluate results"]
+    K --> M
+    L --> M
+    M --> N{"Further corrections needed?"}
+    N -- Yes --> G
+    N -- No --> O["Continue testing"]
+```
 
-1. A new build is deployed to the test environment.
-2. **Smoke testing** checks whether the build is stable enough for further testing.
-3. QA performs the planned testing and identifies a defect in account registration.
-4. A developer implements the defect fix and provides an updated build.
-5. **Confirmation testing** repeats the original reproduction steps to verify that the registration defect has been fixed.
-6. **Sanity testing** checks the changed registration area and closely related behavior to determine whether the change works correctly as a whole.
-7. **Regression testing** checks existing functionality that could have been affected by the registration change.
+The diagram shows how an initial build assessment can lead to planned testing, defect correction, and the selection of relevant verification activities. **Confirmation testing** is appropriate when a reported defect needs to be verified, while **sanity and regression testing** are selected according to the scope and risk of the change. Failed checks may require further corrections and another updated build, while successful results allow testing to continue. This workflow is **illustrative rather than mandatory**. Additional smoke testing may be appropriate after an updated deployment, and not every change requires all three verification activities.
 
-The exact workflow can vary by project. For a small change, confirmation, sanity and targeted regression testing may be sufficient, while a major release may require another smoke test followed by broader regression testing.
-
-The important distinction is the purpose of each activity. **Smoke testing** determines whether the build is suitable for further testing, **sanity testing** checks whether a changed area works correctly, **confirmation testing** verifies that a specific reported defect has been fixed and **regression testing** checks whether changes have introduced unintended problems into existing functionality.
-
-Together, these activities help QA respond efficiently to new builds and software changes without treating every change as requiring the same amount or type of testing.
+Together, **smoke, sanity, confirmation, and regression testing** provide complementary ways to manage the risks associated with new builds and software changes. Each activity contributes to a different aspect of testing, from assessing build readiness to verifying corrections and detecting unintended effects. Selecting and combining these activities according to the scope and risk of a change helps maintain software quality while keeping testing efforts focused and efficient. These activities form part of the broader testing practices discussed in the [Types of Testing Summary](../../summary.md).

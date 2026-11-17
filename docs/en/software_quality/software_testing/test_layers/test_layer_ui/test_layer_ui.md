@@ -12,15 +12,9 @@
 - [Recording Test Results](#recording-test-results)
 - [Completing UI Testing](#completing-ui-testing)
 
-Testing in the **UI layer** evaluates the application from the user's perspective. The tester interacts directly with the interface and observes whether user actions produce the expected visible results.
+Testing through the **user interface (UI)** involves interacting with an application as a user would and verifying whether its responses match the expected behavior. This includes performing actions, entering information, navigating between screens, and observing how the interface responds. To develop these skills, this module focuses on **manual UI testing**, particularly **basic functional checks**, **visual verification**, and **happy path testing**. These activities are primarily performed from a **black-box perspective**, relying on observable behavior rather than knowledge of the application's internal implementation.
 
-The UI describes **where testing is performed**, while testing types describe **what aspect of the application is being evaluated**. Different types of testing can therefore be performed through the UI depending on the testing objective.
-
-The focus of this module is **manual testing**, basic **functional testing**, visual verification and **happy path testing**. Testing is primarily performed from a **black-box perspective**, where the tester evaluates inputs, actions and observable outputs without needing knowledge of the application's source code or internal implementation.
-
-Other testing objectives can also involve the UI. For example, UI interactions may be evaluated as part of **usability**, **accessibility**, **compatibility**, **security** or **performance** testing. These are not separate test layers and require their own testing approaches, so they are introduced only where relevant rather than covered in detail here.
-
-The purpose is to establish a practical foundation for verifying behavior through the interface before testing moves deeper into the system through the API and database layers.
+The module develops a practical approach to UI testing, covering how to prepare suitable test conditions, prioritize important user flows, verify functional and visual results, and record testing outcomes. Although UI interactions may also reveal issues involving **usability**, **accessibility**, or **compatibility**, detailed evaluation of these areas is outside the module's scope. The first step is to understand what UI testing aims to verify and how expected behavior can be evaluated through the interface.
 
 ## Goal of UI Testing
 
