@@ -1,0 +1,11 @@
+- Algorithms and Data Structures:
+    - algorithms_and_data_structures/index.md
+
+    - Data Structures:
+        - $include: modules/algorithms_and_data_structures/data_structures.yml
+
+    - Algorithms:
+        - $include: modules/algorithms_and_data_structures/algorithms.yml
+
+    - Algorithm Analysis:
+        - $include: modules/algorithms_and_data_structures/algorithm_analysis.yml

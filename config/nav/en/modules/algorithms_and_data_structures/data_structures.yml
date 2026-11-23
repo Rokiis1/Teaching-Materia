@@ -1,0 +1,20 @@
+- Data Structures:
+    - data_structures/index.md
+
+    - Data Structure Fundamentals:
+        - data_structures/data_structure_fundamentals/overview.md
+
+    - Linear Data Structures:
+        - data_structures/linear_data_structures/overview.md
+
+    - Hash-Based Data Structures:
+        - data_structures/hash_based_data_structures/overview.md
+
+    - Tree Data Structures:
+        - data_structures/tree_data_structures/overview.md
+
+    - Graph Data Structures:
+        - data_structures/graph_data_structures/overview.md
+
+    - Data Structure Selection:
+        - data_structures/data_structure_selection/overview.md

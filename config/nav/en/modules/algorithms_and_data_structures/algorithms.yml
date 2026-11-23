@@ -1,0 +1,26 @@
+- Algorithms:
+    - algorithms/index.md
+
+    - Algorithm Fundamentals:
+        - algorithms/algorithm_fundamentals/overview.md
+
+        - What Is an Algorithm?:
+            - algorithms/algorithm_fundamentals/what_is_an_algorithm.md
+
+        - Algorithms vs. Programs:
+            - algorithms/algorithm_fundamentals/algorithms_vs_programs.md
+
+        - Pseudocode and Flowcharts:
+            - algorithms/algorithm_fundamentals/pseudocode_and_flowcharts.md
+
+        - Iteration vs. Recursion:
+            - algorithms/algorithm_fundamentals/iteration_vs_recursion.md
+
+    - Algorithm Design Techniques:
+        - algorithms/algorithm_design_techniques/overview.md
+
+    - Common Algorithm Patterns:
+        - algorithms/common_algorithm_patterns/overview.md
+
+    - Algorithm Categories:
+        - algorithms/algorithm_categories/overview.md

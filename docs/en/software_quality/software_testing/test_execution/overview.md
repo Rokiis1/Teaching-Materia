@@ -1,15 +1,35 @@
 # Overview
 
-Software testing involves more than identifying what should be tested and designing test cases. Tests must also be performed to observe how the software behaves and determine whether the results meet expectations. **Test execution** involves running tests, comparing **actual results** with **expected results**, and recording the outcomes. It provides evidence about software behavior and helps identify failures that may indicate underlying defects **(ISTQB, 2024, Section 1.4.1)**.
+Software testing involves more than identifying what should be tested and designing test cases. Tests must also be performed to observe how the software behaves and determine whether the results meet expectations. **Test execution** involves running tests, comparing **actual results** with **expected results**, and recording their outcomes. It provides evidence about software behavior and helps identify failures that may indicate underlying defects **(ISTQB, 2024, Section 1.4.1)**.
 
-How tests are performed depends on the testing objectives, the behavior being examined, and the resources available. Tests can be executed **manually** or **automatically**. In manual execution, a tester performs actions, observes the software's behavior, and evaluates the results. In automated execution, tools or scripts perform predefined actions or checks and report their outcomes.
+Tests can be executed **manually** or **automatically**, depending on the testing objectives, the behavior being examined, and the available resources. In manual execution, a tester performs the test activities and evaluates the observed behavior. In automated execution, tools or scripts perform predefined actions and checks. Both approaches can contribute to effective testing, and they may be used together.
 
-![Test Execution Overview](./assets/images/test_execution_overview.png)
+Regardless of the approach, test execution involves checking that the necessary conditions are available, performing the test, evaluating the observed behavior, and recording the outcome. The following diagram illustrates this basic process, including situations in which a test cannot proceed.
 
-Both approaches support test execution, but they are suitable for different situations. **Manual execution** is particularly useful when human observation, investigation, or judgment is needed, while **automated execution** is often suitable for repeatable checks. Choosing an approach involves considering the testing objectives, execution effort, and maintenance needs. Neither approach is universally preferable, and both may be combined within the same testing effort.
+```mermaid
+flowchart LR
+    A["Prepare for Test Execution"]
+    B{"Ready to Execute?"}
+    C["Execute Test<br/>(Manual or Automated)"]
+    D["Compare Actual and<br/>Expected Results"]
+    E{"Results Match?"}
+    F["Record Passed Result"]
+    G["Record Failed Result"]
+    H["Investigate Unexpected Behavior"]
+    I["Record Blocked Result"]
 
-Regardless of the approach, tests need suitable conditions to produce meaningful results. This may include access to the software, an appropriate **test environment**, the necessary **test data**, and a way to determine expected behavior. These requirements help testers perform checks consistently and investigate unexpected behavior.
+    A --> B
+    B -->|"Yes"| C
+    B -->|"No"| I
+    C --> D
+    D --> E
+    E -->|"Yes"| F
+    E -->|"No"| G
+    G --> H
+```
 
-As tests are performed, their outcomes are evaluated and recorded. A test may be reported as **passed**, **failed**, **blocked**, or assigned another status depending on the reporting conventions used. Unexpected results may require investigation, and a failed test does not necessarily reveal the underlying defect or its location. Recorded results support further investigation and retesting. Broader activities such as monitoring testing progress and managing defects are covered in the [Test Management overview](../test_management/overview.md).
+Meaningful test execution requires suitable conditions, including access to the software, an appropriate **test environment**, relevant **test data**, and defined expectations. If these conditions are not met, a test may be unable to proceed or complete as intended.
 
-The following topics explore test execution at different levels of detail. [Level 1](./1_level/1_test_execution.md) introduces the fundamentals of test execution, [Level 2](./2_level/2_test_execution.md) examines how to choose between manual and automated execution, including automation strategies, and [Level 3](./3_level/3_test_execution.md) covers preparing, performing, and recording tests. You can explore these topics in any order depending on your existing knowledge and learning objectives.
+During execution, observed results are evaluated and outcomes are recorded. Tests may receive statuses such as **passed**, **failed**, or **blocked**, depending on the circumstances and reporting conventions. An unexpected result may require further investigation, since a failed test does not necessarily identify the underlying defect or establish that the software itself is at fault. Broader activities such as monitoring testing progress and managing defects are covered in [Test Management](../test_managment/overview.md).
+
+This module explores test execution across three levels. [Level 1](./1_level/1_test_execution.md) explains how execution outcomes are evaluated and recorded, along with the fundamental differences between manual and automated execution. [Level 2](./2_level/2_test_execution.md) examines how to select an appropriate execution approach, including automation suitability and strategies. [Level 3](./3_level/3_test_execution.md) focuses on preparing, performing, recording, and following up on test execution activities.

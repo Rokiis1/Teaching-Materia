@@ -26,6 +26,12 @@
 
     - software_quality/software_testing/software_development_lifecycle_and_testing/summary.md
 
+- Test Management:
+    - software_quality/software_testing/test_managment/overview.md
+    - software_quality/software_testing/test_managment/1_level/1_level_test_managment.md
+    - software_quality/software_testing/test_managment/2_level/2_level_test_managment.md
+    - software_quality/software_testing/test_managment/summary.md
+
 - Types of Testing:
     - software_quality/software_testing/types_of_testing/overview.md
     - Dynamic Testing:
@@ -65,8 +71,3 @@
     - software_quality/software_testing/levels_of_testing/system_integration_testing/system_integration_testing.md
     - software_quality/software_testing/levels_of_testing/acceptance_testing/acceptance_testing.md
     - software_quality/software_testing/levels_of_testing/summary.md
-
-- Test Management:
-    - software_quality/software_testing/test_managment/overview.md
-    - software_quality/software_testing/test_managment/1_level/1_level_test_managment.md
-    - software_quality/software_testing/test_managment/summary.md
