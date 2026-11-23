@@ -1,4 +1,3 @@
-
 # Level 1
 
 ## Table of Contents: Software Development Lifecycle & Testing

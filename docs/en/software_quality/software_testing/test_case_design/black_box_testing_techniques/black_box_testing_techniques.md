@@ -1,6 +1,6 @@
-# Black Box Testing Techniques
+# Black-Box Testing Techniques
 
-## Table of Contents: # Black Box Testing Techniques
+## Table of Contents: Black-Box Testing Techniques
 
 - [Equivalence Partitioning](#equivalence-partitioning)
 - [Boundary Value Analysis](#boundary-value-analysis)
@@ -8,164 +8,87 @@
 - [State Transition Testing](#state-transition-testing)
 - [Use Case Testing](#use-case-testing)
 
-In **Test Case Design Level 2**, testing relied on experience-based and heuristic approaches. Techniques such as Error Guessing, Exploratory Testing, and Checklist-Based Testing focused on identifying defects using intuition, prior knowledge, and general testing practices.
+**Black-box testing techniques** are systematic methods for designing test cases based on the specified or expected behavior of software, without requiring knowledge of its internal implementation. They use requirements, specifications, business rules, and other information from the **test basis** to identify test conditions, select test data, and determine expected results. These techniques help testers select meaningful tests and evaluate how well the expected behavior has been covered without attempting to test every possible situation **(ISTQB, 2024, Section 4.2)**.
 
-These approaches are valuable for discovering unexpected issues, especially when requirements are incomplete or unclear. However, they do not provide a consistent or systematic way to design test cases.
-
-As systems grow in complexity, relying only on intuition makes it difficult to ensure complete and reliable coverage.
-
-At this level, the focus shifts from *experience-driven testing* to *structured test design*.
-
-Instead of selecting inputs based on guesswork, test cases are now derived using defined techniques. These techniques provide clear rules for identifying relevant inputs and help ensure that testing is both efficient and meaningful.
-
-The goal is not only to reduce the number of test cases, but to ensure that each test case represents important behavior within the system.
-
-These techniques follow a **black box approach**, where testing is based only on inputs and observed outputs. The internal implementation is not considered. The system is evaluated based on how it behaves, not how it is built.
-
-This approach is widely used when the internal logic is not visible or not relevant. For example, it is commonly applied when testing **user interfaces**, where interactions happen through forms and user input, and when testing **APIs**, where requests and responses define system behavior.
-
-It is also essential in **system level testing** and **integration testing**, where the focus is on how components interact and how the system behaves as a whole.
-
-In all of these cases, testing is performed by analyzing inputs and outputs without relying on internal code or structure.
-
-This introduces a more systematic way of designing test cases, where each test is derived from a clear rule rather than intuition.
-
-**Choosing the right technique**, each technique in this level addresses a different testing challenge. Use Equivalence Partitioning when inputs can be grouped by rules or ranges. Use Boundary Value Analysis when defects are likely at the edges of those ranges. Use Decision Table Testing when multiple conditions interact to produce outcomes. Use State Transition Testing when system behavior depends on sequences and history. Use Use Case Testing when validating complete user workflows. In practice, these techniques are often combined,and structured design is enhanced by the **experience-based approaches from Level 2**.
-
-We start with **Equivalence Partitioning**, which focuses on grouping inputs that are expected to behave in the same way.
+Black-box techniques can be applied at different **test levels**, including component, integration, system, and acceptance testing. This chapter introduces five techniques: **Equivalence Partitioning**, **Boundary Value Analysis**, **Decision Table Testing**, **State Transition Testing**, and **Use Case Testing**. Each provides a structured approach to designing tests for different aspects of software behavior, with the choice depending on the testing objectives, available information, and risks. The discussion begins with **Equivalence Partitioning**, which focuses on selecting representative test cases from groups of inputs or conditions expected to behave similarly.
 
 ## Equivalence Partitioning
 
-**Equivalence Partitioning** is a *black-box testing technique* that focuses on reducing the number of test cases while still maintaining effective coverage.
+**Equivalence Partitioning (EP)** is a **black-box testing technique** that divides input data or other test conditions into groups expected to be processed in the same way. These groups are called **equivalence partitions** or **equivalence classes**. Rather than testing every possible value, testers select representative values from each identified partition, reducing the number of test cases while maintaining systematic coverage of the defined partitions. Partitions may be **valid**, containing values that satisfy the requirements, or **invalid**, containing values that violate them (ISTQB, 2024, Section 4.2.1).
 
-In many systems, inputs are not processed individually but are handled based on defined rules or ranges. When inputs follow the same rule, the system is expected to treat them in the same way. Testing each individual value in such cases does not provide additional benefit and quickly becomes inefficient.
+For example, consider an online registration system that accepts an age between `13` and `100`, inclusive. The input can be divided into three equivalence partitions: values below the permitted range, values within the range, and values above it. Each partition represents a different expected outcome, allowing one representative value to be selected for testing, as shown in the following table.
 
-To address this, inputs are grouped into sets where all values are expected to behave similarly. These sets are called **equivalence classes**.
+| Test Case ID | Equivalence Partition | Test Input | Expected Outcome      |
+|--------------|-----------------------|------------|-----------------------|
+| TCID-001     | Age below `13`        | `10`       | Registration rejected |
+| TCID-002     | Age from `13` to `100`| `30`       | Registration accepted |
+| TCID-003     | Age above `100`       | `110`      | Registration rejected |
 
-**Partitioning** is the process of dividing input data into these equivalence classes. Each class represents a group of inputs that the system is expected to treat in the same way, which means a **single test case can represent the entire group**.
+These test cases cover the three identified age partitions without testing every possible age. However, partition coverage does not guarantee that every value behaves correctly, and additional tests may be needed to investigate particular risks or boundary conditions.
 
-Each equivalence class represents inputs that share the same expected outcome. These include **valid inputs**, which should be accepted, and **invalid inputs**, which should be rejected.
+Equivalence Partitioning also applies when a **single input has multiple validation rules**. For example, suppose a username must contain between `5` and `10` characters and begin with a letter. The length and format requirements can be partitioned separately, with representative values selected for each valid and invalid partition. When evaluating one rule, the other applicable conditions should remain valid wherever possible so that the result can be associated with the partition being tested. The following table combines these requirements into one set of test cases.
 
-When designing tests, the goal is to ensure that **each identified class is covered**. This means selecting at least one representative value from every class so that both valid and invalid behavior is exercised.
+| Test Case ID | Validation Rule | Equivalence Partition         | Test Input        | Valid/Invalid | Expected Outcome  |
+|--------------|-----------------|-------------------------------|-------------------|---------------|-------------------|
+| TCID-004     | Length          | `5–10` characters             | `user123`         | Valid         | Username accepted |
+| TCID-005     | Length          | Fewer than `5` characters     | `abc`             | Invalid       | Username rejected |
+| TCID-006     | Length          | More than `10` characters     | `username123`     | Invalid       | Username rejected |
+| TCID-007     | Format          | Starts with a letter          | `user123`         | Valid         | Username accepted |
+| TCID-008     | Format          | Does not start with a letter  | `1user23`         | Invalid       | Username rejected |
+| TCID-009     | Input type      | Non-string input              | `123456` (number) | Invalid       | Username rejected |
 
-For example, consider a system that accepts age between `13` and `100`.
+When a system processes **multiple inputs**, the same principle can be extended to each field. Consider a registration form containing a username, age, and password. Each field has its own validation requirements, and the resulting partitions can be used to design tests for the complete form. A practical approach is to begin with valid values for all fields and then change one field at a time to exercise its invalid partitions while keeping the remaining inputs valid. The following example uses the previously defined username and age requirements and assumes that the password must contain at least eight characters.
 
-Instead of testing many individual values, the input can be divided into classes based on expected behavior. One class represents values below the allowed range, another represents values within the valid range, and another represents values above the allowed range.
+| Test Case ID | Username  | Age   | Password   | Partition Being Tested     | Expected Outcome      |
+|--------------|-----------|-------|------------|----------------------------|-----------------------|
+| TCID-010     | `user123` | `25`  | `Passw0rd` | All fields valid           | Registration accepted |
+| TCID-011     | `abc`     | `25`  | `Passw0rd` | Invalid username length    | Registration rejected |
+| TCID-012     | `1user23` | `25`  | `Passw0rd` | Invalid username format    | Registration rejected |
+| TCID-013     | `user123` | `10`  | `Passw0rd` | Invalid age below minimum  | Registration rejected |
+| TCID-014     | `user123` | `110` | `Passw0rd` | Invalid age above maximum  | Registration rejected |
+| TCID-015     | `user123` | `25`  | `Pass1`    | Invalid password length    | Registration rejected |
 
-| Test Case ID | Equivalence Class      | Test Input | Expected Outcome              | PASS/FAIL |
-|--------------|------------------------|------------|-------------------------------|-----------|
-| TCID-001     | Age less than `13`     | `10`       | Registration rejected         |           |
-| TCID-002     | Age between `13–100`   | `30`       | Registration accepted         |           |
-| TCID-003     | Age greater than `100` | `110`      | Registration rejected         |           |
+This approach allows testers to cover the identified partitions across several fields without examining every possible combination of values. Keeping the other fields valid helps isolate the requirement being tested, although additional cases may be necessary when fields depend on one another or when further partitions are identified.
 
-This reduces `88` possible inputs to `3` test cases while maintaining the same coverage of system behavior.
-
-The same idea applies when validating text input with multiple independent rules. For example, a username may be required to follow rules related to length and format. Each rule is partitioned separately.
-
-**Length partitions**.
-
-| Test Case ID | Equivalence Class Description | Valid/Invalid | Expected Outcome  | PASS/FAIL |
-| ------------ | ----------------------------- | ------------- | ----------------- | --------- |
-| TCID-001     | Length between `5–10`         | Valid         | Username accepted |           |
-| TCID-002     | Length less than `5`          | Invalid       | Username rejected |           |
-| TCID-003     | Length greater than `10`      | Invalid       | Username rejected |           |
-
-**Format partitions**.
-
-| Test Case ID | Equivalence Class Description | Valid/Invalid | Expected Outcome  | PASS/FAIL |
-| ------------ | ----------------------------- | ------------- | ----------------- | --------- |
-| TCID-004     | Starts with a letter          | Valid         | Username accepted |           |
-| TCID-005     | Does not start with a letter  | Invalid       | Username rejected |           |
-| TCID-006     | Non-string input              | Invalid       | Username rejected |           |
-
-When multiple inputs are involved, the same principle still applies. Instead of testing all combinations, a **single valid combination** can represent correct system behavior, while invalid combinations test each rule independently.
-
-| Test Case ID | Username  | Age  | Password   | Description                      | Valid/Invalid | Expected Outcome     | PASS/FAIL |
-|--------------|-----------|------|------------|----------------------------------|---------------|----------------------|-----------|
-| TCID-010     | `user123` | `25` | `Passw0rd` | All inputs satisfy requirements  | Valid         | Login successful     |           |
-
-**Equivalence Partitioning** is most useful when input rules are clearly defined. It provides a structured way to design test cases by focusing on groups of inputs instead of individual values, allowing testing to remain efficient while still covering meaningful scenarios.
-
-However, while grouping inputs reduces the number of test cases, it does not specifically address what happens at the **edges of those groups**. In many systems, defects are more likely to occur at the boundaries between valid and invalid inputs.
-
-To handle this, testing focuses more closely on the **limits of input ranges**.
+Equivalence Partitioning is particularly useful when requirements define clear categories, ranges, or validation rules. It helps testers select a manageable set of representative test cases, but it does not specifically examine the values at which behavior changes between partitions. These boundaries may contain defects that representative values do not reveal, which leads to **Boundary Value Analysis**, a technique focused on testing values at and around those limits.
 
 ## Boundary Value Analysis
 
-Boundary Value Analysis is a black-box testing technique that focuses on testing the edges of input ranges rather than values in the center.
+**Boundary Value Analysis (BVA)** is a **black-box testing technique** that focuses on values at and around the boundaries of ordered equivalence partitions. While Equivalence Partitioning groups inputs according to expected behavior, Boundary Value Analysis examines the points where that behavior changes. These boundaries are particularly important because defects such as incorrect comparisons and off-by-one errors often occur near minimum and maximum limits. The technique is commonly applied to ordered inputs, including numerical values, dates, and lengths, where neighboring values can be identified (ISTQB, 2024, Section 4.2.2).
 
-In many systems, inputs are defined by limits. These limits create boundaries between valid and invalid values. While Equivalence Partitioning groups inputs based on similar behavior, it does not specifically verify how the system behaves at these boundaries.
+Two common approaches are **2-value Boundary Value Analysis (2-value BVA)** and **3-value Boundary Value Analysis (3-value BVA)**. Both use boundaries identified through Equivalence Partitioning, but they differ in how many values are selected around each boundary. In **2-value BVA**, testing focuses on the boundary value and its closest neighboring value from the adjacent partition. This verifies whether the system correctly distinguishes between values on either side of a boundary, as illustrated in the following diagram.
 
-In practice, defects often occur at these edges. Errors such as off-by-one mistakes or incorrect comparisons are more likely to appear where input values change from valid to invalid.
+![2-value Boundary Value Analysis](./assets/images/2BVA.png)
 
-Because of this, testing focuses on values that are at, just below, and just above these limits.
+For example, consider a file upload system that accepts files between `1 MB` and `10 MB`, inclusive. Assuming file sizes are evaluated in increments of `0.01 MB`, the lower boundary separates rejected files below `1 MB` from accepted files at or above that limit. Similarly, the upper boundary separates accepted files at or below `10 MB` from rejected files above it. The following test cases examine both sides of these boundaries.
 
-Boundary Value Analysis applies to inputs that have an ordered structure, such as numbers or date ranges. These inputs form partitions where minimum and maximum values define the boundaries.
+| Test Case ID | Boundary             | Test Value | Valid/Invalid | Expected Outcome |
+|--------------|----------------------|------------|---------------|------------------|
+| TC001        | Below lower boundary | `0.99 MB`  | Invalid       | Upload rejected  |
+| TC002        | At lower boundary    | `1.00 MB`  | Valid         | Upload accepted  |
+| TC003        | At upper boundary    | `10.00 MB` | Valid         | Upload accepted  |
+| TC004        | Above upper boundary | `10.01 MB` | Invalid       | Upload rejected  |
 
-Instead of selecting values from within the range, testing is centered around these boundary points and the values immediately surrounding them. This allows both valid and invalid edges of the input domain to be verified.
+These test cases verify whether the system applies the correct acceptance and rejection rules at both limits. The neighboring values must reflect the precision supported by the system, since a file size measured in bytes would require different test values from one measured in decimal increments.
 
-Two common approaches are used when applying Boundary Value Analysis.
+While **2-value BVA** examines values on either side of a boundary, **3-value Boundary Value Analysis (3-value BVA)** provides more detailed coverage by selecting three values around each boundary. These include the value immediately below the boundary, the boundary itself, and the value immediately above it. This approach helps reveal defects involving incorrect comparisons or unexpected behavior near the limits, as illustrated in the following diagram.
 
-In a simpler approach, testing focuses on the boundary points themselves. This verifies that the system correctly handles the minimum and maximum allowed values.
+![3-value Boundary Value Analysis](./assets/images/3BVA.png)
 
-![2BVA](./assets/images/2BVA.png)
+For example, consider an internal banking application in which transaction processing depends on the transaction amount. Transactions below `100` are rejected, transactions from `100` through `10,000` are processed normally, and transactions above `10,000` require additional approval. These rules create two boundaries where the expected behavior changes. Assuming transaction amounts are whole numbers, the following test cases examine the values immediately below, at, and above each boundary.
 
-In this approach, only the exact boundary values are tested to confirm they are accepted.
+| Test Case ID | Boundary             | Test Value | Expected Outcome               |
+|--------------|----------------------|------------|--------------------------------|
+| TC001        | Below lower boundary | `99`       | Transaction rejected           |
+| TC002        | At lower boundary    | `100`      | Transaction processed normally |
+| TC003        | Above lower boundary | `101`      | Transaction processed normally |
+| TC004        | Below upper boundary | `9,999`    | Transaction processed normally |
+| TC005        | At upper boundary    | `10,000`   | Transaction processed normally |
+| TC006        | Above upper boundary | `10,001`   | Additional approval required   |
 
-For example, consider a file upload system that allows files between 1MB and 10MB.
+These test cases verify that the application applies the correct business rules immediately before, at, and after each threshold. If transaction amounts support decimal values, the neighboring test values should instead reflect the smallest permitted increment, such as `0.01`.
 
-The boundaries are defined by the minimum value of 1MB and the maximum value of 10MB. Testing focuses on these limits and the values immediately around them to ensure the system correctly handles valid inputs at the edges.
-
-| Test Case ID | Boundary Type             | Value  | Valid/Invalid | PASS/FAIL |
-| ------------ | ------------------------- | ------ | ------------- | --------- |
-| TC001        | Lower Boundary            | 1MB    | Valid         |           |
-| TC002        | Upper Boundary            | 10MB   | Valid         |           |
-| TC003        | Just Above Lower Boundary | 1.01MB | Valid         |           |
-| TC004        | Just Below Upper Boundary | 9.99MB | Valid         |           |
-
-This confirms that the system accepts the boundary values, but it does not verify behavior outside these limits. To cover invalid boundaries, additional test cases are needed.
-
-| Test Case ID | Boundary Type             | Value   | Valid/Invalid | Expected Outcome | PASS/FAIL |
-| ------------ | ------------------------- | ------- | ------------- | ---------------- | --------- |
-| TC005        | Just Below Lower Boundary | 0.99MB  | Invalid       | Upload rejected  |           |
-| TC006        | Just Above Upper Boundary | 10.01MB | Invalid       | Upload rejected  |           |
-
-In a more detailed approach, testing includes values just below, exactly at, and just above each boundary. This helps detect edge related defects more precisely and is especially useful for identifying off-by-one errors.
-
-![3BVA](./assets/images/3BVA.png)
-
-In this approach, testing is important when system behavior changes at boundary conditions and incorrect handling can affect business logic.
-
-For example, consider an internal banking application where transaction processing depends on the amount.
-
-```text
-Transactions below 100 are rejected  
-Transactions from 100 to 10,000 are processed normally  
-Transactions above 10,000 require additional approval
-```
-
-The boundaries are defined by the minimum value of 100 and the maximum value of 10,000. Testing focuses on these limits and the values around them.
-
-| Test Case ID | Boundary Type             | Value  | Expected Behavior                | PASS/FAIL |
-|--------------|---------------------------|--------|----------------------------------|-----------|
-| TC001        | Lower Boundary            | 100    | Accepted and processed           |           |
-| TC002        | Upper Boundary            | 10000  | Accepted and processed           |           |
-| TC003        | Just Below Lower Boundary | 99     | Rejected                         |           |
-| TC004        | Just Above Lower Boundary | 101    | Accepted and processed           |           |
-| TC005        | Just Below Upper Boundary | 9999   | Accepted and processed           |           |
-| TC006        | Just Above Upper Boundary | 10001  | Accepted with approval required  |           |
-
-This verifies that the system correctly handles both valid and invalid inputs and applies the correct business rules at the boundaries where behavior changes.
-
-Boundary Value Analysis is often used together with Equivalence Partitioning. While Equivalence Partitioning reduces the number of test cases by grouping inputs, Boundary Value Analysis improves coverage by focusing on the most error-prone areas of those groups.
-
-This allows testing to remain efficient while still validating critical edge conditions.
-
-However, not all system behavior is defined by input ranges. In many cases, the outcome depends on combinations of different conditions rather than a single input value.
-
-When multiple conditions influence the result, testing needs to consider how these combinations affect system behavior.
-
-To handle this, a structured way of representing conditions and their outcomes is used.
+Boundary Value Analysis complements **Equivalence Partitioning** by examining the limits between partitions rather than relying only on representative values from within them. Together, these techniques help testers cover both general input behavior and the points where defects are more likely to occur. However, some systems determine outcomes through combinations of conditions rather than ordered input ranges. Such behavior can be examined using **Decision Table Testing**, which organizes conditions and their corresponding actions into a structured set of rules.
 
 ## Decision Table Testing
 
