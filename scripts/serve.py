@@ -46,6 +46,11 @@ def copy_shared_assets():
             javascripts_dir / "quiz.js",
         )
 
+        shutil.copy2(
+            "docs/shared/javascripts/mathjax.js",
+            javascripts_dir / "mathjax.js",
+        )
+
 def build():
     print("\nCopying shared assets")
     copy_shared_assets()

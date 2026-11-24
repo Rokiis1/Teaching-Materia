@@ -55,6 +55,9 @@ jobs:
           cp docs/shared/javascripts/quiz.js docs/en/javascripts/quiz.js
           cp docs/shared/javascripts/quiz.js docs/lt/javascripts/quiz.js
 
+          cp docs/shared/javascripts/mathjax.js docs/en/javascripts/mathjax.js
+          cp docs/shared/javascripts/mathjax.js docs/lt/javascripts/mathjax.js
+
       - name: Generate navigation configs
         run: uv run python scripts/generate_config.py
 
