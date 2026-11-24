@@ -112,12 +112,12 @@ In **2-value BVA**, the coverage items for each boundary value are the boundary 
 
     All values in the diagram are expressed in MB, and the diagram is not to scale. Based on the identified boundary values, four distinct test cases can be derived to verify the transitions between adjacent partitions.
 
-    | Test Case ID | Boundary      | Test Value | Valid/Invalid | Expected Outcome |
-    |--------------|---------------|------------|---------------|------------------|
-    | TCID-001     | Below minimum | `0.99 MB`  | Invalid       | Upload rejected  |
-    | TCID-002     | At minimum    | `1.00 MB`  | Valid         | Upload accepted  |
-    | TCID-003     | At maximum    | `10.00 MB` | Valid         | Upload accepted  |
-    | TCID-004     | Above maximum | `10.01 MB` | Invalid       | Upload rejected  |
+    | Test Case ID | Boundary Position  | Test Value | Valid/Invalid | Expected Outcome |
+    |--------------|--------------------|------------|---------------|------------------|
+    | TCID-001     | Just below minimum | `0.99 MB`  | Invalid       | Upload rejected  |
+    | TCID-002     | Minimum            | `1.00 MB`  | Valid         | Upload accepted  |
+    | TCID-003     | Maximum            | `10.00 MB` | Valid         | Upload accepted  |
+    | TCID-004     | Just above maximum | `10.01 MB` | Invalid       | Upload rejected  |
 
 In **3-value BVA**, the coverage items for each boundary value include the boundary value itself, its immediately preceding value, and its immediately succeeding value. Neighboring boundary values may share coverage items, so duplicate values are counted only once when determining the distinct coverage items and deriving test cases. This approach extends the coverage provided by 2-value BVA.
 
@@ -129,12 +129,12 @@ In **3-value BVA**, the coverage items for each boundary value include the bound
 
     As in the previous diagram, all values are expressed in MB, and the diagram is not to scale. The four additional coverage items are used to derive the following test cases.
 
-    | Test Case ID | Boundary Region       | Test Value | Valid/Invalid | Expected Outcome |
-    |--------------|-----------------------|------------|---------------|------------------|
-    | TCID-005     | Lower boundary region | `0.98 MB`  | Invalid       | Upload rejected  |
-    | TCID-006     | Lower boundary region | `1.01 MB`  | Valid         | Upload accepted  |
-    | TCID-007     | Upper boundary region | `9.99 MB`  | Valid         | Upload accepted  |
-    | TCID-008     | Upper boundary region | `10.02 MB` | Invalid       | Upload rejected  |
+    | Test Case ID | Boundary Position            | Test Value | Valid/Invalid | Expected Outcome |
+    |--------------|------------------------------|------------|---------------|------------------|
+    | TCID-005     | Two increments below minimum | `0.98 MB`  | Invalid       | Upload rejected  |
+    | TCID-006     | Just above minimum           | `1.01 MB`  | Valid         | Upload accepted  |
+    | TCID-007     | Just below maximum           | `9.99 MB`  | Valid         | Upload accepted  |
+    | TCID-008     | Two increments above maximum | `10.02 MB` | Invalid       | Upload rejected  |
 
     Together, the original and additional test cases cover all eight distinct 3-value BVA coverage items.
 
