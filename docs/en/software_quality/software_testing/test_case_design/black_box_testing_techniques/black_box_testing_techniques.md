@@ -190,19 +190,19 @@ While Equivalence Partitioning and Boundary Value Analysis examine inputs and th
 
 ## Decision Table Testing
 
-**Decision Table Testing** is a **black-box testing technique** used to design test cases for systems whose behavior depends on combinations of conditions and their corresponding actions. While Equivalence Partitioning and Boundary Value Analysis focus on identifying representative values and examining partition boundaries, Decision Table Testing examines how combinations of conditions determine expected system behavior. This technique is particularly useful for testing business rules and identifying missing, inconsistent, or contradictory requirements **(ISTQB, 2024, Section 4.2.3)**.
+**Decision Table Testing** is a **black-box testing technique** used to design test cases for systems whose behavior depends on combinations of conditions and their corresponding actions. While Equivalence Partitioning and Boundary Value Analysis focus on representative values and partition boundaries, Decision Table Testing examines how conditions work together to determine expected system behavior. It is particularly useful for testing business rules and identifying missing, inconsistent, or contradictory requirements **(ISTQB, 2024, Section 4.2.3)**.
 
 ![Decision Table Testing](./assets/images/decision_table_testing.png)
 
-A **decision table** represents the relationship between conditions and actions in a structured tabular format. Conditions describe the circumstances that influence system behavior, while actions describe the expected responses. Conditions and actions are represented in rows, and each column represents a **decision rule**, which specifies a combination of condition values and the corresponding expected actions.
+A **decision table** represents conditions and actions in rows, with each column representing a **decision rule**. A rule specifies a combination of condition values and the actions expected for that combination.
 
-In Decision Table Testing, test conditions associated with business rules and specified system behavior are analyzed to identify relevant combinations of condition values and their expected actions. The conditions represented in a decision table describe individual factors influencing system behavior, whereas a test condition may concern an individual business rule, a combination of factors, or the overall behavior being verified. Each feasible decision rule represents a **coverage item** from which test cases can be derived. When these rules provide sufficient information for test case design and coverage evaluation, separately documenting test scenarios is not necessary. The relationship between test conditions, test scenarios, and test cases is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
+During test design, business rules and other test conditions are analyzed to identify the relevant combinations and their expected actions. Each feasible decision rule represents a **coverage item** from which test cases can be derived. When the rules provide sufficient information for test case design and coverage evaluation, separately documenting test scenarios is unnecessary. This relationship is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
 
-In a **limited-entry decision table**, each condition has two Boolean values, commonly represented as `T` when the condition is satisfied and `F` when it is not. Projects may use another defined notation, such as `Yes/No`, without changing the meaning of the conditions. An **extended-entry decision table** allows conditions to contain values, ranges, or categories rather than restricting them to Boolean values.
+In a **limited-entry decision table**, conditions have Boolean values, commonly represented as `T` and `F` or `Yes` and `No`. An **extended-entry decision table** allows conditions to contain values, ranges, or categories instead.
 
 !!! example "Extended-entry decision table"
 
-    Consider a delivery service in which the delivery charge depends on the customer's membership status and order value. Standard members receive free delivery for orders of at least €50, while premium members receive free delivery regardless of the order value. A delivery charge of €5 applies to standard members whose orders are below €50.
+    A delivery service charges standard members €5 for orders below €50 and provides free delivery for orders of €50 or more. Premium members receive free delivery regardless of the order value.
 
     | Conditions and Actions | R1        | R2          | R3        | R4          |
     |------------------------|-----------|-------------|-----------|-------------|
@@ -212,8 +212,6 @@ In a **limited-entry decision table**, each condition has two Boolean values, co
     | **Actions**            |           |             |           |             |
     | Charge €5 for delivery | X         |             |           |             |
     | Provide free delivery  |           | X           | X         | X           |
-
-    This table expresses membership status and order value as categories and ranges rather than Boolean conditions.
 
 Decision tables use notation to represent condition values, expected actions, and their applicability within individual rules. The following table presents commonly used symbols, although notation may vary between projects and tools.
 
@@ -255,27 +253,50 @@ All theoretical combinations can be constructed by pairing each possible value o
     | Provide free delivery       | X  | X  | X  |    |
     | Charge €5 for delivery      |    |    |    | X  |
 
-    Rules `R2` and `R4` both concern orders below €50, but their expected actions differ because the membership condition has a different value. The combinations therefore distinguish two situations that require different expected results.
+    Rules `R1` and `R3` both concern orders below €50, but their expected actions differ because the membership condition has a different value. The combinations therefore distinguish two situations that require different expected results.
 
-    There are two choices for A and, for each choice, two choices for B, giving $2 \times 2 = 4$ combinations. Adding a third Boolean condition doubles the total because each existing combination can be extended with either `T` or `F`. For example, `TT` becomes `TTT` and `TTF`, producing eight combinations in total.
-
-Every additional Boolean condition doubles the theoretical number of combinations. For $n$ Boolean conditions, the total can be calculated using the following formula.
+When **every condition has exactly two possible values**, the theoretical number of combinations can be calculated using the following formula, where $n$ is the number of conditions.
 
 $$
 \text{Number of combinations} = 2^n
 $$
 
-Here, $n$ is the number of conditions, and $2^n$ means multiplying 2 by itself $n$ times. Three Boolean conditions produce $2^3 = 8$ combinations, while four produce $2^4 = 16$. The calculation depends on each condition having two possible values, not on whether those values are written as `T/F`, `Yes/No`, or another defined notation.
+This formula applies to any number of two-valued conditions. Two conditions produce $2^2 = 4$ combinations, three produce $2^3 = 8$, and four produce $2^4 = 16$. Each additional two-valued condition doubles the total.
 
-When conditions have different numbers of possible values, the theoretical total is calculated by multiplying the number of values defined for each condition. For example, if a delivery service distinguished three membership categories and two order-value ranges, it would have $3 \times 2 = 6$ theoretical combinations.
+When conditions have different numbers of possible values, the **general combination formula** multiplies the number of values defined for each condition.
 
-The theoretical total does not determine how many decision rules or test cases are ultimately needed. Combinations that cannot occur under the system's requirements can be excluded. Other combinations may be represented by one rule when a condition does not affect the expected action. In the Boolean delivery table, rules `R1` and `R2` both provide free delivery to premium customers, regardless of the order value, so one rule can represent both combinations.
+$$
+\text{Number of combinations} =
+v_1 \times v_2 \times \cdots \times v_n
+$$
+
+Here, $n$ is the number of conditions, and $v_i$ is the number of possible values for condition $i$. The formula also applies when all conditions have two values, in which case it simplifies to $2^n$.
+
+!!! example "Calculating combinations with different numbers of values"
+
+    Suppose a delivery service considers three conditions when determining the available delivery options.
+
+    | Condition            | Possible Values                   | Number of Values |
+    |----------------------|-----------------------------------|------------------|
+    | Membership status    | Standard, Premium                 | 2                |
+    | Order value          | Below €50, €50 or more            | 2                |
+    | Delivery destination | Domestic, Regional, International | 3                |
+
+    The theoretical number of combinations is calculated as follows.
+
+    $$
+    2 \times 2 \times 3 = 12
+    $$
+
+    Each of the four membership and order-value combinations can be paired with three destinations, producing twelve combinations in total. The expected action for each must then be determined from the delivery requirements.
+
+The theoretical total is calculated before considering feasibility or minimization. Combinations that cannot occur under the requirements can be excluded, while combinations with the same expected actions may be represented by one rule when a condition is irrelevant. In the Boolean delivery table, for example, `R3` and `R4` can be combined because premium members receive free delivery at either order value.
 
 **Decision table minimization** reduces the number of decision rules by combining rules when particular condition values do not influence the expected actions. An irrelevant condition can be marked with `–`, indicating that any permitted value for that condition produces the same expected actions within the rule. Minimization therefore allows one rule to represent multiple combinations without changing the specified behavior. The following loan approval example demonstrates how sixteen Boolean combinations can be represented using five decision rules.
 
 !!! example "Decision table for loan approval"
 
-    Consider a loan approval system in which approval depends on the applicant's credit score, monthly income, employment status, and requested loan amount. For this example, assume that loan approval requires a credit score of at least `650`, a monthly income of at least `€2,000`, current employment, and a requested loan amount not exceeding `€20,000`. All four conditions must be satisfied for the loan to be approved. These are illustrative business rules rather than actual lending criteria.
+    Consider a loan approval system that requires a credit score of at least `650`, a monthly income of at least `€2,000`, current employment, and a requested loan amount not exceeding `€20,000`. All four conditions must be satisfied for approval. These are illustrative business rules rather than actual lending criteria.
 
     These requirements define four Boolean conditions and two possible actions. Although four Boolean conditions produce sixteen theoretical combinations ($2^4 = 16$), the expected behavior can be represented using five non-overlapping decision rules in a minimized decision table.
 
@@ -290,7 +311,7 @@ The theoretical total does not determine how many decision rules or test cases a
     | Approve loan                       | X  |    |    |    |    |
     | Deny loan                          |    | X  | X  | X  | X  |
 
-    Rule `R1` represents the single combination in which all four approval conditions are satisfied. Rule `R2` represents eight combinations because an insufficient credit score results in denial regardless of the other three condition values. Similarly, `R3` represents four combinations, `R4` represents two, and `R5` represents one. Together, the five rules account for all sixteen combinations without listing each one separately.
+    Rule `R1` represents the single combination in which all approval conditions are satisfied. Rule `R2` represents eight combinations because the other three conditions are irrelevant when the credit score is insufficient. Similarly, `R3` represents four combinations, `R4` represents two, and `R5` represents one. Together, the rules account for all sixteen combinations.
 
     Representative input values can be selected from the corresponding equivalence partitions to satisfy each decision rule and derive the following test cases.
 
@@ -317,15 +338,15 @@ $$
 \times 100\%
 $$
 
-In the loan approval example, the five test cases (`TCID-001` through `TCID-005`) are designed to cover all five feasible decision rules in the minimized decision table. Executing all five as specified achieves 100% coverage of that table ($5/5 \times 100\% = 100\%$). The same executions exercise only five of the sixteen combinations in the full decision table, giving 31.25% coverage of the full table ($5/16 \times 100\% = 31.25\%$).
+In the loan approval example, executing `TCID-001` through `TCID-005` achieves 100% coverage of the minimized table ($5/5 \times 100\% = 100\%$). The same executions cover five of the sixteen combinations in the full table, giving 31.25% coverage of that table ($5/16 \times 100\% = 31.25\%$).
 
-As the number of conditions increases, the number of possible combinations can grow significantly, increasing the effort required to construct decision tables and derive test cases. When exercising every feasible decision rule is impractical, testers may prioritize rules according to product risks and testing objectives. Any rules that remain untested should be considered when evaluating the achieved coverage.
+As the number of conditions or their possible values increases, constructing and testing every feasible rule may become impractical. Testers may prioritize rules according to product risks and testing objectives, accounting for untested rules when evaluating coverage.
 
 !!! warning "Limitations of decision table coverage"
 
-    Achieving 100% coverage of a minimized decision table does not mean that every possible combination of conditions has been tested. Defects may still occur when conditions identified as irrelevant incorrectly influence system behavior. Additional test cases may therefore be necessary to exercise alternative condition values, specific combinations, and other identified risks.
+    Achieving 100% coverage of a minimized decision table does not mean that every condition combination has been tested. Defects may remain if the implementation incorrectly allows an irrelevant condition to influence the outcome. Additional tests may be needed to examine alternative values or specific combinations.
 
-While Decision Table Testing examines how combinations of conditions determine expected actions, some systems produce different outcomes for the same input depending on their current state and previous events. Such behavior can be examined using **State Transition Testing**, which focuses on states, events, and the transitions between them.
+While Decision Table Testing examines how combinations of conditions determine expected actions, some systems respond differently to the same input depending on their current state and previous events. **State Transition Testing** examines such behavior through states, events, and transitions.
 
 ## State Transition Testing
 
