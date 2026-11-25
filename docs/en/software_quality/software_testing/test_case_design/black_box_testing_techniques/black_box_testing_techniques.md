@@ -18,7 +18,7 @@ This chapter examines five black-box testing techniques. **Equivalence Partition
 
 ![Equivalence Partitioning](./assets/images/equivalence_partitioning.png)
 
-In Equivalence Partitioning, test conditions associated with specified system behavior are analyzed to identify **equivalence partitions** that serve as **coverage items**. Representative values are then selected from these partitions to derive test cases. When the identified partitions provide sufficient information for test case design and coverage evaluation, separately documenting test scenarios is not necessary. The relationship between test conditions, test scenarios, and test cases is discussed in [**Test Design Fundamentals on Test Conditions and Test Scenarios**](../test_design_fundamentals/#test-conditions-and-test-scenarios).
+In Equivalence Partitioning, test conditions associated with specified system behavior are analyzed to identify **equivalence partitions** that serve as **coverage items**. Representative values are then selected from these partitions to derive test cases. When the identified partitions provide sufficient information for test case design and coverage evaluation, separately documenting test scenarios is not necessary. The relationship between test conditions, test scenarios, and test cases is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
 
 The simplest application of Equivalence Partitioning involves a **single input with a single validation rule**, where acceptance or rejection depends on one requirement. The possible input values are divided into partitions according to their expected behavior, and a representative value is selected from each partition.
 
@@ -32,7 +32,7 @@ The simplest application of Equivalence Partitioning involves a **single input w
     | TCID-002     | Age from `13` to `100` | `30`       | Valid         | Registration accepted |
     | TCID-003     | Age above `100`        | `110`      | Invalid       | Registration rejected |
 
-**Equivalence partition coverage** measures the proportion of identified equivalence partitions exercised by the tests. To achieve 100% equivalence partition coverage, every identified partition, including both valid and invalid partitions, must be exercised at least once. The broader concept of test coverage is discussed in [**Test Management Level 3 on Test Coverage**](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
+**Equivalence partition coverage** measures the proportion of identified equivalence partitions exercised by the tests. To achieve 100% equivalence partition coverage, every identified partition, including both valid and invalid partitions, must be exercised at least once. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
 
 $$
 \text{EP Coverage} =
@@ -96,21 +96,23 @@ Although Equivalence Partitioning provides systematic coverage of identified par
 
 ## Boundary Value Analysis
 
-**Boundary Value Analysis (BVA)** is a **black-box testing technique** that focuses on values at and around the boundaries of ordered equivalence partitions. While Equivalence Partitioning groups inputs according to expected behavior, Boundary Value Analysis examines the limits of these partitions, where defects such as incorrect comparisons and off-by-one errors frequently occur. The technique is applicable to ordered partitions, including those based on numerical values, dates, and lengths, where boundary values and their neighboring values can be identified **(ISTQB, 2024, Section 4.2.2)**.
+**Boundary Value Analysis (BVA)** is a **black-box testing technique** that focuses on values at and around **Boundary Value Analysis (BVA)** is a **black-box testing technique** that examines values at and around the boundaries of ordered equivalence partitions, where defects such as incorrect comparisons and off-by-one errors frequently occur. It is applicable to numerical values, dates, lengths, and other ordered inputs for which boundary values and their neighbors can be identified **(ISTQB, 2024, Section 4.2.2)**.
 
-In Boundary Value Analysis, test conditions associated with ordered equivalence partitions are examined to identify **boundary values** and their relevant neighboring values. These values serve as **coverage items** and provide a direct basis for deriving test cases without requiring separately documented test scenarios. The relationship between test conditions, test scenarios, and test cases is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
+A **boundary value** is a minimum or maximum value of an ordered equivalence partition. Where two partitions meet, each may have its own boundary value. For example, if an integer input accepts values from `1` to `10`, the upper boundary of the valid partition is `10`, while the lower boundary of the adjacent invalid partition is `11`.
 
-Two common approaches are **2-value Boundary Value Analysis (2-value BVA)** and **3-value Boundary Value Analysis (3-value BVA)**. Both approaches use boundary values identified through Equivalence Partitioning but differ in the neighboring values selected for each boundary value.
+During test design, boundary values and the neighboring values required by the selected BVA approach are identified as **coverage items**. Test cases can be derived directly from these items without separately documenting test scenarios. This relationship is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
 
-In **2-value BVA**, the coverage items for each boundary value are the boundary value itself and its closest neighboring value belonging to the adjacent partition. This approach verifies whether the system correctly distinguishes between values belonging to neighboring partitions.
+Two common approaches are **2-value BVA** and **3-value BVA**. They differ in which neighboring values are selected for each boundary value.
+
+In **2-value BVA**, each boundary value and its closest neighbor in the adjacent partition are selected. This focuses testing on the transition between partitions with different expected behavior.
 
 !!! example "2-value Boundary Value Analysis"
 
-    Consider a file upload system that accepts files between `1 MB` and `10 MB`, inclusive. Assuming file sizes are evaluated in increments of `0.01 MB`, three ordered equivalence partitions can be identified. These include file sizes below `1 MB`, file sizes from `1 MB` to `10 MB`, and file sizes above `10 MB`. The following diagram illustrates the boundary values associated with the minimum and maximum permitted file sizes.
+    A file upload system accepts files between `1 MB` and `10 MB`, inclusive, with sizes evaluated in increments of `0.01 MB`. This produces three ordered equivalence partitions consisting of files below the permitted range, files within it, and files above it.
 
     ![2-value Boundary Value Analysis](./assets/images/2BVA.png)
 
-    All values in the diagram are expressed in MB, and the diagram is not to scale. Based on the identified boundary values, four distinct test cases can be derived to verify the transitions between adjacent partitions.
+    All values in the diagram are expressed in MB, and the diagram is not to scale. Applying 2-value BVA produces four distinct coverage items, from which the following test cases can be derived.
 
     | Test Case ID | Boundary Position  | Test Value | Valid/Invalid | Expected Outcome |
     |--------------|--------------------|------------|---------------|------------------|
@@ -119,26 +121,43 @@ In **2-value BVA**, the coverage items for each boundary value are the boundary 
     | TCID-003     | Maximum            | `10.00 MB` | Valid         | Upload accepted  |
     | TCID-004     | Just above maximum | `10.01 MB` | Invalid       | Upload rejected  |
 
-In **3-value BVA**, the coverage items for each boundary value include the boundary value itself, its immediately preceding value, and its immediately succeeding value. Neighboring boundary values may share coverage items, so duplicate values are counted only once when determining the distinct coverage items and deriving test cases. This approach extends the coverage provided by 2-value BVA.
+In **3-value BVA**, the coverage items for each boundary value are the boundary value itself, its immediately preceding value, and its immediately succeeding value. This examines both sides of each partition boundary value rather than only the neighboring value in the adjacent partition. Coverage items shared by neighboring boundary values are counted only once. The approach can be applied independently and does not require testers to perform 2-value BVA first.
 
 !!! example "3-value Boundary Value Analysis"
 
-    Applying 3-value BVA to the previously defined file upload requirements produces eight distinct coverage items, including the four values already selected through 2-value BVA. The following diagram illustrates these values and highlights the additional coverage items.
+    Applying 3-value BVA to the same file upload requirements begins with the four partition boundary values `0.99 MB`, `1.00 MB`, `10.00 MB`, and `10.01 MB`. Each boundary value is considered together with its immediately preceding and succeeding values.
+
+    | Boundary Value | Immediately Before | Boundary Itself | Immediately After |
+    |----------------|--------------------|-----------------|-------------------|
+    | `0.99 MB`      | `0.98 MB`          | `0.99 MB`       | `1.00 MB`         |
+    | `1.00 MB`      | `0.99 MB`          | `1.00 MB`       | `1.01 MB`         |
+    | `10.00 MB`     | `9.99 MB`          | `10.00 MB`      | `10.01 MB`        |
+    | `10.01 MB`     | `10.00 MB`         | `10.01 MB`      | `10.02 MB`        |
+
+    Several values appear more than once because the boundary values of adjacent partitions are neighbors. Removing these duplicates produces eight distinct coverage items, as illustrated in the following diagram.
 
     ![3-value Boundary Value Analysis](./assets/images/3BVA.png)
 
-    As in the previous diagram, all values are expressed in MB, and the diagram is not to scale. The four additional coverage items are used to derive the following test cases.
+    All values in the diagram are expressed in MB, and the diagram is not to scale. The complete set of test cases for 3-value BVA is shown below.
 
     | Test Case ID | Boundary Position            | Test Value | Valid/Invalid | Expected Outcome |
     |--------------|------------------------------|------------|---------------|------------------|
     | TCID-005     | Two increments below minimum | `0.98 MB`  | Invalid       | Upload rejected  |
+    | TCID-001     | Just below minimum           | `0.99 MB`  | Invalid       | Upload rejected  |
+    | TCID-002     | Minimum                      | `1.00 MB`  | Valid         | Upload accepted  |
     | TCID-006     | Just above minimum           | `1.01 MB`  | Valid         | Upload accepted  |
     | TCID-007     | Just below maximum           | `9.99 MB`  | Valid         | Upload accepted  |
+    | TCID-003     | Maximum                      | `10.00 MB` | Valid         | Upload accepted  |
+    | TCID-004     | Just above maximum           | `10.01 MB` | Invalid       | Upload rejected  |
     | TCID-008     | Two increments above maximum | `10.02 MB` | Invalid       | Upload rejected  |
 
-    Together, the original and additional test cases cover all eight distinct 3-value BVA coverage items.
+    The four test cases from the 2-value example remain part of this set. If they have already been executed under applicable test conditions, only the four additional coverage items remain to be exercised.
 
-**Boundary value coverage** measures the proportion of identified coverage items exercised by the tests. These coverage items depend on whether 2-value BVA or 3-value BVA is applied. To achieve 100% boundary value coverage, every identified coverage item for the selected approach must be exercised at least once. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
+!!! info "Input precision and neighboring values"
+
+    Neighboring values depend on the smallest increment relevant to the specified behavior. Integer inputs normally differ by `1`, while the file upload example assumes an increment of `0.01 MB`. If the system validates exact file sizes in bytes, the tests should instead use the specified byte limits and their neighboring byte values. Display precision alone does not establish the increment used for validation.
+
+**Boundary value coverage** measures the proportion of coverage items exercised for the selected approach. Coverage is calculated using the following formula.
 
 $$
 \text{BVA Coverage} =
@@ -147,29 +166,27 @@ $$
 \times 100\%
 $$
 
-In the file upload example, executing the first four test cases (`TCID-001` through `TCID-004`) achieves 100% 2-value boundary value coverage ($4/4 \times 100\% = 100\%$). Executing all eight test cases (`TCID-001` through `TCID-008`) achieves 100% 3-value boundary value coverage ($8/8 \times 100\% = 100\%$). Although both approaches achieve complete coverage against their respective criteria, 3-value BVA exercises additional neighboring values.
+**Boundary value coverage** measures the proportion of coverage items exercised for the selected BVA approach. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
 
-!!! info "Input precision and neighboring values"
+In the file upload example, executing `TCID-001` through `TCID-004` achieves 100% 2-value BVA coverage ($4/4 \times 100\% = 100\%$) and 50% 3-value BVA coverage ($4/8 \times 100\% = 50\%$). Executing all eight test cases achieves 100% 3-value BVA coverage ($8/8 \times 100\% = 100\%$). Whether the additional coverage is warranted depends on the testing objectives, product risks, and available resources.
 
-    The selection of neighboring values depends on the data type and smallest increment supported by the system. For integer inputs, neighboring values normally differ by `1`, whereas values evaluated to two decimal places may differ by `0.01`. The precision displayed by a user interface may differ from the precision used internally by the system. Testers must therefore identify the precision relevant to the specified behavior before deriving boundary value test cases.
+The choice of approach depends on the testing objectives, product risks, required coverage, and available resources. **2-value BVA** may be proportionate for straightforward, low-risk validation when the main objective is to check where acceptance changes to rejection. **3-value BVA** provides additional coverage near those transitions and may be worthwhile when failures have greater consequences, boundary defects have occurred previously, or calculations and conversions introduce additional risk. A simple interval does not, by itself, rule out either approach.
 
-The choice between **2-value BVA** and **3-value BVA** depends on the testing objectives, identified risks, and available resources. While 2-value BVA generally requires less testing effort, 3-value BVA examines additional neighboring values and can reveal defects that 2-value BVA may miss.
+!!! example "Choosing between 2-value and 3-value BVA"
 
-!!! bug "Detecting additional boundary defects"
+    For a low-risk quantity field accepting whole numbers from `1` to `99`, a tester may select `0`, `1`, `99`, and `100` using 2-value BVA to check the permitted limits.
 
-    Suppose the file upload system incorrectly rejects files of exactly `1.01 MB` while correctly processing all values selected through 2-value BVA.
+    For a payment system that changes its processing rule at `€100.00`, a tester may choose 3-value BVA and select `€99.98`, `€99.99`, `€100.00`, and `€100.01`. The additional values may be justified by the financial impact of incorrect processing or risks associated with rounding near the threshold.
 
-    | Test Case ID | Test Value | Expected Outcome | Actual Outcome  |
-    |--------------|------------|------------------|-----------------|
-    | TCID-006     | `1.01 MB`  | Upload accepted  | Upload rejected |
+!!! bug "Detecting an additional boundary defect"
 
-    This defect would remain undetected by the test cases derived using 2-value BVA but would be revealed by the additional test case derived using 3-value BVA.
+    Suppose the file upload system accepts `1.00 MB` but incorrectly rejects `1.01 MB`. All four 2-value BVA test cases could pass, while `TCID-006` in the 3-value BVA set would reveal the defect.
 
 !!! warning "Limitations of boundary value coverage"
 
-    Complete boundary value coverage does not address every possible value within equivalence partitions or every dependency and combination of inputs. Boundary Value Analysis should therefore be complemented by other test design techniques when additional behavior or identified risks require coverage.
+    Achieving 100% coverage for either approach does not establish that every value within the partitions behaves correctly or that all boundary defects have been detected. Additional techniques may be needed to examine other values, input dependencies, and combinations.
 
-While Equivalence Partitioning and Boundary Value Analysis are useful for examining individual inputs and their boundaries, some systems determine outcomes through combinations of conditions. Such behavior can be examined using **Decision Table Testing**, which organizes conditions and their corresponding actions into a structured set of rules.
+While Equivalence Partitioning and Boundary Value Analysis examine inputs and their boundaries, some systems determine outcomes through combinations of conditions. **Decision Table Testing** examines how those combinations determine the expected actions.
 
 ## Decision Table Testing
 
@@ -181,11 +198,11 @@ A **decision table** represents the relationship between conditions and actions 
 
 In Decision Table Testing, test conditions associated with business rules and specified system behavior are analyzed to identify relevant combinations of condition values and their expected actions. The conditions represented in a decision table describe individual factors influencing system behavior, whereas a test condition may concern an individual business rule, a combination of factors, or the overall behavior being verified. Each feasible decision rule represents a **coverage item** from which test cases can be derived. When these rules provide sufficient information for test case design and coverage evaluation, separately documenting test scenarios is not necessary. The relationship between test conditions, test scenarios, and test cases is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
 
-In a **limited-entry decision table**, conditions are represented using Boolean values, where `T` indicates that a condition is satisfied and `F` indicates that it is not. An **extended-entry decision table** allows conditions to contain multiple values, ranges, or categories rather than being restricted to Boolean values.
+In a **limited-entry decision table**, each condition has two Boolean values, commonly represented as `T` when the condition is satisfied and `F` when it is not. Projects may use another defined notation, such as `Yes/No`, without changing the meaning of the conditions. An **extended-entry decision table** allows conditions to contain values, ranges, or categories rather than restricting them to Boolean values.
 
 !!! example "Extended-entry decision table"
 
-    Consider a delivery service in which the delivery charge depends on the customer's membership status and order value. Standard members receive free delivery for orders of at least `€50`, while premium members receive free delivery regardless of the order value. A delivery charge of `€5` applies to standard members whose orders are below `€50`.
+    Consider a delivery service in which the delivery charge depends on the customer's membership status and order value. Standard members receive free delivery for orders of at least €50, while premium members receive free delivery regardless of the order value. A delivery charge of €5 applies to standard members whose orders are below €50.
 
     | Conditions and Actions | R1        | R2          | R3        | R4          |
     |------------------------|-----------|-------------|-----------|-------------|
@@ -196,7 +213,7 @@ In a **limited-entry decision table**, conditions are represented using Boolean 
     | Charge €5 for delivery | X         |             |           |             |
     | Provide free delivery  |           | X           | X         | X           |
 
-    Unlike a limited-entry decision table, this table represents conditions using categories and ranges rather than Boolean values.
+    This table expresses membership status and order value as categories and ranges rather than Boolean conditions.
 
 Decision tables use notation to represent condition values, expected actions, and their applicability within individual rules. The following table presents commonly used symbols, although notation may vary between projects and tools.
 
@@ -209,21 +226,58 @@ Decision tables use notation to represent condition values, expected actions, an
 | `X`    | The action is expected to occur.                                         |
 | Blank  | The action is not expected to occur.                                     |
 
-When all conditions are Boolean, the theoretical number of possible condition combinations can be calculated using the following formula, where $n$ represents the number of conditions.
+A **condition combination** specifies one value for each condition being considered and represents a particular situation in which the system's behavior can be evaluated. Identifying combinations helps determine how conditions work together to influence the expected actions. In the delivery example, knowing that an order is below €50 is not enough to determine its delivery charge because the customer's membership status also matters. Examining both conditions together provides a systematic way to identify the relevant decision rules, determine their expected actions from the requirements, and derive test cases.
+
+All theoretical combinations can be constructed by pairing each possible value of one condition with every possible value of the remaining conditions. This process applies whether the values are expressed as Boolean values, categories, or ranges. The following example uses Boolean conditions to make the construction visible.
+
+!!! example "Identifying combinations of Boolean conditions"
+
+    The delivery service can also be represented using two Boolean conditions. **Condition A** indicates whether the customer is a premium member, while **Condition B** indicates whether the order value is at least €50. For each True or False value of Condition A, Condition B can also be either True or False, producing the four distinct combinations shown in the following diagram.
+
+    ```mermaid
+    flowchart LR
+        S["Two Boolean conditions"] --> AT["A = T"]
+        S --> AF["A = F"]
+        AT --> TT["B = T: TT"]
+        AT --> TF["B = F: TF"]
+        AF --> FT["B = T: FT"]
+        AF --> FF["B = F: FF"]
+    ```
+
+    Each path selects one value for A and one for B. For example, `TF` means that the customer is a premium member and the order value is below €50. The four combinations can then be placed into separate decision-rule columns, with the expected actions determined from the delivery requirements.
+
+    | Conditions and Actions      | R1 | R2 | R3 | R4 |
+    |-----------------------------|----|----|----|----|
+    | **Conditions**              |    |    |    |    |
+    | A: Premium member           | T  | T  | F  | F  |
+    | B: Order value at least €50 | T  | F  | T  | F  |
+    | **Actions**                 |    |    |    |    |
+    | Provide free delivery       | X  | X  | X  |    |
+    | Charge €5 for delivery      |    |    |    | X  |
+
+    Rules `R2` and `R4` both concern orders below €50, but their expected actions differ because the membership condition has a different value. The combinations therefore distinguish two situations that require different expected results.
+
+    There are two choices for A and, for each choice, two choices for B, giving $2 \times 2 = 4$ combinations. Adding a third Boolean condition doubles the total because each existing combination can be extended with either `T` or `F`. For example, `TT` becomes `TTT` and `TTF`, producing eight combinations in total.
+
+Every additional Boolean condition doubles the theoretical number of combinations. For $n$ Boolean conditions, the total can be calculated using the following formula.
 
 $$
 \text{Number of combinations} = 2^n
 $$
 
-For example, three Boolean conditions produce eight possible combinations ($2^3 = 8$), while five Boolean conditions produce thirty-two combinations ($2^5 = 32$). Dependencies and constraints between conditions may make some combinations infeasible, while other combinations may be consolidated when particular condition values do not influence the expected actions.
+Here, $n$ is the number of conditions, and $2^n$ means multiplying 2 by itself $n$ times. Three Boolean conditions produce $2^3 = 8$ combinations, while four produce $2^4 = 16$. The calculation depends on each condition having two possible values, not on whether those values are written as `T/F`, `Yes/No`, or another defined notation.
 
-**Decision table minimization** reduces the number of decision rules by combining rules that produce the same expected actions when particular condition values do not influence the outcome. Such conditions can be represented using the `–` symbol, indicating that either permitted Boolean value produces the same expected actions within that rule. Infeasible combinations can also be excluded when constructing the applicable decision table.
+When conditions have different numbers of possible values, the theoretical total is calculated by multiplying the number of values defined for each condition. For example, if a delivery service distinguished three membership categories and two order-value ranges, it would have $3 \times 2 = 6$ theoretical combinations.
+
+The theoretical total does not determine how many decision rules or test cases are ultimately needed. Combinations that cannot occur under the system's requirements can be excluded. Other combinations may be represented by one rule when a condition does not affect the expected action. In the Boolean delivery table, rules `R1` and `R2` both provide free delivery to premium customers, regardless of the order value, so one rule can represent both combinations.
+
+**Decision table minimization** reduces the number of decision rules by combining rules when particular condition values do not influence the expected actions. An irrelevant condition can be marked with `–`, indicating that any permitted value for that condition produces the same expected actions within the rule. Minimization therefore allows one rule to represent multiple combinations without changing the specified behavior. The following loan approval example demonstrates how sixteen Boolean combinations can be represented using five decision rules.
 
 !!! example "Decision table for loan approval"
 
     Consider a loan approval system in which approval depends on the applicant's credit score, monthly income, employment status, and requested loan amount. For this example, assume that loan approval requires a credit score of at least `650`, a monthly income of at least `€2,000`, current employment, and a requested loan amount not exceeding `€20,000`. All four conditions must be satisfied for the loan to be approved. These are illustrative business rules rather than actual lending criteria.
 
-    These requirements define four Boolean conditions and two possible actions. Although four Boolean conditions produce sixteen possible combinations ($2^4 = 16$), these combinations can be represented using five non-overlapping decision rules in a minimized decision table.
+    These requirements define four Boolean conditions and two possible actions. Although four Boolean conditions produce sixteen theoretical combinations ($2^4 = 16$), the expected behavior can be represented using five non-overlapping decision rules in a minimized decision table.
 
     | Conditions and Actions             | R1 | R2 | R3 | R4 | R5 |
     |------------------------------------|----|----|----|----|----|
@@ -236,7 +290,9 @@ For example, three Boolean conditions produce eight possible combinations ($2^3 
     | Approve loan                       | X  |    |    |    |    |
     | Deny loan                          |    | X  | X  | X  | X  |
 
-    Rule `R1` represents the combination in which all approval conditions are satisfied, while the remaining rules represent situations in which at least one required condition is not satisfied. Representative input values can be selected from the corresponding equivalence partitions to satisfy the conditions specified by each decision rule and derive the following test cases.
+    Rule `R1` represents the single combination in which all four approval conditions are satisfied. Rule `R2` represents eight combinations because an insufficient credit score results in denial regardless of the other three condition values. Similarly, `R3` represents four combinations, `R4` represents two, and `R5` represents one. Together, the five rules account for all sixteen combinations without listing each one separately.
+
+    Representative input values can be selected from the corresponding equivalence partitions to satisfy each decision rule and derive the following test cases.
 
     | Test Case ID | Decision Rule | Credit Score | Monthly Income | Employment Status | Loan Amount | Expected Outcome |
     |--------------|---------------|--------------|----------------|-------------------|-------------|------------------|
@@ -261,7 +317,7 @@ $$
 \times 100\%
 $$
 
-In the loan approval example, the five test cases (`TCID-001` through `TCID-005`) are designed to cover all five feasible decision rules in the minimized decision table. Executing these test cases achieves 100% decision table coverage ($5/5 \times 100\% = 100\%$). This coverage is measured against the minimized decision table rather than all sixteen original Boolean condition combinations. For comparison, the same five test cases would exercise only five of the sixteen combinations in the full decision table, resulting in 31.25% coverage ($5/16 \times 100\% = 31.25\%$).
+In the loan approval example, the five test cases (`TCID-001` through `TCID-005`) are designed to cover all five feasible decision rules in the minimized decision table. Executing all five as specified achieves 100% coverage of that table ($5/5 \times 100\% = 100\%$). The same executions exercise only five of the sixteen combinations in the full decision table, giving 31.25% coverage of the full table ($5/16 \times 100\% = 31.25\%$).
 
 As the number of conditions increases, the number of possible combinations can grow significantly, increasing the effort required to construct decision tables and derive test cases. When exercising every feasible decision rule is impractical, testers may prioritize rules according to product risks and testing objectives. Any rules that remain untested should be considered when evaluating the achieved coverage.
 
@@ -415,7 +471,7 @@ In addition to verifying valid transitions, State Transition Testing examines ho
 
     Although individual transition test cases verify the behavior associated with a particular state and event combination, defects may also depend on the sequence of previously executed transitions. For example, a thermostat may correctly enter the Heating and Error states individually but fail to resume heating after an error has been cleared. Such behavior can be examined by designing a test case that exercises a sequence of transitions from Idle to Heating, from Heating to Error, from Error back to Idle, and finally from Idle to Heating again, verifying the expected state and associated actions throughout the sequence.
 
-**State transition coverage** measures the extent to which the elements of a state transition model are exercised by the tests. The coverage items depend on the selected coverage criterion, with three commonly used criteria being **all states coverage**, **valid transitions coverage**, and **all transitions coverage**. Each distinct coverage item is counted only once, regardless of how many times it is exercised or attempted. Coverage is determined by the items exercised or attempted during test execution rather than whether the corresponding test cases pass or fail. The broader concept of test coverage is discussed in [**Test Management Level 3 on Test Coverage**](../../test_managment/3_level/3_test_management.md#test-coverage).
+**State transition coverage** measures the extent to which the elements of a state transition model are exercised by the tests. The coverage items depend on the selected coverage criterion, with three commonly used criteria being **all states coverage**, **valid transitions coverage**, and **all transitions coverage**. Each distinct coverage item is counted only once, regardless of how many times it is exercised or attempted. Coverage is determined by the items exercised or attempted during test execution rather than whether the corresponding test cases pass or fail. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage).
 
 **All states coverage** measures the proportion of identified states exercised by the tests. To achieve 100% all states coverage, every identified state must be visited at least once. Coverage is calculated using the following formula.
 
@@ -573,7 +629,7 @@ Test cases are derived from a use case by identifying its feasible scenarios, es
 
     Although Use Case Testing identifies interaction scenarios, it does not necessarily determine all representative input values or combinations of conditions required to test those scenarios thoroughly. Equivalence Partitioning and Boundary Value Analysis can be applied to credential validation requirements, Decision Table Testing can examine combinations of authentication conditions, and State Transition Testing can verify changes between unlocked and locked account states. These complementary techniques provide additional coverage of the behavior associated with the identified use case scenarios.
 
-**Use case scenario coverage** measures the proportion of identified feasible use case scenarios exercised by the tests when scenario coverage is selected as the coverage criterion. Each identified feasible scenario represents a coverage item, and achieving 100% coverage requires exercising every identified feasible scenario at least once. The broader concept of test coverage is discussed in [**Test Management Level 3 on Test Coverage**](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
+**Use case scenario coverage** measures the proportion of identified feasible use case scenarios exercised by the tests when scenario coverage is selected as the coverage criterion. Each identified feasible scenario represents a coverage item, and achieving 100% coverage requires exercising every identified feasible scenario at least once. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage). Coverage is calculated using the following formula.
 
 $$
 \text{Use Case Scenario Coverage} =
