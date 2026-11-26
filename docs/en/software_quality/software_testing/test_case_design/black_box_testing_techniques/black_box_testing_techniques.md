@@ -354,15 +354,15 @@ While Decision Table Testing examines how combinations of conditions determine e
 
 ![State Transition Testing](./assets/images/state_transition_testing.png)
 
-A **state** represents a condition or mode of operation in which a system exists at a particular point in time. A system begins in an initial state and may transition between states as events occur. An **event** is an occurrence that may trigger a transition, such as a user command, a system notification, or an external signal. A **transition** represents the movement from a source state to a target state in response to an event, where the source and target states may be the same. An **action** represents the behavior performed by the system as part of a transition. A transition may also depend on a **guard condition**, which is a Boolean condition that must be satisfied for the transition to occur. When a guard condition is specified, the triggering event alone is insufficient to initiate the transition.
+A **state** represents a condition or mode of operation in which a system exists at a particular point in time. A system begins in an initial state and may transition between states as events occur. An **event** is an occurrence that may trigger a transition, such as a user command, a system notification, or an external signal. A **transition** represents movement from a source state to a target state in response to an event, where the source and target states may be the same. An **action** is the behavior performed by the system as part of a transition. A transition may also depend on a **guard condition**, which is a Boolean condition that must be satisfied for the transition to occur.
 
-In State Transition Testing, test conditions associated with state-dependent behavior are analyzed to identify relevant states, events, and transitions. Depending on the selected coverage criterion, states, valid transitions, and invalid transitions serve as **coverage items** and provide a basis for deriving test cases. Individual transitions or sequences of transitions may also represent test scenarios. However, when the state transition model provides sufficient information for test case design and coverage evaluation, separately documenting test scenarios is not necessary. The relationship between test conditions, test scenarios, and test cases is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
+In State Transition Testing, test conditions associated with state-dependent behavior are analyzed to identify relevant states, events, and transitions. Depending on the selected coverage criterion, states, valid transitions, and invalid transitions serve as **coverage items** from which test cases can be derived. Individual transitions or sequences of transitions may also represent test scenarios. However, when the state transition model provides sufficient information for test case design and coverage evaluation, separately documenting test scenarios is unnecessary. This relationship is discussed in [Test Design Fundamentals on Test Conditions and Test Scenarios](../test_design_fundamentals/#test-conditions-and-test-scenarios).
 
-These elements can be represented visually using a **state transition diagram**, in which states are typically represented by nodes and valid transitions by directed arrows. A transition label may follow the notation `event [guard condition] / action`, where the event identifies the trigger, the optional guard condition specifies when the transition is permitted, and the optional action describes the behavior performed during the transition. For example, `Set Heating [temperature below target] / Start heating` represents a transition triggered by a heating command when the current temperature is below the target temperature.
+These elements can be represented using a **state transition diagram**, in which nodes typically represent states and directed arrows represent valid transitions. A transition label may follow the notation `event [guard condition] / action`. For example, `Set Heating [temperature below target] / Start heating` describes a transition that is permitted when the heating command occurs and the guard is satisfied.
 
 !!! example "State transition model for a thermostat"
 
-    Consider a simplified thermostat system that controls heating, cooling, and energy-saving operations. The system begins in the Idle state and changes its operating state in response to user commands, temperature changes, and detected faults. The following states are defined for this example.
+    Consider a simplified thermostat that controls heating, cooling, and energy-saving operations. It begins in the Idle state and changes its operating state in response to commands, temperature changes, and detected faults.
 
     | State         | Description                                                    |
     |---------------|----------------------------------------------------------------|
@@ -399,42 +399,36 @@ These elements can be represented visually using a **state transition diagram**,
     | Energy-Saving | Error Detected      | Error         | Suspend energy-saving operation and display error  |
     | Error         | Reset               | Idle          | Clear error and restore idle operation             |
 
-    All other combinations of states and events are considered invalid transitions in this simplified model. Invalid events are rejected without changing the current state or interrupting its existing operation. When the system is in the Error state, events other than Reset are rejected, and the existing error indication remains active.
+    All other state and event combinations are considered invalid in this simplified model. Invalid events are rejected without changing the current state or interrupting its existing operation. In the Error state, events other than Reset are rejected and the error indication remains active.
 
-    The following state transition diagram visually represents the defined states and valid transitions. Transition labels identify the triggering events, while the associated actions are documented in the preceding table. No additional guard conditions are introduced in this simplified model.
+    The diagram shows the defined states and valid transitions. Its labels identify events, the associated actions are documented in the preceding table. No additional guard conditions are defined for this model.
 
     ```mermaid
     stateDiagram-v2
         direction TB
 
         state "Energy-Saving" as EnergySaving
-
         [*] --> Idle
-
         Idle --> Heating: Set Heating
         Idle --> Cooling: Set Cooling
         Idle --> EnergySaving: Set Energy-Saving
-
         Heating --> Idle: Temperature Reached
         Cooling --> Idle: Temperature Reached
-
         EnergySaving --> Heating: Set Heating
         EnergySaving --> Cooling: Set Cooling
-
         Heating --> Error: Error Detected
         Cooling --> Error: Error Detected
         EnergySaving --> Error: Error Detected
-
         Error --> Idle: Reset
     ```
 
     The initial arrow pointing to Idle represents system initialization and is not counted as an event-triggered transition.
 
-While a state transition diagram provides a visual representation of system behavior, a **state table** represents the relationship between current states and events in a tabular format. Rows represent states, columns represent events, and each cell identifies the resulting state and may also include an associated action. Unlike a state transition diagram, which typically represents valid transitions, a state table can explicitly identify invalid transitions, providing a more comprehensive basis for deriving test cases.
+While a state transition diagram provides a visual representation of system behavior. A **state table** represents the relationship between current states and events in a tabular format. Rows represent states, columns represent events, and each cell identifies the resulting state and may include an associated action. A state table can explicitly identify invalid transitions as well as valid ones.
 
 !!! example "State table for a thermostat"
 
-    Based on the previously defined thermostat model, the following state table identifies the expected target state for each combination of current state and event. A cell marked with `–` represents an invalid transition. The actions associated with valid transitions are defined in the preceding thermostat example.
+    Based on the previously defined thermostat model, the following table identifies the expected target state for each state and event combination in the thermostat model. A cell marked with `–` represents an invalid transition. The associated actions are defined in the preceding example.
 
     | Current State | Set Heating | Set Cooling | Set Energy-Saving | Temperature Reached | Error Detected | Reset |
     |---------------|-------------|-------------|-------------------|---------------------|----------------|-------|
@@ -444,13 +438,15 @@ While a state transition diagram provides a visual representation of system beha
     | Energy-Saving | Heating     | Cooling     | –                 | –                   | Error          | –     |
     | Error         | –           | –           | –                 | –                   | –              | Idle  |
 
-    With five identified states and six defined events, the state table contains thirty state and event combinations ($5 \times 6 = 30$). Of these combinations, eleven represent valid transitions and nineteen represent invalid transitions.
+    With five states and six events, the table contains thirty combinations ($5 \times 6 = 30$), comprising eleven valid and nineteen invalid transitions.
 
-Test cases are derived from the state transition model by establishing the required source state, triggering an event, and verifying the resulting state and associated actions. Depending on the testing objectives, a test case may exercise a single transition or a sequence of transitions. When the required source state cannot be established directly, preceding events must be performed to bring the system into that state before the transition under test is exercised.
+Test cases are derived from the model according to the behavior being examined. A test case targeting an **individual transition** establishes the required source state and any guard conditions, triggers the event, and verifies the resulting state and associated actions. The source state may be prepared directly or reached through preceding events. A test case targeting a **sequence of transitions** follows an ordered path through the model, verifying the expected behavior after each event. The state and relevant data produced by one step become part of the conditions for the next.
+
+The distinction concerns the test objective rather than whether a test contains ordered actions. Individual transition test cases do not require a fixed execution order relative to one another when each establishes its own prerequisites. Within a sequence test case, however, the transitions must occur in the specified order because later steps depend on earlier ones.
 
 !!! example "Test cases for valid state transitions"
 
-    Based on the previously defined valid transitions, associated actions, and state table, the following test cases are derived to verify permitted system behavior. Each test case specifies the required current state, triggering event, expected next state, and expected system action.
+    Each test case below targets one permitted transition. Before executing a test case, the tester establishes its specified current state. For example, `TCID-004` requires the thermostat to be in Heating before Temperature Reached is triggered, it does not require `TCID-001` to have been executed as a separate test case first.
 
     | Test Case ID | Current State | Event               | Expected Next State | Expected Action                                    |
     |--------------|---------------|---------------------|---------------------|----------------------------------------------------|
@@ -468,11 +464,11 @@ Test cases are derived from the state transition model by establishing the requi
 
     Together, these test cases are designed to exercise all five states and all eleven valid transitions defined by the thermostat model.
 
-In addition to verifying valid transitions, State Transition Testing examines how the system handles **invalid transitions**, which are attempted when events occur in states from which the corresponding transitions are not permitted. The expected behavior depends on the specified requirements and may include rejecting the event, maintaining the current state, displaying an error message, or performing another defined recovery action.
+In addition to verifying valid transitions, State Transition Testing also examines **invalid transitions**, which are attempted when events occur in states from which the corresponding transitions are not permitted. The expected response must be derived from the requirements and may include rejecting the event, maintaining the current state, or performing another specified action.
 
 !!! example "Test cases for invalid state transitions"
 
-    Based on the thermostat state table and the previously defined requirements for invalid transitions, representative test cases can be derived to verify that unsupported events do not cause unintended state changes or actions.
+    The following test cases verify representative invalid combinations from the thermostat state table. As with the valid transition tests, each case requires its specified current state to be established before the event is attempted.
 
     | Test Case ID | Current State | Event               | Expected Next State | Expected Action                                   |
     |--------------|---------------|---------------------|---------------------|---------------------------------------------------|
@@ -486,11 +482,22 @@ In addition to verifying valid transitions, State Transition Testing examines ho
 
 !!! note "Isolation of invalid transitions"
 
-    When designing test cases for invalid transitions, it is generally preferable to attempt only one invalid transition per test case. Attempting multiple invalid transitions within the same test case may make it difficult to determine which event caused an unexpected state change or system response. Establishing the required source state before each invalid transition attempt helps isolate the behavior being evaluated.
+    It is generally preferable to attempt only one invalid transition per test case. This helps isolate the cause of an unexpected response. Any preceding events needed to establish the source state are setup activities rather than additional invalid transitions under test.
 
-!!! info "Testing sequences of transitions"
+A **sequence test case** is useful when the objective is to verify behavior across consecutive transitions, such as completing a workflow or recovering from an error. Unlike independently prepared transition tests, it preserves the relevant execution history throughout the path.
 
-    Although individual transition test cases verify the behavior associated with a particular state and event combination, defects may also depend on the sequence of previously executed transitions. For example, a thermostat may correctly enter the Heating and Error states individually but fail to resume heating after an error has been cleared. Such behavior can be examined by designing a test case that exercises a sequence of transitions from Idle to Heating, from Heating to Error, from Error back to Idle, and finally from Idle to Heating again, verifying the expected state and associated actions throughout the sequence.
+!!! example "Test case for a sequence of state transitions"
+
+    `TCID-SEQ01` verifies that the thermostat can resume heating after an operational error has been detected and cleared. The test begins in Idle, and its four steps are executed in the specified order without independently preparing the state between steps.
+
+    | Test Case ID | Step | Current State | Event          | Expected Next State | Expected Action                        |
+    |--------------|------|---------------|----------------|---------------------|----------------------------------------|
+    | TCID-SEQ01   | 1    | Idle          | Set Heating    | Heating             | Start heating                          |
+    | TCID-SEQ01   | 2    | Heating       | Error Detected | Error               | Stop heating and display error         |
+    | TCID-SEQ01   | 3    | Error         | Reset          | Idle                | Clear error and restore idle operation |
+    | TCID-SEQ01   | 4    | Idle          | Set Heating    | Heating             | Start heating                          |
+
+    The final step checks that heating can start again after the preceding error and recovery events. Testing the same transitions individually would not necessarily verify this complete history-dependent behavior.
 
 **State transition coverage** measures the extent to which the elements of a state transition model are exercised by the tests. The coverage items depend on the selected coverage criterion, with three commonly used criteria being **all states coverage**, **valid transitions coverage**, and **all transitions coverage**. Each distinct coverage item is counted only once, regardless of how many times it is exercised or attempted. Coverage is determined by the items exercised or attempted during test execution rather than whether the corresponding test cases pass or fail. The broader concept of test coverage is discussed in [Test Management Level 3 on Test Coverage](../../test_managment/3_level/3_test_management.md#test-coverage).
 
