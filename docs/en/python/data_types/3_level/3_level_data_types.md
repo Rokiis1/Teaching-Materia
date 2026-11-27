@@ -1152,7 +1152,7 @@ Strings serve a different purpose by representing ordered textual data, so we no
 
 ## Strings Data Type
 
-A **string** is an **immutable sequence of Unicode characters**. Strings are used everywhere: user input, messages, file names, configuration values, and API responses. Their ordered characters can be accessed through indexing and slicing, but cannot be changed in place. String methods therefore focus on normalizing, splitting, searching, validating, and transforming text, often returning new strings rather than modifying the original object.
+A **string** is an **immutable sequence of Unicode characters**. Strings are used for user input, messages, file names, configuration values, and API responses. Their ordered characters can be accessed through indexing and slicing, but cannot be changed in place. String methods therefore focus on normalizing, splitting, searching, validating, and transforming text, often returning new strings rather than modifying the original object.
 
 Use `lower()` and `upper()` to convert text to lowercase or uppercase. A consistent capitalization is useful when comparing or storing user input that may arrive in different forms.
 
@@ -1182,18 +1182,26 @@ print(normalized) # ['example', 'example', 'example', 'example']
 status = "error"
 
 print(status.upper()) # ERROR
-
-text = "Hello"
-text.upper()
-
-print(text) # Hello
-
-text = text.upper()
-
-print(text) # HELLO
 ```
 
-The loop produces four lowercase usernames, preventing capitalization from creating inconsistent records when a consistent form is required. The status is converted to uppercase for display. Calling `text.upper()` without assigning its result leaves `text` unchanged, while the final assignment makes the variable refer to the new uppercase string.
+The loop stores all four username variations in lowercase, giving them a consistent representation. The status is converted to uppercase for display.
+
+!!! warning "String methods do not change the original string"
+
+    Calling `upper()` returns a new string. If the result is not assigned or otherwise used, the original value remains unchanged.
+
+    ```py
+    text = "Hello"
+    text.upper()
+
+    print(text) # Hello
+
+    text = text.upper()
+
+    print(text) # HELLO
+    ```
+
+    The first call discards the returned string. The assignment keeps the result by making `text` refer to `"HELLO"`.
 
 Strings often appear inside lists and dictionaries, where their values can be normalized before being used.
 
@@ -1211,23 +1219,6 @@ for user in users:
 ```
 
 Here, each role is converted to lowercase before comparison, so the check does not depend on how the role was originally capitalized.
-
-Indexing and slicing can select particular characters or sections of a string, including a reversed copy when the step is `-1`.
-
-```py
-filename = "report_2026.pdf"
-country_code = "+370-612-34567"
-text = "Python"
-
-extension = filename[-3:]
-reversed_text = text[::-1]
-
-print(extension) # pdf
-print(country_code[:4]) # +370
-print(reversed_text) # nohtyP
-```
-
-The first slice retrieves the final three characters of the filename, the second retrieves the first four characters of the phone number, and the third reads `"Python"` from the end toward the beginning. Each slice creates a new string without modifying the original.
 
 Use `split()` to separate a string into a list of smaller strings. Without an argument, it splits on whitespace such as spaces, tabs, and newlines. A specified separator, such as a comma or equals sign, can instead be used for structured input.
 
@@ -1291,7 +1282,24 @@ for line in lines:
 
 The loop prints each log entry separately with the `"Log entry:"` prefix.
 
-Use `startswith()` and `endswith()` to check a string's prefix or suffix without comparing the entire value. These methods are useful for file validation, URL handling, log parsing, and input filtering. `startswith()` can also accept a starting position when only part of a string should be checked.
+Indexing and slicing can select particular characters or sections of a string, including a reversed copy when the step is `-1`.
+
+```py
+filename = "report_2026.pdf"
+country_code = "+370-612-34567"
+text = "Python"
+
+extension = filename[-3:]
+reversed_text = text[::-1]
+
+print(extension) # pdf
+print(country_code[:4]) # +370
+print(reversed_text) # nohtyP
+```
+
+The first slice retrieves the final three characters of the filename, the second retrieves the first four characters of the phone number, and the third reads `"Python"` from the end toward the beginning. Each slice creates a new string without modifying the original.
+
+When the goal is to check a prefix or suffix rather than extract it, use `startswith()` or `endswith()` to return a Boolean result. These methods are useful for checking filename extensions, URL paths, log prefixes, and input suffixes. `startswith()` can also accept a starting position when only part of a string should be checked.
 
 ```py
 filename = "report_2026.pdf"
@@ -1314,7 +1322,7 @@ if email.endswith("@example.com"):
     print("Internal company email") # Internal company email
 ```
 
-The first check accepts the PDF filename, while the second identifies the error log by its prefix. Starting the path check at index `5` allows `"v1"` to be matched without creating a separate slice, and the final check recognizes the email suffix.
+The first check confirms that the filename ends with `.pdf`, while the second identifies the error log by its prefix. Starting the path check at index `5` allows `"v1"` to be matched without creating a separate slice, and the final check recognizes the email suffix.
 
 Use `replace(old, new[, count])` to replace a substring with new text. The optional `count` argument limits the maximum number of replacements, and matching is case-sensitive.
 
